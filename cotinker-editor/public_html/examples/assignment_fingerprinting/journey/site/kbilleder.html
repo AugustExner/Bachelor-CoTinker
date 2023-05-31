@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+      <link rel="stylesheet" href="main.css">
+    
+    <title></title>
+    <script type="text/javascript">
+      var h=150; //global
+      function lille_stor(nr) {
+        if (h==50) {
+          if (nr==1){
+            document.images.b1.width=h*5/3;
+            document.images.b1.height=h;
+          };
+          if (nr==2){
+            document.images.b2.width=h*5/3;
+            document.images.b2.height=h;
+          };
+          if (nr==3){
+            document.images.b3.width=h*5/3;
+            document.images.b3.height=h;
+          };
+          if (nr==4){
+            document.images.b4.width=h*5/3;
+            document.images.b4.height=h;
+          };
+          h=150;
+        }
+      else {
+          if (nr==1){
+            document.images.b1.width=h*5/3;
+            document.images.b1.height=h;
+          };
+          if (nr==2){
+            document.images.b2.width=h*5/3;
+            document.images.b2.height=h;
+          };
+          if (nr==3){
+            document.images.b3.width=h*5/3;
+            document.images.b3.height=h;
+          };
+          if (nr==4){
+            document.images.b4.width=h*5/3;
+            document.images.b4.height=h;
+          };
+          h=50;
+        };
+      };
+    </script>
+  </head>
+<body style="width:100%;margin:10%;background-color:#57A">
+      <div class="ad floating" id="primaryAd"></div>
+
+  <a href="menu2.html"><img src="ungfri.jpg" style="float:left" width="100px"></a>
+
+<div style="width:60%;float:left;margin-right:15%;margin-left:10%;padding:15px;background-color:#79A;position:fixed"><p>
+      <H1>Hvorfor overhovedet tage til koncert?<br></H1>
+Du får en intens og uforglemmelig oplevelse med masser af nye venskaber – uanset om du tager på en festival eller en enkelt livekoncert.
+
+
+En koncert med et band du kan lide er én af de mest intense oplevelser, du kan få i dit liv. Der er både fart på og plads til at synge med og du møder en masse nye mennesker. Der bliver et stort fællesskab.
+    </p>
+  <div style="padding:15px; background-color:#546;"><p>
+    <img src="fest.jpg" name="b1" width="83" border=1  height="50"  onclick=lille_stor(1)>
+    <img src="k2.jpg" name="b2" width="83" border=1 height="50"  onclick=lille_stor(2)>
+    <img src="k3.jpg" name="b3" width="83" border=1  height="50"  onclick=lille_stor(3)>
+    <img src="k1.jpg" name="b4" width="83" border=1  height="50"  onclick=lille_stor(4)>
+  </div>  </div>
+
+  <script src="journey.js"></script>
+
+  </body>
+</html>

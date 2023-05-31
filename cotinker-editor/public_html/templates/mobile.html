@@ -1,0 +1,62 @@
+<template id="mobileMessage">
+    <div class="mobileMessage">
+        <div class="message">{{message}}</div>
+        <div class="postinfo">
+            <div class="author" userid="{{userid}}">{{author}}</div>
+            <div class="timestamp">{{timestamp}}</div>
+        </div>
+    </div>
+</template>
+
+<template id="mobileChat">
+    <div name="messenger" class="assignment-chat">
+        <form id="messenger">
+            <input class="message" name="message" type="text" placeholder="Send Note..." nosync>
+            <!-- CC Attribution Share-alike Mun May Tee-Galloway -->
+            <svg class="post-image removed" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+                            <g transform="matrix(1 0 0 -1 0 1638)">
+                                <path d="M20,1620l-4,4l-2-2l-4,4l-2-1l-4-5H20z M22,1633v-15H2v15H22z"/>
+                            </g>
+                        </svg>
+            <div class="chat-options" tabindex=1>
+                <input type="submit" value="Add Note">
+            </div>
+            
+        </form>
+    </div>
+</template>
+
+<template id="mobileNavigation">
+    <div class="assignment-navigation" name="buttons">
+        <button class="previous">&lt; Previous</button>
+        <div class="stepCounter"></div>
+        <button class="next">Next &gt;</button>
+    </div>
+</template>
+
+<template id="thumbnailDialogTpl">
+    <div class="mdc-dialog screenShotPopup">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface"
+                 role="alertdialog"
+                 aria-modal="true"
+                 aria-labelledby="my-dialog-title"
+                 aria-describedby="my-dialog-content">
+                <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+                <h2 class="mdc-dialog__title" id="my-dialog-title">Select image to post</h2>
+                <div class="mdc-dialog__content" id="my-dialog-content">
+                    <ul class="mdc-image-list" data-mdc-auto-init="MDCList">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+</template>
+
+<template id="thumbnailItemTpl">
+    <li class="mdc-image-list__item" data-mdc-auto-init="MDCRipple">
+        <img class="mdc-image-list__image">
+    </li>
+</template>

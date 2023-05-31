@@ -1,0 +1,120 @@
+<link href="assignment.css" type="text/css" rel="stylesheet" />
+<script src="history.js" type="application/javascript"></script>
+<script>
+    // Switch layout to put mobile controller on the view screen as a sidebar
+    window.cotinkerConfig.sidebarController = true;
+    window.cotinkerConfig.hideSendNote = true;
+    window.cotinkerConfig.disableCollaboration = true;
+    
+    /**
+     * This assignment contains 2 additional views:
+     * - The ?webshop, a finished webshop
+     * - The ?stepshop, a preview that shows a preview of the code in the current step     
+     */
+    
+    
+    // Show only the webshop
+    let search = new URLSearchParams(window.location.search);
+    const demoMode = search.get('webshop');
+    if (demoMode != null && demoMode !== false) {
+        // Skip the rest of the normal load process as we are now in demoMode
+        window.cotinkerConfig.skipEverything = true;
+        
+        WPMBoot.onLoaded(async ()=>{
+            await WPMv2.require([
+                {"package": "fragment_scss", "repository": "codestrates-repos"},
+                {"package": "material-design-icons", "repository": "wpm_js_libs"}
+            ]);
+            
+            
+            // Load and reload regardless of AUTO
+            let fragments = ["ShopLayout", "ShopTheme", "ShopTemplates", "cssExample"];
+            for (let index = 0; index < fragments.length; index++) {
+                let fragment = Fragment.one("#"+fragments[index]);
+                await fragment.insertAutoDom();
+                fragment.registerOnFragmentChangedHandler(()=>{
+                    fragment.insertAutoDom();
+                });
+            }
+            
+            fragments = ["SearchFilter", "RenderProduct", "ShopCode"];
+            for (let index = 0; index < fragments.length; index++) {
+                await Fragment.one("#"+fragments[index]).require();
+            }
+            
+            // Custom stylesheet
+            let stylesheet = document.createElement("style");
+            stylesheet.innerHTML = "body{background:black!important}.cotinker-top-bar{display:none!important}slides{display:block!important}#preview-webshop{display:block!important}";
+            let transient = document.createElement("transient");
+            transient.appendChild(stylesheet);
+            document.documentElement.appendChild(transient);
+            
+        });        
+        
+        // Custom stylesheet
+        let stylesheet = document.createElement("style");
+        stylesheet.innerHTML = "body{background:black!important}.cotinker-top-bar{display:none!important}";
+        let transient = document.createElement("transient");
+        transient.appendChild(stylesheet);
+        document.documentElement.appendChild(transient);
+        
+    }
+    
+    
+    // Show only the stepshop
+    const stepMode = search.get('stepshop');
+    if (stepMode != null && stepMode !== false) {
+        WPMBoot.onLoaded(async ()=>{
+            await WPMv2.require([
+                {"package": "fragment_scss", "repository": "codestrates-repos"},
+                {"package": "material-design-icons", "repository": "wpm_js_libs"}
+            ]);
+        });
+        
+        // Load css and update it automatically when changed
+        WPMBoot.onLoaded(async ()=>{
+            let cssStuff = Fragment.one("#cssExample");
+            cssStuff.insertAutoDom();
+            cssStuff.registerOnFragmentChangedHandler((context) => {
+                cssStuff.insertAutoDom();
+            });
+        });
+
+        // Skip the rest of the normal load process as we are now in stepMode
+        window.cotinkerConfig.disableCollaboration = true;
+        window.cotinkerConfig.disableSidebarNavigation = true;
+        window.cotinkerConfig.disableNotifications = true;
+        window.cotinkerConfig.disableGettingStarted = true;
+        window.cotinkerConfig.slidePrefix = "preview-"; // Show a different set of slides here
+        
+        // Custom stylesheet
+        let stylesheet = document.createElement("style");
+        stylesheet.innerHTML = "body{background:black!important}.cotinker-top-bar{display:none!important}";
+        let transient = document.createElement("transient");
+        transient.appendChild(stylesheet);
+        document.documentElement.appendChild(transient);
+    }    
+</script>
+
+<code-fragment data-type="text/javascript" auto="auto">                
+    enqueueAfterLoad(async ()=>{
+        let link = window.location.href.split('?')[0] + "?stepshop";
+        await WPMv2.require([{package: "qrcodejs", repository: "wpm_js_libs"}]);
+        let target = document.getElementById("htmlqrcode");
+        new QRCode(target, {
+            text: link,
+            width: 2560,
+            height: 2560,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });            
+    });
+</code-fragment>       
+<code-fragment data-type="text/javascript" auto="auto">
+    enqueueAfterLoad(()=>{
+        document.querySelectorAll(".imageAssetUploader").forEach((uploadArea)=>{
+            CoTinkerAssetUploader.prepareUploadArea(uploadArea);
+        });
+    });
+</code-fragment>

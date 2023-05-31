@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Politik - Quiz</title>
+        <link rel="stylesheet" href="main.css">
+        <script src="politics.js"></script>
+         <meta http-equiv="resfresh" content="1">
+    </head>
+    <body>
+        <include template="politics-menu"></include>
+        
+        <template id="politics-answers">
+            <form>
+                <ul class="answers">
+                    <li><label><input type="radio" name="d">Anthony Downs' teori om medianvælgeren</input></label></li>
+                    <li><label><input type="radio" name="d">Robert Dahls teori om polyarki</input></label></li>
+                    <li><label><input type="radio" name="d">John Rawls' teori om uvidenhedens slør</input></label></li>
+                </ul>                                 
+            </form>
+        </template>
+
+        <article>
+            <h1>Multiple choice quiz om politik</h1>
+
+            <div class="multiple-choice">
+                <p class="question" data-answer="Robert Dahls teori om polyarki">
+                Hvilken teori handler om en politisk struktur, hvor der er mange magtcentre og ingen enkelt gruppe har monopol på magten?
+                </p>
+                <include template="politics-answers"></include>
+
+                <p class="question" data-answer="Robert Dahls teori om polyarki">
+                Hvilken teori handler om en politisk struktur, hvor magten deles mellem en række grupper eller organisationer, der alle har indflydelse på politiske beslutninger?
+                </p>
+                <include template="politics-answers"></include>
+
+                <p class="question" data-answer="John Rawls' teori om uvidenhedens slør">
+                Hvilken teori handler om en metode til at afgøre, hvilke politiske principier der er retfærdige ved at forestille sig, at vi er en gruppe mennesker, der forhandler om vores politiske system bag et "slør af uvidenhed", der skjuler vores specifikke interesser og vores sociale og økonomiske position?
+                </p>
+                <include template="politics-answers"></include>
+                
+                <p class="question" data-answer="Anthony Downs' teori om medianvælgeren">
+                Hvilken teori handler om en politisk struktur, hvor den enkelte vælger stemmer på den kandidat eller parti, der ligger tættest på deres egne holdninger, således at magten i samfundet fordeles mellem forskellige grupper i samfundet?
+                </p>
+                <include template="politics-answers"></include>                            
+            </div>
+        </article>
+    </body>
+</html>

@@ -1,0 +1,99 @@
+
+.farve
+{background-color:#555;}
+
+.body
+ {background-color: black;}
+
+#top {font-size: 12px;
+  padding-top:1px;
+  font-family: "helvetica";
+  color:#BBB;
+  text-align:center;
+  background-color:#555;
+}
+#side {
+width:100%;
+}
+
+#container {
+  font-size: 12px;
+  font-family: "helvetica";
+  position: relative;
+  overflow:hidden;
+  width:100%; /* Aht. IE6 */
+}
+
+#venstre{
+  color: black;
+  width:250px;
+  margin: 0 auto;
+  float: left;
+}
+#midt{
+  padding:5px;
+  background-color:#AAA;
+  font-size: 18px;
+  color: black;
+  width:800px;
+  margin: 0 auto;
+}
+#hoejre{
+  background-color:#888;
+  color: grey;
+  width:200px;
+  margin: 0 auto;
+  float: right;
+}
+#VandretMenu {
+  font-size: 12px;
+  font-family: "helvetica";
+  margin: 0;
+  padding: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width:1200px;
+  height:100px;
+  z-index: 1;
+  position: relative;
+}
+#VandretMenu ul {
+  list-style: none;
+  margin:0;
+  padding: 0;
+  line-height: 40px;
+}
+
+#VandretMenu li {
+  float: left;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  background-color: #888;
+}
+#VandretMenu ul li a {
+  width: 200px;
+  height: 30px;
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+}
+#VandretMenu ul ul {
+  position: absolute;
+  top:30px;
+  visibility: hidden;
+}
+#VandretMenu ul li:hover ul {
+  visibility: visible;
+}
+#VandretMenu a:hover {
+  background-color: #999;
+  color:#000;
+}
+#VandretMenu ul li ul li a:hover {
+  background-color: #CCC;
+}
+.clearfloat {
+  clear: both;
+}

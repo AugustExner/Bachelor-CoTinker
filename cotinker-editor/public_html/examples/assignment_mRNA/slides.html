@@ -1,0 +1,230 @@
+        <slide id="welcome">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../img/logo_light.svg">
+        </slide>
+        <slide id="model">
+            <div class="outer" name="Outer Container">
+                <div id="container">
+                    <canvas width="600" height="600" style="width: 600px; height: 600px;"></canvas>
+                </div>
+                <div class="viz" name="Charts">
+                    <div class="viz__chart" name="Chart">
+                        <h3>Complete mRNA strings</h3>
+                        <div id="RNAstrings">
+                            <canvas width="300" height="200" style="width: 300px; height: 200px;"></canvas>
+                        </div>
+                    </div>
+                    <div class="viz__chart" name="Chart">
+                        <h3>Free nucleotides</h3>
+                        <div id="free">
+                            <canvas width="300" height="200" style="width: 300px; height: 200px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <template id="controlsTpl">
+                <transient class="controls">
+                    <div class="control" title="Speed">
+                        <label>Speed
+                            <input id="simulation-speed" type="range" min="1" max="50" value="30">
+                        </label>
+                    </div>
+                    <div class="control" >
+                    </div>
+                    <div class="control" >
+                        <button class="sim-button reset" title="Reload the Simulation">⟳&#xfe0e;</button>
+                        <button class="sim-button play" title="Start Simulation">▶&#xfe0e;</button>
+                        <button class="sim-button pause" title="Pause Simulation">⏸&#xfe0e;</button>
+                    </div>
+                </transient>
+            </template>
+
+            <script type="application/javascript">
+                function toggleCodeEditor() {
+                    if(isEditorOpen()) {
+                        closeEditor();
+                    } else {
+                        openEditor(["#agents", "#Script"]);
+                    }
+                }
+            </script>
+
+            <div class="my-controls controls"></div>
+
+            <script>
+                webstrate.on("loaded", ()=>{
+                    let controlsTemplate = document.querySelector("#controlsTpl");
+
+                    controlsTemplate.parentNode.insertBefore(document.querySelector("#controlsTpl").content.cloneNode(true).children[0], controlsTemplate);
+                });
+            </script>
+
+            <style>
+                .outer {
+                    flex: 1 1 auto;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .viz {
+                    margin: 20px;
+                }
+
+                .viz__chart {
+                    border: 1px solid #666;
+                    border-radius: 2px;
+                    padding: 10px;
+                    margin-bottom: 20px;
+                }
+
+                .viz__chart h3 {
+                    font-size: 16px;
+                    text-decoration: underline;
+                    margin: 0 0 0.5em;
+                }
+
+                .viz__chart:last-child {
+                    margin-bottom: 0;
+                }          
+                
+                #model[data-slide-mode]:not([data-slide-mode~='free-for-all']) .viz {
+                    /* Hide stats when editor is open */
+                    display: none
+                }
+                #model .controls {
+                    flex: 0 0 auto;
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;                    
+                    background: rgba(255,255,255,0.1);
+                }
+                #model .controls .control {
+                    padding: 0.2em 1em;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                #model .controls .control label {
+                    display: flex;
+                    flex-direction: column;
+                }
+                #model .sim-button {
+                    height: 3rem;
+                    margin: 0.1rem;
+                    min-width: 3rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    line-height: 1rem;
+                    font-size: 1.75em;
+                    font-family: "Segoe UI symbol";
+                }
+            </style>
+            
+            <code-fragment data-type="text/javascript">               
+                function pause() {
+                  cancelAnimationFrame(window.animationID);
+                  environment.renderers.forEach((r) =&gt; r.render());
+                  environment.set("paused", true);
+                  document.querySelector("#model .play").style.display = "";
+                  document.querySelector("#model .pause").style.display = "none";
+                }
+
+                function run(keepRunning = false) {
+                  if (keepRunning) environment.set("paused", false);
+                  environment.tick({ randomizeOrder: true });
+                  if (environment.get("paused")) return;
+                  window.animationID = requestAnimationFrame(run);
+                }          
+                
+                async function reset(){
+                    await Fragment.one("#Script").require();
+                    environment.set("speed", document.querySelector("#model #simulation-speed").value / 100);
+                    Tagger.tag("modelReset");
+                    pause();
+                }
+                
+                await reset();
+                
+                function onPlayClicked(){
+                    document.querySelector("#model .play").style.display = "none";
+                    document.querySelector("#model .pause").style.display = "";
+                    run(true);                    
+                    Tagger.tag("modelPlayed");
+                }
+                
+                document.querySelector("#model .play").addEventListener("click", onPlayClicked);
+                document.querySelector("#model .reset").addEventListener("click", reset);
+                document.querySelector("#model .pause").addEventListener("click", pause);
+                document.querySelector("#model #simulation-speed").addEventListener("input", (d)=>{
+                    if (environment){
+                        environment.set("speed", d.target.value / 100);
+                    }
+                });                
+                
+                onSlideUnloaded(()=>{
+                    // Clean up simulation environment
+                    let env = window.environment;
+                    if (env){
+                        pause();
+                        env.clear();
+                    }
+                    
+                    // And event listeners
+                    document.querySelector("#model .play").removeEventListener("click", onPlayClicked);
+                    document.querySelector("#model .reset").removeEventListener("click", reset);
+                    document.querySelector("#model .pause").removeEventListener("click", pause);
+                });                
+            </code-fragment>                    
+            <code-fragment data-type="text/javascript" data-slide-mode="colour">
+                openEditor(["#Script"]);     
+                
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });
+            </code-fragment>                    
+            <code-fragment data-type="text/javascript" data-slide-mode="inhibitor-init">
+                openEditor(["#Script", "#agents"]);     
+
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });
+            </code-fragment>                
+            <code-fragment data-type="text/javascript" data-slide-mode="inhibitor-function">
+                openEditor(["#Script"]);     
+                // highlight "Script": line 150 - 158
+                
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });                
+            </code-fragment>        
+            <code-fragment data-type="text/javascript" data-slide-mode="free-for-all">
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });                
+            </code-fragment>                 
+        </slide>
+
+        <slide id="thanks">
+            <h1 class="supersizeme">✓</h1>            
+            <style>
+                @keyframes supersizeAppears {
+                    0% {transform: scale(0.5); opacity: 0;}
+                    90% {transform: scale(1.1)}
+                    100% {}
+                }
+                @keyframes supersizeGlow {
+                    from {text-shadow: 0 0 0.1em rgba(255,255,255,0.2);}
+                    to {text-shadow: 0 0 5em white;}
+                }
+                
+                .supersizeme {
+                    font-size: 70vh;
+                    color: #00ca00;
+                    text-shadow: 0 0 5em white;
+                    opacity: 1;
+                    animation: supersizeAppears 0.125s ease-out, supersizeGlow 2s alternate ease-in-out infinite;
+                }
+            </style>
+        </slide>       

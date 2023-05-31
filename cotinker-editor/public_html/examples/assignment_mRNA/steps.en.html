@@ -1,0 +1,152 @@
+        <step  name="Connect" data-slide="welcome" >
+            <h1>Welcome to CoTinker</h1>
+            <p>Press the phone icon <img style="width: 1.5em;height: 1.5em;vertical-align: middle;filter: invert(1);" src="../../img/call.svg"> in the communication menu at the top of the <b>computer</b> screen to talk to the rest of the group members in your group - the conversation will be recorded. </p>
+            <p>It can be a clear advantage that everyone uses <b>headsets</b> to avoid making noise or other noise. </p>
+            <p>Wait to press continue until <b>everyone</b> is connected and ready for the next part of the task.</p>
+        </step>          
+        <step  name="Survey" data-slide="welcome">
+            <h1>Questionnaire</h1>
+            <p>In the first part of the assignment, each of you must answer <a href="#" onclick="window.open('https://survey.au.dk/LinkCollector?key=R4RGXNP5JK16', '_blank');">this questionnaire</a>.</p>
+            <p>The questionnaire is personal and the answers will only be read by those who have done the survey.</p>
+            <p>When everyone is ready, you can move on to the next part of the task.</p>
+        </step>          
+        <step name="Model" data-slide="model">
+            <h1>A graphical model</h1>
+            <p>On the screen is a computer model of a biological process.</p>
+            <ul>
+                <li>Try starting the model and examine it thoroughly.</li>
+                <li>Describe which biological process the model represents.</li>
+            </ul>
+            <p>To answer the task, you can use the note tool below to make common notes along the way.</p>
+            <p>Everyone can read the notes that are written.</p>
+        </step>
+        <step name="Elements" data-slide="model">
+            <h1>Elements</h1>
+            <p>Describe which elements appear in the model.</p>
+            <ul>
+                <li>Name as many elements as possible.</li>
+                <li>How do they look?</li>
+                <li>How do they behave?</li>
+            </ul>
+        </step>
+        <step name="More Elements" data-slide="model">
+            <h1>More elements</h1>
+            <p>Are there elements that the model is missing?</p>
+            <ul>
+                <li>Describe below which you think the model is missing.</li>
+            </ul>
+        </step>
+        <step name="Presentation" data-slide="model" data-slide-mode="colour">
+            <h1>Display</h1>
+            <p>Consider other colors for the elements in the model and describe which colors you want to use.</p>
+            <ul>
+                <li>Look in the highlighted code and try to change the colors to match your wishes.</li>
+                <li>Run the code from the beginning with the <span style="font-size: 1.75em; vertical-align: top;">⟳</span> button at the bottom of the computer screen and see the result. </li>
+                <li>Why did you choose these particular colors?</li>
+            </ul>
+            
+            <code-fragment data-type="text/javascript">
+                // Jump to colour definitions when entering this step
+                jumpTo("#Script", 170, 0);
+                broadcastSelection("#Script", 171, 0, 182, 0); // highlight "Script": original screenshot line 166 - 176
+            </code-fragment>
+        </step>
+        <step name="Creation" data-slide="model" data-slide-mode="inhibitor-init">
+            <h1>Inhibitors</h1>
+            <p>Look at the code for what <a href="javascript:showInhibitorAgent()">inhibitors look like</a> and <a href="javascript:showInhibitorCreation()">when they are created</a>.</p>
+            <ul>
+                <li>Describe below how the inhibitors in the model are created.</li>
+            </ul>                 
+            <p>
+                Both links open and highlight the relevant code on the computer.
+            </p>
+            <script>
+                function showInhibitorAgent(){
+                    jumpTo("#agents", "inhibitor");
+                    broadcastSelection("#agents", "inhibitor"); // highlight "agents": original screenshot line 51 - 68
+                }
+                
+                function showInhibitorCreation(){
+                    jumpTo("#Script", "inhibitor-creation");
+                    broadcastSelection("#Script", "inhibitor-creation"); // highlight "Script": original screenshot line 81 - 85
+                }
+            </script>
+        </step>
+        <step name="Inhibitor Function" data-slide="model" data-slide-mode="inhibitor-function">
+            <h1>The behavior of the inhibitors</h1>
+            <p>Look at the highlighted code and describe what the function of the inhibitors is and how they behave in the model. </p>
+            
+            <code-fragment data-type="text/javascript">
+                // Jump to inhibitor
+                jumpTo("#Script", 154, 0);
+                broadcastSelection("#Script", 155, 0, 164, 0); // highlight "Script": original screenshot line 150 - 158
+            </code-fragment>                
+        </step>
+        <step name="More Inhibitors" data-slide="model" data-slide-mode="free-for-all">
+            <h1>Inhibitors in the model</h1>
+            <p>Let's take a closer look at the inhibitors and the production of mRNA</p>
+            <p>Here you can <a href="javascript:toggleCodeEditorOnScreen()">show and hide the code editor</a> on the screen as needed.</p>
+            <script type="application/javascript">
+                function toggleCodeEditorOnScreen() {
+                    runOnScreen("toggleCodeEditor");
+                }
+            </script>
+            <form>
+                <h2>When are the inhibitors in the model created?</h2>
+                <p>
+                    <label class="indented"><input name="answer1" type="radio" value="reset">They are all created when you press <span style="font-size: 1.75em; vertical-align: top;">⟳&#xfe0e;</span> (the reload button)</label><br>
+                    <label class="indented"><input name="answer1" type="radio" value="mRNA5">One is created when you press <span style="font-size: 1.75em; vertical-align: top;">⟳&#xfe0e;</span>, and more when the number of mRNA molecules becomes greater than five</label><br>
+                    <label class="indented"><input name="answer1" type="radio" value="nucleo">One is created when you press <span style="font-size: 1.75em; vertical-align: top;">⟳&#xfe0e;</span>, and more when the number of nucleotides becomes less than 500</label><br>
+                    <label class="indented"><input name="answer1" type="radio" value="poly">They are all created when a polymerase attaches itself to the DNA molecule</label><br>
+                </p>                        
+
+                <h2>Try to start the model by pressing play (▶&#xfe0e;). Why does the production of mRNA "chop"?</h2>
+                <p> 
+                    <label class="indented"><input name="answer2" type="radio" value="computer">Because the computer cannot work faster</label><br>
+                    <label class="indented"><input name="answer2" type="radio" value="randompoly">Because the polymerases move at random speed</label><br>
+                    <label class="indented"><input name="answer2" type="radio" value="nucleo">Because the number of nucleotides is too high</label><br>
+                    <label class="indented"><input name="answer2" type="radio" value="randomnucleo">Because the nucleotides move randomly around the model</label><br>
+                    <label class="indented"><input name="answer2" type="radio" value="lowpoly">Because the number of polymerases is too low</label><br>
+                </p>
+
+                <h2>Why are there some mRNA molecules that are not completed?</h2>
+                <p>
+                    <label class="indented"><input name="answer3" type="radio" value="computer">Because the computer cannot work faster</label><br>
+                    <label class="indented"><input name="answer3" type="radio" value="highnucleo">Because the number of nucleotides is too high</label><br>
+                    <label class="indented"><input name="answer3" type="radio" value="lowpoly">Because the number of polymerases is too low</label><br>
+                    <label class="indented"><input name="answer3" type="radio" value="lowinhibi">Because the number of inhibitors is too high</label><br>
+                    <label class="indented"><input name="answer3" type="radio" value="lownucleo">Because the number of nucleotides is too low</label><br>
+                </p>
+
+                <h2>Why is the DNA molecule a good place to store information?</h2>
+                <p>
+                    <label class="indented"><input name="answer4" type="radio" value="hydrobonds">The hydrogen bonds that hold it together are very stable and difficult to break</label><br>
+                    <label class="indented"><input name="answer4" type="radio" value="basepartners">The bases always bind to their correct partners</label><br>
+                    <label class="indented"><input name="answer4" type="radio" value="baseirrelevant">The sequence of bases does not have much influence on the molecule</label><br>
+                    <label class="indented"><input name="answer4" type="radio" value="shapeinfo">The general shape of the molecule reflects the information contained within it</label><br>
+                </p>
+
+                <h2>What is it about DNA/mRNA that makes it easy to copy genetic information?</h2>
+                <p>
+                    <label class="indented"><input name="answer5" type="radio" value="hydrobonds">The hydrogen bonds are easily broken</label><br>
+                    <label class="indented"><input name="answer5" type="radio" value="baseunique">The binding of the bases to each other is specific</label><br>
+                    <label class="indented"><input name="answer5" type="radio" value="basesequence">The sequence of the bases stores information</label><br>
+                    <label class="indented"><input name="answer5" type="radio" value="moleculeshape">The shape of the molecule is determined by the information it contains</label><br>
+                </p>
+
+                <h2>What best describes how a polymerase "finds" a nucleotide that can be inserted into mRNA?</h2>
+                <p>
+                    <label class="indented"><input name="answer6" type="radio" value="polycatch">The polymerase captures a nucleotide</label><br>
+                    <label class="indented"><input name="answer6" type="radio" value="hydrostream">The polymerase follows the flow of hydrogen ions</label><br>
+                    <label class="indented"><input name="answer6" type="radio" value="electroboom">The electronegativity of the polymerase attracts nucleotides to the polymerase</label><br>
+                    <label class="indented"><input name="answer6" type="radio" value="nucleopump">Nucleotides are actively pumped to the right area</label><br>
+                    <label class="indented"><input name="answer6" type="radio" value="randomwalk">Random movements bring the nucleotides into the vicinity of the polymerase</label><br>
+                </p>
+            </form>
+        </step>
+        <step name="Ending" data-slide="thanks">
+            <h1>Thank you for your reply.</h1>
+            <p>In conclusion, we would like to ask you to fill in a <a href="#" onclick="window.open('https://survey.au.dk/LinkCollector?key=GVPFVFXPU212', '_blank');">short questionnaire</a>. The feedback you give us helps to make the CoTinker experience better. </p>
+
+            <p>Thank you for taking part in this small test of future teaching material!</p>
+        </step>        

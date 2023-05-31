@@ -1,0 +1,206 @@
+    <assignment>
+    <script>
+        enqueueAfterLoad(()=>{
+            if (view){
+                WPMv2.require("cotinker-pxt-microbit");
+            }
+        });
+    </script>
+    <slides>
+        <slide id="welcome" class="current">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../../img/logo_light.svg">
+        </slide>        
+        <slide id="code"> 
+            <code-fragment data-type="text/javascript">
+                // Insert MakeCode editor in slide regardless of mode
+                if (!window.makeController){
+                    let slide = document.querySelector("#code");
+                    let transient = document.createElement("transient");
+                    transient.classList.add("makecode-view");
+                    slide.appendChild(transient);
+                    let makeController = new MakeController(transient);
+                    window.makeController = makeController;
+                }
+            </code-fragment>        
+            
+            <code-fragment data-type="text/javascript" data-slide-mode="connect">
+                await makeController.linkFragment(Fragment.one("#smiley"), {
+                    "blocks": {
+                        "pxt-on-start": 1,
+                        "device_show_leds": 1
+                    },                    
+                    "defaultState": 0
+                });
+                makeController.pair();
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+            </code-fragment>      
+            
+            <code-fragment data-type="text/javascript" data-slide-mode="buttons">
+                await makeController.linkFragment(Fragment.one("#smiley-buttons"), {
+                    "blocks": {
+                        "pxt-on-start": 1,
+                        "smileys_happy": 1,
+                        "smileys_surprised": 1,
+                        "smileys_sad": 1,
+                        "device_button_event": 1
+                    },                    
+                    "defaultState": 0
+                });                
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+            </code-fragment>    
+            
+            <code-fragment data-type="text/javascript" data-slide-mode="timing">
+                await makeController.linkFragment(Fragment.one("#smiley-buttons"), {
+                    "namespace": {
+                        "variables": 1
+                    },
+                    "blocks": {
+                        "pxt-on-start": 1,
+                        "smileys_happy": 1,
+                        "smileys_surprised": 1,
+                        "smileys_sad": 1,
+                        "device_button_event": 1,
+                        "variables_set": 1,
+                        "device_get_running_time": 1,
+                        "every_interval": 1,
+                        "controls_if": 1,
+                        "logic_compare": 1,
+                        "variables_get": 1,
+                        "math_arithmetic": 1
+                    },                    
+                    "defaultState": 0
+                });                
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+            </code-fragment>              
+            
+            <code-fragment data-type="text/javascript" data-slide-mode="js">
+                await makeController.linkFragment(Fragment.one("#smiley-buttons"), {
+                    "namespace": {},
+                    "blocks": {},
+                    "defaultState": 0
+                });                 
+                makeController.restrictLanguages("no-python");
+            </code-fragment>
+        </slide>
+    </slides>
+    
+    <steps>
+        <step  name="Welcome" data-slide="welcome" >
+            <h1>Welcome to CoTinker</h1>
+            <p>In this tutorial we will build a happy robot!</p>
+            <p>Click Next to get started</p>
+        </step>        
+        <step  name="Connect" data-slide="code" data-slide-mode="connect">
+            <code-fragment data-type="text/markdown" auto="true">
+# Connecting
+                
+Here is an example program that creates a smiley face on the LEDs. You can change it to your own smiley if you like.
+
+To program the micro:bit hardware you first need to:
+1. Connect it to the computer using a USB cable.
+2. Allow the browser to pair with the device
+3. Hit the download button
+
+Please follow the guide on the computer screen to do the pairing.
+
+Hit `Download` and now a smiley should be smiling at you on the LEDs of the micro:bit!
+From now on you can just hit the `Download` button whenever you want to program the micro:bit.
+            </code-fragment>            
+            
+            <code-fragment id="smiley" data-type="application/json">
+{
+  "header": {
+    "name": "Smiley",
+    "meta": {},
+    "editor": "blocksprj",
+    "pubId": "",
+    "pubCurrent": false,
+    "target": "microbit",
+    "targetVersion": "4.1.7",
+    "id": "0a58f6ce-7265-4904-8d72-0609d5682e6f",
+    "recentUse": 1638357781,
+    "modificationTime": 1638357781,
+    "path": "Untitled-2",
+    "cloudCurrent": false,
+    "saveId": null,
+    "githubCurrent": false
+  },
+  "text": {
+    "README.md": "",
+    "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"0\" y=\"0\"><statement name=\"HANDLER\"><block type=\"device_show_leds\"><field name=\"LEDS\">`\n        . . . . . \n        . # . # . \n        . . . . . \n        # . . . # \n        . # # # .\n        `</field></block></statement></block></xml>",
+    "main.ts": "basic.showLeds(`\n    . . . . .\n    . # . # .\n    . . . . .\n    # . . . #\n    . # # # .\n    `)\n",
+    "pxt.json": "{\n    \"name\": \"Untitled\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\",\n    \"languageRestriction\": \"blocks-only\"\n}\n"
+  }
+}
+            </code-fragment>
+        </step>           
+        <step  name="Buttons" data-slide="code" data-slide-mode="buttons">    
+            <code-fragment data-type="text/markdown" auto="true">
+# Interactive Buttons
+                
+Now try to create a program that is
+* Surprised when it starts
+* Happy when you press A
+* Sad when you press B
+
+Hit `Download` and see if your program does what you expect when it runs on the micro:bit
+            </code-fragment>                 
+            <code-fragment id="smiley-buttons" data-type="application/json">{
+  "header": {
+    "target": "microbit",
+    "targetVersion": "4.0.16",
+    "editor": "blocksprj",
+    "name": "SmileyButtons",
+    "meta": {},
+    "pubId": "",
+    "pubCurrent": false,
+    "id": "7eeb1be5-7cd2-423a-bdf2-22e07f8fc674",
+    "recentUse": 1638362653,
+    "modificationTime": 1638362653,
+    "path": "Untitled",
+    "blobCurrent_": false,
+    "cloudCurrent": false,
+    "saveId": null,
+    "githubCurrent": false
+  },
+  "text": {
+    "README.md": "",
+    "custom.ts": "/**\n * Functions are mapped to blocks using various macros\n * in comments starting with %. The most important macro\n * is \"block\", and it specifies that a block should be\n * generated for an **exported** function.\n */\n\n//% color=\"#AA278D\" weight=100\nnamespace smileys {\n    //% block\n    export function happy() {\n        basic.showLeds(`\n            . . . . .\n            . # . # .\n            . . . . .\n            # . . . #\n            . # # # .\n        `)\n    }\n\n    //% block\n    export function surprised() {\n        basic.showLeds(`\n            . . . . .\n            . # . # .\n            . . . . .\n            . . # . .\n            . . . . .\n            `)        \n    }\n\n    // note that Caml casing yields lower case\n    // block text with spaces\n\n    //% block\n    export function sad() {\n        basic.showLeds(`\n            . . . . .\n            . # . # .\n            . . . . .\n            . # # # .\n            # . . . #\n            `)\n    }\n}",
+    "main.blocks": "&lt;xml xmlns=\"https://developers.google.com/blockly/xml\">&lt;block type=\"pxt-on-start\" x=\"54\" y=\"21\"/>&lt;/xml>",
+    "main.ts": "\n",
+    "pxt.json": "{\n    \"name\": \"Untitled\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"radio\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\",\n        \"custom.ts\"\n    ],\n    \"targetVersions\": {\n        \"branch\": \"v4.0.16\",\n        \"tag\": \"v4.0.16\",\n        \"commits\": \"https://github.com/microsoft/pxt-microbit/commits/04b1a5492fb75af626caed5601ee8d794d970dd7\",\n        \"target\": \"4.0.16\",\n        \"pxt\": \"7.0.12\"\n    },\n    \"preferredEditor\": \"blocksprj\"\n}\n"
+  }
+}            </code-fragment>                                    
+        </step>
+        <step  name="Timing" data-slide="code" data-slide-mode="timing">    
+            <code-fragment data-type="text/markdown" auto="true">
+# Timing, loops and variables  
+             
+New blocks are available in the toolbox!
+Use 1337-haxor skills to improve the program by making a loop that
+1. Runs every 100ms
+2. Checks if no button has been pressed for 3 seconds and then
+3. Becomes surprised if so
+
+Hint: You can store the current running time in a variable
+
+Then hit `Download` again to see if your program does what you expect when it runs
+            </code-fragment>       
+        </step>
+        <step  name="Javascript" data-slide="code" data-slide-mode="js">
+            <code-fragment data-type="text/markdown" auto="true">            
+# Look ma', no blocks!
+            
+That's it!
+
+Use the toggle-button in the top center of the computer screen to switch to JavaScript and take a look at the code that you have written!
+
+Do you recognize the logic of the program in the code?
+
+            </code-fragment>
+        </step>        
+    </steps>    
+</assignment>

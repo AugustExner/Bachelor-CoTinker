@@ -1,0 +1,141 @@
+body {
+  background: #c7d3e8;
+  max-width: 50em;
+  margin: 0 auto;
+  min-height: 100vh;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  background: white;
+  padding: 0;
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.22);
+}
+
+.header {
+  background: linear-gradient(to bottom, #cfe0ff 0%, #a6c6ff 100%);
+  font-family: sans-serif;
+}
+.header h1 {
+  display: block;
+  margin: 0;
+  padding: 0.1em 0.5em;
+  font-size: 4em;
+  font-style: italic;
+  font-weight: bold;
+  cursor: pointer;
+  -webkit-mask: repeating-linear-gradient(to bottom, black 0%, transparent 2px);
+  mask: repeating-linear-gradient(to bottom, black 0%, transparent 2px);
+}
+.header .topmenu {
+  background: black;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+}
+.header .topmenu li {
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 0.5em;
+  color: white;
+  cursor: pointer;
+}
+.header .topmenu li:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.header .topmenu li.active {
+  background: rgba(255, 255, 255, 0.5);
+  font-weight: bolder;
+  text-shadow: 0 0 0.2em #0000002b;
+}
+.header .topmenu li.active:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.subheader {
+  background: #3572b3;
+  font-family: sans-serif;
+  color: white;
+  margin-top: 1em;
+}
+.subheader h2 {
+  display: block;
+  padding: 0.5em;
+  margin: 0;
+  font-size: 1em;
+  text-align: center;
+  cursor: pointer;
+}
+.subheader ul {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+}
+.subheader ul li {
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 0.5em;
+  cursor: pointer;
+}
+.subheader ul li:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.subheader ul li.active {
+  background: rgba(255, 255, 255, 0.5);
+  font-weight: bolder;
+  text-shadow: 0 0 0.2em #0000002b;
+}
+.subheader ul li.active:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+article {
+  padding: 1em;
+  background: rgba(0, 10, 250, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+article .multiple-choice {
+  background: rgba(0, 0, 0, 0.05);
+  border-top: 5px solid black;
+  padding: 1em;
+  margin-top: 2em;
+}
+article .multiple-choice ul {
+  list-style: none;
+}
+article .multiple-choice .wrong {
+  background: #ff8f8f;
+}
+article .multiple-choice .correct {
+  background: lightgreen;
+}
+article h2 {
+  font-size: 1.1em;
+  font-weight: bold;
+  font-family: sans-serif;
+  margin-bottom: 0.25em;
+  margin-top: 1.75em;
+}
+article p {
+  margin-top: 0;
+}
+article table {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+article table p {
+  margin: 0;
+}
+article table thead {
+  background: rgba(0, 0, 0, 0.2);
+}
+article table thead td {
+  padding: 0.5em 1em;
+  border-bottom: 3px solid black;
+}
+article table tbody td {
+  padding: 0 1em;
+}
+
+/*# sourceMappingURL=main.css.map */

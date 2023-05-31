@@ -1,0 +1,38 @@
+<template id="getHelpDialogTpl">
+    <div class="helpBox">
+        <p>
+            Help usually doesn't arrive instantly. Once you have clicked the button consider spending a little time
+            thinking about what exactly you want to ask about.
+        </p>            
+        <div class="helpArea">
+            <!-- hook for templates -->
+        </div>
+    </div>
+</template>
+
+<template id="helpButtonTpl">
+    <button class="helpMePinger" title="Get Help">
+        Request Help
+    </button> 
+</template>
+
+<template id="helpRequestTpl">
+    <div class="helpStatus requesting">
+        Requesting help...
+    </div>
+</template>
+
+<template id="helpCancelTpl">
+    <div class="helpStatus cancelling">
+        Cancelling request for help...
+    </div>
+</template>
+
+<template id="helpStatusTpl">
+    <div class="helpStatus enqueued">
+        <div>
+            Your request was received, wait for help, or cancel your request.
+        </div>        
+        <button class="cancel">Cancel request</button>
+    </div>
+</template>

@@ -1,0 +1,588 @@
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?">
+<link rel="assignment" href="../assignment_niklas_webshop/PictureUploader/assignment.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../assignment_niklas_webshop/WebshopName/webshopname.css">
+<link rel="stylesheet" href="../assignment_niklas_webshop/ProductSiteName/productName.css">
+<link rel="stylesheet" href="../assignment_niklas_webshop/ProductBackground/productbackground.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<inline src="template.html"></inline>
+<inline src="template_cart_item.html"></inline>
+<script src="createEditor.js"></script>
+<script src="imageUploader.js"></script>
+<script src="toggleDiv.js"></script>
+<script src="webshopCart.js"></script>
+
+<script>
+    // Switch layout to put mobile controller on the view screen as a sidebar
+    window.cotinkerConfig.sidebarController = true;
+    window.cotinkerConfig.hideSendNote = true;
+    window.cotinkerConfig.disableCollaboration = true;
+</script>
+<assignment>
+    <steps>
+
+        <step name="welcome" data-slide="welcome" >
+            <code-fragment data-type="text/markdown" auto="true">
+# Indledning
+
+- Velkommen til CoTinker!
+
+Dette er en læringsplatform der vil tage jer igennem nogle programmeringsopgaver.
+
+I 3 mands grupper skal i lave en webshop til det emme i har valgt fra Google drev (link)
+eller også kan i selv finde passende billeder der er rettet mod jeres emme, billederne
+skal være i formatet 2800x1400 til forside og 500x500 til produkter.
+
+I vil nu blive præsenteret for en skabelon til en webshop, som i vil skulle ændre på,
+hop videre til næste step <b>&#128512;</b>
+
+<p>Tilgå OneDrive i ny fane <a href="https://1drv.ms/f/s!AmCNtXSBjjtcgXQ5D32Um1uGltmZ?e=ycrfoe" title="W3.CSS" target="_blank" class="w3-hover-text-green about1">Onedrive Mappe</a></p>
+
+            </code-fragment>
+        </step>
+
+        <step name="kritik" data-slide="webshop">
+            <code-fragment data-type="text/markdown" auto="true">
+# Orienter jer på siderne
+
+Her kan i få jer et overblik over den skabelon som i skal arbejde på
+
+
+I kan overveje skabelonens design og vurderer hvad der skulle
+være anderledes til jeres emme.
+
+Hvis i har brug for hjælp, råber i bare højt!  <b>&#128512;</b>
+
+            </code-fragment>
+        </step>
+        <!--Forside - Ved dette step skal man vælge webshoppens navn og hernæst kan det modificeres -->
+        <step name="Visibility" data-slide="webshop" >
+            <code-fragment data-type="text/markdown" auto="true">
+# Webshop navn/styling
+
+- Vælg webshop navn og styling ved at redigere i koden<br>
+            </code-fragment>
+            <div id="editor6"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor6 = new createStepEditor("#step6", "#editor6");
+                const editor6 = createEditor6.editor;
+                onStepUnloaded(()=>{
+                    editor6.unload();
+                });
+            </code-fragment>
+            <br>
+            <br>
+            <code-fragment data-type="text/markdown" auto="true">
+- Her kan der ændres på farve af overskriften ved at ændre i rgb værdierne nedenfor <br>
+                            </code-fragment>
+            <div id="editor7"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor7 = new createStepEditor("#step7", "#editor7");
+                const editor7 = createEditor7.editor;
+                onStepUnloaded(()=>{
+                    editor7.unload();
+                });
+            </code-fragment>
+        </step>
+    <!-- Forside - Ved dette step skal man uploade og henvise til et billede, som skal være på forsiden-->
+        <step name="two" data-slide="webshop">
+            <code-fragment data-type="text/markdown" auto="true">
+# Forside billede
+
+For at ændre forside billedet, skal i downloade et billede fra enten google drev eller
+internettet
+
+- Hint <b>&#128512;</b> hvis i downloader et billede fra internettet skal det have formattet ...
+for at specifere søgningen på google kan i gøre således "messi imagesize2800x1400"
+
+
+
+            </code-fragment>
+            <div class="imageAssetUploader" id="imageAssetUploader">
+                <div class="preview"><img src="background.jpg"><span class="description">background.jpg</span></div>
+            </div>
+            <br>
+            I koden nedenfor skal i ændre på src, så det matcher navnet på jeres nye forsidebillede
+            <div id="editor5" class="editor"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#stepImg", "#editor5");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+             <!-- Forside - Gør menubaren synlig ved hjælp af udkommentering og herudover ændrer i dens css-->
+            <step name="v" data-slide="webshop">
+            <code-fragment data-type="text/markdown" auto="true">
+# Menubar
+
+Der kan vælges både farve på skrift og baggrund i navigationsbaren ved at gøre ligesom før,
+herudover kan i vælge farven på det der kaldes en hoover, kan i finde ud af hvad det er?  <br>
+            </code-fragment>
+            <div id="editor2"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step2", "#editor2");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+        <step name="v" data-slide="webshop">
+            <code-fragment data-type="text/markdown" auto="true">
+#Om os
+
+- Tryk på "Om os" sektionen oppe i navigationsbaren
+
+Ved at ændre værdierne i rgb kan i ændre farve på "Om os" sektionen
+
+            </code-fragment>
+            <div id="editor10">
+            </div>
+            <div>
+                <br>
+                <br>
+            </div>
+            <code-fragment data-type="text/markdown" auto="true">
+
+- Tryk på teksten i "Om os"
+
+I skal nu ændre direkte i teksten på "Om os" sektionen, så webshoppen
+stemmer overens med emmet og værdierne i jeres virksomhed, det kunne fx være
+kernekompetencer, målgruppe osv<br>
+                            </code-fragment>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step10", "#editor10");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+        <!-- Forside -  Vælg baggrundsfarve på forsiden -->
+        <step name="Visibility" data-slide="webshop">
+            <code-fragment data-type="text/markdown" auto="true">
+#Baggrundsfarve
+
+I kan nu ændre på farven til hele webshoppen så den stemmer overens med resten af designet
+
+- Skriv følgende imellem de to brackets "background-color: rgb(0, 255, 255);" <br>
+            </code-fragment>
+            <div id="editor1"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step1", "#editor1");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+        <!-- Forside - Ændrer i selve menubaren og hvad der står ift valg af webshop-->
+         <!--
+        <step name="Visibility" data-slide="webshop">
+            Menubar
+            Prøv at finde ud af hvad der skal udkommenteres for at der opstår en menubar
+            Herefter kan der vælges både farve på baren og skriften
+            <div id="editor4"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step4", "#editor4");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+-->
+        <!--
+        <step name="Visibility" data-slide="webshop">
+            Vælg productsidens navn
+            Her kan der ændres på font og farve af overskriften
+            <div id="editor9"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step9", "#editor9");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+        -->
+        <!-- Dette step er json og upload af billede til produktsiden -->
+        <step name="two" data-slide="webshop">
+            <code-fragment data-type="text/markdown" auto="true">
+#Produktside
+
+- OBS! Hvis der kommer flere produkter ved upload, så refresh siden!
+
+- Tryk på produktside i navigationsbaren
+
+I vil igen skulle downloade billeder fra enten google drev eller internettet ved at lave en
+google søgning på fx "ronaldo imagesize500x500", for at få produkter ind på webshoppen
+
+- Find 6 produkter og upload dem til databasen
+<br>
+            </code-fragment>
+            <div class="imageAssetUploaderProduct" id="imageAssetUploader">
+                <!--<div class="preview"><img src="../assignment_niklas/Images/hamburger.jpg"><span class="description">book_512.png</span></div>-->
+            </div>
+            <code-fragment data-type="text/markdown" auto="true">
+I ser nu en JSON fil, hvor jeres produkter har fået bl.a.
+- navn, description og pris
+
+I skal nu ændre i disse værdier så det passer til produktet
+
+            </code-fragment>
+            <div id="editor8"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#json", "#editor8");
+                const editor = createEditor.editor;
+                if (!window.AlreadyRunning) {
+                    let upload = document.querySelector(".imageAssetUploaderProduct");
+                    upload.addEventListener("drop", (evt) => {
+                        evt.preventDefault();
+                        let files = evt.dataTransfer.files;
+
+                        let file = files[0];
+
+                        webstrate.on("asset", function(asset) {
+                            if(asset.fileName === file.name) {
+                                //Find fragmentet
+                                const frag = createEditor.frag;
+                                //Gem den gamle "rå" værdi, altså selve teksten man ser i editoren.
+                                let oldFragmentValue = frag.raw.slice(0,-1);
+
+                                //Ret teksten til hvad man nu vil
+                                //console.log("Old fragment value", oldFragmentValue.length);
+                                if (oldFragmentValue.length > 20) {
+                                    frag.raw = oldFragmentValue + '    ,\n    {\n        "name":"name",\n        "description":"description",\n        "price":0,\n        "image":"' + file.name + '"\n    }\n]';
+                                } else {
+                                    frag.raw = oldFragmentValue + '    {\n        "name":"name",\n        "description":"description",\n        "price":0,\n        "image":"' + file.name + '"\n    }\n]';
+                                }
+                                //let newFragmentValue = oldFragmentValue + '    ,\n    {\n        "name":"name",\n        "description":"description",\n        "price":0,\n        "image":"' + file.name + '"\n    }\n]';
+                                //Sæt værdien på fragmentet
+                                frag.raw = newFragmentValue;
+                            }
+                        });
+                    });
+                    window.AlreadyRunning = true;
+                }
+
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+
+        <step name="Visibility" data-slide="webshop">
+            <code-fragment data-type="text/markdown" auto="true">
+#Baggrundsfarve
+
+I kan nu ændre på farven til baggrunden af produkterne
+<br>
+            </code-fragment>
+            <div id="editor12"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step12", "#editor12");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+
+
+        <step name="test" data-slide="webshop">
+            <code-fragment data-type="text/markdown" auto="true">
+#Indkøbskurv
+
+- Tryk på Indkøbskurven
+
+- Tilføj et produkt til Indkøbskurven
+
+- Tryk på plusset udfra produktet i indkøbskurven
+
+Som i nok bemærker så opdatere kurven 2 produkter ad gangen,
+når i trykker på plusset.
+
+- I skal nu ændre koden til kun at stige med 1 produkt
+                <br>
+                            </code-fragment>
+            <div id="editor11"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#addQuantity", "#editor11");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+    </steps>
+    <slides>
+        <!-- Første slide, startside -->
+        <slide id="welcome">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../img/logo_light.svg">
+        </slide>
+        <slide id="webshop">
+            <div class="webshopname">
+                <!-- Henter opgave om virksomhedsnavn ind, webshopName.html -->
+                <code-fragment id="step6" data-type="text/html" auto="true">
+                    <inline src="../assignment_niklas_webshop/WebshopName/webshopName.html"></inline>
+                </code-fragment>
+            </div>
+            <div class="navbar w3-top">
+                <!--<div class="w3-top">-->
+                    <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
+                        <a id="papa" onclick="toggleDiv(); toggleImage();" class="w3-bar-item w3-button hoover">Produktside </a >
+                        <a id="sss" onclick="toggleDiv(); toggleImage();" class="w3-bar-item w3-button hoover" style="display: none;">Startside </a >
+                      <!-- Right-sided navbar links. Hide them on small screens -->
+                        <div class="w3-right w3-hide-small">
+                            <a href="#about" class="w3-bar-item w3-button hoover">Om os</a>
+                            <a href="#footer" class="w3-bar-item w3-button hoover">CoTinker</a>
+                            <a id="button-toggle-cart" class="w3-bar-item w3-button hoover"><!--<img style="color: #f1f1f1;" src="shopping-cart-icon.svg"  height="20" width="20"/> --> <i class="material-icons-outlined cartIcon">shopping_cart</i></a>
+                        </div>
+                    </div>
+
+                    <style>
+                        .cartIcon{
+                            font-size: 20px;
+    align-items: center!important;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid;
+    border: none;
+                        }
+                    </style>
+
+
+                    <div id="myImg" class="navPic">
+                        <code-fragment data-type="text/html" id="stepImg" auto="true">
+                            <inline src="../assignment_niklas_webshop/PictureUploader/picture.html"></inline>
+                        </code-fragment>
+                    </div>
+                <!--</div>-->
+            </div>
+            <div id="div1">
+
+                        <!-- Det her er den html, så man kan skrive hvilket billede man vælger img""-->
+<!--
+                        <div class="imgCon">
+                        <code-fragment data-type="text/html" id="stepImg" auto="true">
+                            <inline src="../assignment_niklas_webshop/PictureUploader/picture.html"></inline>
+                        </code-fragment>
+                        </div>
+
+                        <style>
+                            .imgCon{
+                                left: 50%;
+                                right: 50%;
+                                transform: translate(-50%, -50%);
+                                width: 100%;
+                                height: 13cm;
+                                position: absolute;
+                                margin-top: 3.5cm;
+                                /* display: inline-block; */
+                                top: 38%;
+                            }
+                        </style>
+                        -->
+
+                <div class="about1 about" style="padding:128px 16px" id="about">
+                    <h3 contenteditable="true" class="w3-center">OM ....</h3>
+                    <p contenteditable="true" class="w3-center w3-large">KERNEKOMPETENCER</p>
+                    <div id="features" class="w3-row-padding w3-center" style="margin-top:64px">
+                    <div class="w3-quarter">
+                        <i class="fa fa-desktop w3-margin-bottom w3-jumbo w3-center"></i>
+                        <p contenteditable="true" class="w3-large">Målgruppe</p>
+                        <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                    </div>
+                    <div class="w3-quarter">
+                        <i class="fa fa-heart w3-margin-bottom w3-jumbo"></i>
+                        <p contenteditable="true" class="w3-large">Passion</p>
+                        <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                    </div>
+                    <div class="w3-quarter">
+                        <i class="fa fa-diamond w3-margin-bottom w3-jumbo"></i>
+                        <p contenteditable="true" class="w3-large">Design</p>
+                        <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                    </div>
+                    <div class="w3-quarter">
+                        <i class="fa fa-cog w3-margin-bottom w3-jumbo"></i>
+                        <p contenteditable="true" class="w3-large">Support</p>
+                        <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div id="div2">
+                <div id="cart-menubar" style="
+                position: absolute;
+                width: 60px;
+                height: 50px;
+                top: 200px;
+                left: 30px;
+                ">
+                </div>
+            </div>
+            <div id="cart" style="
+                display: none;
+                width: 200px;
+                height: 300px;
+                position: absolute;
+                box-sizing: border-box;
+                right: 12px;
+                top: 180px;
+                background-color: #f1f1f1;
+                box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                font-family: Arial, sans-serif;
+                z-index: 1000;
+                border-radius: 10px;
+                overflow: auto;
+                ">
+                    <div class="w3-white w3-hover-white:hover" style="border: solid;  border-radius: 10px;  border-color: white;">
+                        <p style="text-align:center;
+                        font-size:25px;">Din Kurv</p>
+                    </div>
+                    <p id="cart-status" style="text-align:center;
+                    font-size:20px;
+                    color: #757575;
+                    display: block;">Kurven er tom...</p>
+                    <div id="cart-items"></div>
+            </div>
+
+                <div id="div3">
+                    <h1 id="web">Produktkategori</h1>
+                </div>
+
+            <style>
+                #div3{
+                    position: absolute;
+                    /* top: 3cm; */
+                    /* margin-top: 3.5cm; */
+                    top: 40%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    /* text-align: center; */
+                }
+            </style>
+                <!--Her påbegyndes produktside -->
+
+                <!--Indhenter samme navigationsbar igen -->
+
+                    <!-- Henter opgave om virksomhedsnavn ind, webshopName.html -->
+                    <!-- hvis man gerne vil have samme webshop navn på begge sider, hvordan får vi så redigeret i samme fragment på begge sider -->
+                    <!--
+                    <code-fragment id="step9" data-type="text/html" auto="true">
+                        <inline src="../assignment_niklas_webshop/ProductSiteName/productSiteName.html"></inline>
+                    </code-fragment>
+                    -->
+
+                <!--Indkøbsvognen på produktsiden-->
+
+ <!--
+                <div id="cart">
+                    <p class="w3-right">
+                        <i class="fa fa-shopping-cart w3-margin-right"></i>
+                    </p>
+                </div>
+                -->
+                <!--Her placeres de json elementer som opstår pga billedet bliver trukket ind-->
+
+                <!--Overskrift på produktsiden-->
+                <!--
+                <h1 contenteditable="true" id="header" class="w3-hide-small">COLLECTION</h1>
+                    -->
+
+                <!--Listen af produkter, der skal genereres automatisk udfra template, med fake it elementer  -->
+                <div class="container">
+                <div class="list1" id="webshop-items"></div>
+                </div>
+            </div>
+            <style>
+                .container {
+                    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    /* display: flex; */
+    /* justify-content: center; */
+    top: cm;
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
+    /* left: 0; */
+    margin-top: -12cm;
+}
+            </style>
+            <!-- Footer -->
+            <div id="footer" class="about1">
+                <div class="w3-xlarge w3-section">
+                    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+                    <i class="fa fa-instagram w3-hover-opacity"></i>
+                    <i class="fa fa-snapchat w3-hover-opacity"></i>
+                    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+                    <i class="fa fa-twitter w3-hover-opacity"></i>
+                    <i class="fa fa-linkedin w3-hover-opacity"></i>
+                </div>
+                <p>Powered by <a href="" title="W3.CSS" target="_blank" class="w3-hover-text-green about1">CoTinker</a></p>
+            </div>
+
+            <code-fragment data-type="application/json" name="json" id="json"><inline src="products.json"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" name="reloadCode" id="reloadCode"><inline src="reloadCode.js"></inline></code-fragment>
+            <code-fragment data-type="text/css" id="step2" auto="true"><inline src="../assignment_niklas_webshop/NavigationBar/step2.css"></inline></code-fragment>
+            <code-fragment data-type="text/css" id="step10" auto="true"><inline src="../assignment_niklas_webshop/About/about.css"></inline></code-fragment>
+            <code-fragment data-type="text/css" id="step1" auto="true"><inline src="../assignment_niklas_webshop/BackgroundColour/step1.css"></inline></code-fragment>
+            <code-fragment data-type="text/css" id="step7" auto="true"><inline src="../assignment_niklas_webshop/WebshopName/webshopname.css"></inline></code-fragment>
+            <code-fragment data-type="text/css" id="step12" auto="true"><inline src="../assignment_niklas_webshop/ProductBackground/productbackground.css"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" name="addQuantity" id="addQuantity"><inline src="addQuantityFrag.js"></inline></code-fragment>
+            <code-fragment data-type="text/javascript">
+                if (!window.AlreadyRunningCart) {
+                    const cart = document.querySelector("#button-toggle-cart");
+                    cart.addEventListener("click", toggleCart);
+                    window.AlreadyRunningCart = true;
+                }
+            </code-fragment>
+        </slide>
+    </slides>
+</assignment>
+
+<!--
+        <li>
+            <div class="productItem w3-row w3-grayscale">
+                <div class="item">
+                  <div class="w3-container">
+                    <img class="imageProduct" src="../assignment_niklas/Images/tablesetting2.jpg" >
+                    <p>Ripped Skinny Jeans<br></p>
+                    <b>$24.99</b>
+                  </div>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="productItem w3-row w3-grayscale">
+                <div class="item">
+                  <div class="w3-container">
+                    <img class="imageProduct" src="../assignment_niklas/Images/hamburger.jpg" >
+                    <p>Ripped Skinny Jeans<br><b>$24.99</b></p>
+                  </div>
+                </div>
+            </div>
+        </li>
+            <li>
+            <div class="productItem w3-row w3-grayscale">
+                <div class="item">
+                  <div class="w3-container">
+                    <img class="imageProduct" src="../assignment_niklas/Images/hamburger.jpg" >
+                    <p>Ripped Skinny Jeans<br><b>$24.99</b></p>
+                  </div>
+                </div>
+            </div>
+        </li>
+ -->
+
+    <!--
+    <button id="switch" onclick="toggleDiv()">This div1</button>
+    -->

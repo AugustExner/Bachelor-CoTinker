@@ -1,0 +1,27 @@
+/* Overall shop appearance */
+.shop {
+    background-color: #f3f3f3;
+    color: black;
+}
+
+/* The top banner on the page */
+.header {
+    background-color: #0f0a02dc;
+    color: lightgrey;
+}
+
+/* A nice logo */
+.header .logo {
+    background-image: url(logo_light.svg);
+}
+
+/* This affects the images in the search results listing... */
+#searchResults .product .preview img {
+    background-color: white;
+}
+
+
+/* The product detail pages */
+#productView .product {
+    background: white;
+}

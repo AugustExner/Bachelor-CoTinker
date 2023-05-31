@@ -1,0 +1,387 @@
+.fullframe {
+    flex: 1 1 auto;
+    border: none;
+    width: 100%;
+    z-index: 9000;
+}
+
+body {
+    counter-reset: anonymous-counter;
+}
+
+.comparison-table .description {
+    font-weight: normal;
+    font-size: 0.8em;
+}
+
+.comparison-table table {
+    border-collapse: collapse;
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    flex: 1 1 auto;
+}
+
+.comparison-table svg {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.comparison-table th.superheader {
+    padding: 1em;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    vertical-align: top;
+}
+
+.comparison-table th.superheader:before {
+    content: "";
+    background: #001b28;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: -1;
+    position: absolute;
+}
+
+.comparison-table table table th {
+    background: rgba(26, 84, 137, 0.25);
+    padding: 0.5em;
+}
+
+.comparison-table tbody th:nth-child(2n) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.comparison-table thead {
+    position: sticky;
+    top: 0;
+    background: #063755;
+    z-index: 3;
+}
+
+.comparison-table thead [transient-class~="anonymous"] {
+    visibility: hidden;
+    position: relative;
+}
+
+.comparison-table thead [transient-class~="anonymous"]:after {
+    display: block;
+    counter-increment: anonymous-counter;
+    content: "Anonymous " counter(anonymous-counter);
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+}
+
+.comparison-table thead [transient-class~="self"]:not([transient-class~="anonymous"]) {
+    background: #86b99a30;
+}
+
+.comparison-table tbody ul {
+    list-style: none;
+    padding: 0;
+}
+
+.comparison-table tbody td.cell {
+    padding: 0.5em;
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.comparison-table .mark {
+    font-size: 1.8em;
+}
+
+.comparison-table table table {
+    width: 100%;
+}
+
+.comparison-table {
+    flex: 1 1 auto;
+    overflow: auto;
+    display: flex;
+    width: 100%;
+}
+
+.locationmap {
+    width: 250px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+
+.trackingPreview {
+    background: white;
+    width: 15em;
+    height: 16em;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.trackingPreview:focus {
+    transition: all 0.25s ease-in-out;
+    position: fixed;
+    width: 80%;
+    height: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+.trackingPreview svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.trackingPreview iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 0;
+}
+
+steps textarea {
+    display: block;
+    width: 100%;
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+steps textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+assignment steps step h1 {
+    min-height: 3.5rem;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+@keyframes stepAppears {
+    from {
+        opacity: 0;
+    }
+}
+
+.headerAware {
+    padding-top: 3.6rem;
+    contain: paint;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.d3navigator {
+    background: rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.d3navigator a {
+    cursor: pointer;
+    fill: white;
+}
+
+.d3navigator .navigationStep.root {
+    display: none;
+}
+
+.d3navigator a.closed circle {
+    fill: red;
+}
+
+.d3navigator circle {
+    filter: drop-shadow(0 0 0.1em black);
+    fill: white;
+    transition: transform 0.1s ease-in-out;
+}
+
+.d3navigator a:hover circle {
+    transform: scale(2);
+    filter: drop-shadow(0 0 0.15em black);
+}
+
+.d3navigator a:hover text {
+    font-size: 1.3em;
+    transform: rotate(-35deg) translateX(7px);
+}
+
+.d3navigator .navigationStep {
+    stroke: rgba(0, 0, 0, 0.08);
+    stroke-width: 4px;
+}
+
+.d3navigator .navigationStep text {
+    transform: rotate(-35deg);
+}
+
+.d3navigator .externalNavigation {
+    opacity: 0.5;
+}
+
+.d3navigator path.to-externalNavigation {
+    stroke-dasharray: 5, 5;
+    stroke-width: 3;
+}
+
+.d3navigator .blur, .d3navigator .focus {
+    opacity: 0.75;
+}
+
+.d3navigator .blur circle, .d3navigator .focus circle {
+    transform: scale(0.5);
+    fill: #b02b2b;
+}
+
+.d3navigator path.to-focus, .d3navigator path.from-blur {
+    stroke-dasharray: 5, 5;
+    stroke-width: 3;
+    stroke: darkred;
+}
+
+.d3navigator .externalNavigation circle {
+    transform: scale(0.5);
+    fill: rgb(61 255 255);
+}
+
+.d3navigator .navigationLine {
+    stroke: rgb(205, 242, 255);
+    stroke-width: 4px;
+}
+
+
+.element-inspector {
+    background: #181f2e;
+    width: 100%;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.element-inspector .navigation-head {
+    background: rgb(0 0 0);
+}
+
+.element-inspector .navigation-head h1 {
+    margin: 0.5em;
+}
+
+.element-inspector .navigation-head h2 {
+    background: #1c1c1c;
+    display: block;
+    margin: 0;
+    padding: 0.1em 1rem;
+    font-size: 0.8em;
+}
+
+.element-inspector .navigation-head .icon {
+    margin-right: 0.5em;
+}
+
+.element-inspector .views {
+    display: flex;
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.element-inspector .viz-timeline {
+    flex: 1 1 auto;
+}
+
+.element-inspector .visualizer {
+    position: relative;
+    flex: 1 1 auto;
+    max-width: 23em;
+    margin: 0em;
+    display: flex;
+}
+
+.element-inspector .visualizer:focus {
+    position: fixed;
+    z-index: 99999;
+    padding: 10vh 10vw;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    max-width: initial;
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+.element-inspector .visualizer .scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: clip;
+    position: relative;
+    pointer-events: all;
+}
+
+.element-inspector .visualizer svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.element-inspector .visualizer iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 0;
+    pointer-events: none;
+}
+
+.element-inspector .vis-labelset .vis-label {
+    color: white;
+}
+
+.element-inspector .vis-labelset .vis-label {
+    color: white;
+}
+
+.element-inspector .vis-time-axis .vis-text {
+    color: white;
+}
+
+.element-inspector .vis-item {
+    color: white;
+}
+
+.element-inspector .vis-item.vis-range {
+    background-color: #36487c;
+}
+
+.element-inspector .vis-timeline {
+    border: 0;
+    border-left: 1px solid #000000;
+}
+
+.element-inspector .vis-item.vis-background {
+    background: linear-gradient(180deg, rgb(255 0 0 / 27%), transparent);
+    color: red;
+}
+
+.element-inspector .vis-time-axis.vis-foreground {
+    background: #0000004f;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.element-inspector .vis-labelset {
+    background: #262626;
+}

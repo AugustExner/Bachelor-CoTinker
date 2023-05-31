@@ -1,0 +1,204 @@
+<template id="unitySlideTpl">
+  <slide>
+    <code-fragment data-type="application/json" class="unityData" name="UnitySliteData">{}</code-fragment>
+    <code-fragment data-type="text/html" class="unityUploaderHtml">
+      <div class="uploader">
+        <div class="status">Upload unity files:</div>
+        <form method="post" enctype="multipart/form-data" name="UnityUploader">
+          <div class="uploadArea">UPLOAD HERE</div>
+          <input type="file" accept="application/zip">
+        </form>
+      </div>
+    </code-fragment>
+    <code-fragment data-type="text/html" class="unityPlayer" name="UnityPlayer">
+      <div class="player">
+        <canvas class="unityCanvas" width="960" height="600" style="width: 960px; height: 600px;"></canvas>
+        <div class="status">Loading...</div>
+      </div>
+    </code-fragment>
+    <code-fragment data-type="text/javascript" name="UnitySlideInit" class="unityJs">
+      let ourSlide = fragmentSelfReference.html.parent("slide");
+      let dataFragment = Fragment.one(ourSlide.find(".unityData"));
+
+      function uploadFile(file, fileName) {
+        let url = location.origin + location.pathname;
+        let formData = new FormData();
+
+        formData.append('file', file, fileName);
+
+        return fetch(url, {
+          method: 'POST',
+          body: formData
+        });
+      }
+
+      async function setupUploader() {
+        let uploadFragment = Fragment.one(ourSlide.find(".unityUploaderHtml"));
+        await uploadFragment.insertAutoDom();
+
+        let uploaderDiv = ourSlide.find(".autoDom .uploader");
+        let uploadArea = uploaderDiv.find(".uploadArea");
+
+        uploadArea.on("dragenter dragover dragleave drop", (evt) => {
+          evt.preventDefault();
+          evt.stopPropagation();
+        });
+
+        uploadArea.on("dragenter dragover", () => {
+          uploadArea.addClass("highlight");
+        });
+
+        uploadArea.on("dragleave drop", () => {
+          uploadArea.removeClass("highlight");
+        });
+
+        uploadArea.on("drop", async (evt) => {
+          let files = evt.dataTransfer.files;
+
+          if (files.length === 0) {
+            return;
+          }
+
+          if (files.length > 1) {
+            alert("Multi file upload not supported!");
+            return;
+          }
+
+          let file = files[0];
+
+          if (!file.name.toLowerCase().trim().endsWith(".zip")) {
+            alert("Only zipfiles supported!");
+            return;
+          }
+
+          let uuid = UUIDGenerator.generateUUID("unity", 10);
+          let fileName = uuid + ".zip";
+
+          uploaderDiv.find(".status")[0].textContent = "Uploading...";
+          uploaderDiv.find("form")[0].style.display = "none";
+
+          await uploadFile(file, fileName);
+
+          uploadFragment.clearAutoDom();
+
+          let response = await fetch(location.origin + location.pathname + fileName + "?dir");
+          let json = await response.json();
+
+          function toZipUrl(url) {
+            if (url == null) {
+              return null;
+            }
+
+            return fileName + "/" + url;
+          }
+
+          let loaderUrl = toZipUrl(json.find((s) => {
+            return s.toLowerCase().trim().endsWith(".loader.js");
+          }))
+
+          let config = {
+            dataUrl: toZipUrl(json.find((s) => {
+              return s.toLowerCase().trim().endsWith(".data");
+            })),
+            frameworkUrl: toZipUrl(json.find((s) => {
+              return s.toLowerCase().trim().endsWith(".framework.js");
+            })),
+            codeUrl: toZipUrl(json.find((s) => {
+              return s.toLowerCase().trim().endsWith(".wasm");
+            })),
+            streamingAssetsUrl: toZipUrl("StreamingAssets")
+          };
+
+          if (loaderUrl != null && config.dataUrl != null && config.frameworkUrl != null && config.codeUrl != null && config.streamingAssetsUrl != null) {
+            dataFragment.raw = JSON.stringify({
+              config,
+              loaderUrl,
+              uuid
+            }, null, 2);
+
+            uploadFragment.clearAutoDom();
+
+            await startUnity();
+          } else {
+            alert("Could not identify unity web player from zip file, did you remember to build without compression enabled in player settings?");
+          }
+        });
+
+        let fileInput = uploaderDiv.find("input[type='file']");
+
+        fileInput.on("change", () => {
+          console.log("Files changed!");
+        });
+      }
+
+      let unityData = await dataFragment.require();
+
+      if (unityData.loaderUrl == null) {
+        await setupUploader();
+      } else {
+        await startUnity();
+      }
+
+      async function startUnity() {
+        if (ourSlide[0].unityController == null) {
+          console.log("Starting unity!");
+          let json = await dataFragment.require();
+
+          let unityPlayerFragment = Fragment.one(ourSlide.find(".unityPlayer"));
+          await unityPlayerFragment.insertAutoDom();
+
+          let canvas = ourSlide.find(".autoDom .player canvas")[0];
+          canvas.setAttribute("id", json.uuid);
+
+          ourSlide[0].unityController = new UnityController(json.loaderUrl, json.config, canvas);
+          await ourSlide[0].unityController.startUnity();
+
+          ourSlide.find(".autoDom .status")[0].style.display = "none";
+
+          onSlideUnloaded(async () => {
+            await ourSlide[0].unityController.destroy();
+            ourSlide[0].unityController = null;
+            unityPlayerFragment.clearAutoDom();
+          });
+        }
+      }
+
+    </code-fragment>
+  </slide>
+</template>
+
+<template id="unityJSControlSlideTpl">
+  <slide>
+    <div>
+      <button class="run">Run Code</button>
+    </div>
+
+    <code-fragment name="UnityControl" data-type="text/javascript" class="unityCode cotinker-noauto">
+      //Your unity control code goes here
+    </code-fragment>
+    <code-fragment data-type="text/javascript" name="SlideInit">
+      let ourSlide = fragmentSelfReference.html.parent("slide");
+      let codeFragment = Fragment.one(ourSlide.find(".unityCode"))
+
+      ourSlide.find("button.run").on("click", () => {
+        codeFragment.require({
+          context: {
+            sendOSC: (addr, ...values)=>{
+              let slide = document.querySelector("slide[transient-activation='current']");
+              if(slide?.unityController != null) {
+                slide.unityController.sendOSC(addr, ...values);
+              }
+              publishToShareFrame(addr, ...values);
+            }
+          }
+        });
+      });
+
+      openEditor(codeFragment);
+
+      onSlideUnloaded(() => {
+        closeEditor();
+      });
+    </code-fragment>
+  </slide>
+</template>

@@ -1,0 +1,9 @@
+{
+    "description": "CoTinker MakeCode Micro:bit Integration",
+    "dependencies": [
+        "/webstrate-components-repos/?raw #MenuSystem",
+        "/webstrate-components-repos/?raw #MaterialDesignOutlinedIcons",
+        "/codestrates-repos/?raw #EventSystem"
+    ],
+    "version": "0.1"
+}

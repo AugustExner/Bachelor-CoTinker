@@ -1,0 +1,173 @@
+<assignment>
+    <steps>
+        <step class="" name="Getting Started">
+            <h1>Get Started</h1>
+            <p>The mobile is your remote control!</p>
+            <p>As you progress through the assignment you will control the 
+                state of the code editor by clicking links on the mobile.</p>
+            <p>For each step you can take screenshots and leave comments to yourself - makes
+                it easier to write up the report afterwards!</p>
+
+            <p>Scroll down and click "Next" to move to the first task</p>
+        </step>                              
+        <step class="" name="Assignment Steps and Notes"><h1>Assignment Steps</h1>
+            <p>Assignments are broken into steps. Steps are small self-contained pieces of the assignment with this 
+                guide HTML content as well as the ability for students to post notes into it.
+            </p>
+            <p>Try writing some notes in this step</p>
+            <code-fragment data-type="text/javascript">closeEditor();</code-fragment>
+
+            <div class="mobileMessage">
+                <div class="author" authorid="jbk:au">jbk</div>
+                <div class="timestamp">Mar 9 21:02, 2021</div>
+                <div class="message">But I have no clue what to write!?</div>
+            </div>
+            <div class="mobileMessage">
+                <div class="author" authorid="clemens:au">Clemens</div>
+                <div class="timestamp">Mar 9 21:03, 2021</div>
+                <div class="message">Congratulations, after reviewing your answers it has been decided that you have passed the class!</div>
+            </div>
+        </step>    
+        <step name="Step Code" class=""><h1>Step Code</h1>
+
+            <p>If a step contains a code fragment then the fragment is executed whenever a student navigates to that step.</p>
+            <p>This step contains a JavaScript fragment that opens an editor with the JavaScript fragment itself in it.</p>
+            <p>Take a look at the code and maybe try adding an alert() call right after it opens the editor and then go back to the previous step to proceed to this step once more to try it out</p><code-fragment data-type="text/javascript" name="" id="demoStepCode">/**
+* This code is executed when someone navigates to this step.
+* For example it can modify the view
+*/
+
+openEditor("#demoStepCode"); // openEditor() also works with arrays for multiple tabs!
+
+// If only there was some more code here
+// ...
+
+            </code-fragment></step><step name="Controlling the Editor"><h1>Controlling the Editor</h1>
+            <p>When an editor is open it is possible to perform a number of actions from the remote control guide HTML.</p>
+            <p>Although all the students in a group will be on the same step in the assignment at the same time, the focus within the editor tabs are individually controllable.</p>
+            <p>Students can see each others' keyboard cursors and selections.</p>
+
+            <p>To make it easier to navigate the code it is possible to provide jump points from this HTML guide to specific points in the code:</p>
+            <ul>
+                <li>Highlight a <a href="javascript:broadcastSelection('#demoJumpingStep', 4, 4, 9, 5)">specific range of code</a> based on starting and ending lines and columns</li>
+                <li><a href="javascript:broadcastSelectionCleared('#demoJumpingStep')">Clear the highlight</a> again</li>
+                <li>Potential TODO: Jump the cursor focus to a specific line and column in an already open fragment (may switch tabs to get there)</li>
+                <li>Potential TODO: Jump the cursor focus to the next occourance of the given search text (useful for finding a particular part of the code even after people have edited some code)</li>
+            </ul>
+            <p>The jumps are only carried out on the view tied to the device that opened this guide - you only jump your own cursor, not everyone's.</p><code-fragment data-type="text/javascript">if (view){
+                openEditor("#demoJumpingStep");
+                }</code-fragment><code-fragment data-type="text/html" id="demoJumpingStep">&lt;!-- This HTML fragment contains what appears to be random gibberish
+- if only there was a way to easily navigate it... --&gt;
+&lt;p&gt;
+Commodo sociis odio est porttitor augue luctus massa eget auctor. 
+Pharetra convallis placerat praesent nec. Posuere vulputate dapibus in 
+odio pharetra, convallis netus pulvinar ad inceptos sociosqu curae;! Amet 
+orci amet tellus placerat accumsan dui. Sagittis tincidunt porta dictum 
+sociosqu dignissim. Justo imperdiet eros phasellus malesuada nisi pulvinar. 
+Faucibus vehicula justo justo odio aliquam, laoreet orci?
+&lt;/p&gt;
+&lt;p&gt;
+Ultrices metus, per sociis mattis euismod nascetur justo fusce eget. 
+Lobortis nam aliquam sagittis sociis hendrerit rhoncus tincidunt ultricies 
+auctor aptent nam urna. Posuere mollis nec fusce ipsum vulputate ultrices. 
+Metus sagittis natoque dignissim. Amet donec egestas porta. Sodales 
+conubia mauris nascetur nunc, nascetur integer fringilla phasellus 
+eleifend vulputate hendrerit? Suscipit nulla, sociis tristique sodales 
+ultricies. Eu risus, nostra nec aliquam amet montes vulputate. Posuere 
+velit integer faucibus a commodo curabitur metus dictum at tellus metus 
+massa. Odio inceptos laoreet tempor himenaeos velit vitae ipsum sed 
+penatibus egestas. Himenaeos pulvinar magnis semper hendrerit sed est 
+eleifend turpis rhoncus libero.
+&lt;/p&gt;
+&lt;!-- This comment marks the spot --&gt;
+&lt;p&gt;
+Posuere magna sodales vehicula facilisis, orci potenti quam iaculis 
+ullamcorper sodales. Ut, nostra facilisis quis proin dis ipsum accumsan 
+fames tempor. Quis nullam sagittis adipiscing hac mauris fringilla. 
+Tempus tempus et consectetur ante tempus varius maecenas! Placerat 
+neque posuere litora rhoncus. Proin aliquam tempus penatibus? Massa 
+lorem eleifend nascetur magnis consequat rhoncus rutrum dapibus enim 
+elementum. Sociosqu tristique cras iaculis suscipit, hendrerit suscipit 
+cubilia aenean justo? Vestibulum cras semper torquent enim duis.
+&lt;/p&gt;
+&lt;p&gt;
+Curae; convallis, mi dictumst pharetra inceptos arcu nostra eleifend 
+vitae. Praesent inceptos eu ultrices dictum semper. Varius suspendisse, 
+sodales nascetur euismod etiam vestibulum ante erat lacus diam erat 
+vulputate. Sodales sed potenti luctus dictum imperdiet bibendum pellentesque 
+fermentum est platea. Parturient quis felis duis curae; hac. Etiam mollis 
+pharetra vitae inceptos accumsan torquent facilisi nunc diam etiam. Urna 
+ut nisi penatibus cras integer tristique nibh mauris.
+&lt;/p&gt;
+&lt;p&gt;
+Himenaeos interdum adipiscing in torquent faucibus eros dui inceptos. 
+Eleifend nostra eleifend fringilla quis tristique varius sollicitudin at 
+mus habitasse magnis sapien. Sollicitudin rhoncus dignissim non aptent 
+urna luctus ultricies ante pellentesque eleifend. Vitae pretium arcu congue 
+cursus porttitor malesuada. Augue ut magna nulla, curabitur cursus. Senectus 
+uis urna parturient tempus dolor diam felis leo sollicitudin netus velit 
+fringilla. Sodales pretium scelerisque rutrum, pretium senectus! 
+Facilisis nascetur.
+&lt;/p&gt;</code-fragment></step><step name="Form Fields" class=""><h1>Forms and Fields</h1>
+            <p>Form fields inside steps are automatically synced across all clients and saved.<br>
+                This is useful for creating questionnaires.</p>
+            <p>Try answering these simple questions - notice that you can take a break and come back at any time:</p>
+            <code-fragment data-type="text/javascript">closeEditor();</code-fragment>
+
+            <form>
+                <h2>Once the ribosome has made a protein what encodes where it goes?</h2>
+                <p>
+                    <label><input name="answer1" type="radio" value="S">The S glycoprotein signal peptide</label><br>
+                    <label><input name="answer1" type="radio" value="protein" checked="">The protein itself</label><br>
+                    <label><input name="answer1" type="radio" value="both">Both of the above</label><br>
+                </p>
+
+                <h2>What do you like most about proteins? (Select all that apply)</h2>
+                <p>
+                    <label><input type="checkbox" value="on">Their shape</label><br>
+                    <label><input type="checkbox" value="on" checked="">The way they sound under water</label><br>
+                    <label><input type="checkbox" value="on" checked="">The colour</label><br>
+                    <label><input type="checkbox" value="on">How still they are at −273.15°C</label><br>
+                </p>
+
+                <h2>More enhanced HTML5 inputs</h2>
+                <p>
+                    <label>Email<br><input type="email"></label><br>
+                    <label>Phone<br><input type="tel"></label><br>
+                    <label>URL<br><input type="url"></label><br>
+                    <label>Number<br><input type="number"></label><br>
+                    <label>Range<br><input type="range" min="40" max="500" value="270"></label><br>
+                    <label>Date<br><input type="date"></label><br>
+                    <label>Color<br><input type="color" value="#000000"></label><br>
+                </p>
+
+                <h2>How about a multiselect list?</h2>
+                <p>
+                    <label>Do you like it?<br>
+                        <select multiple="" size="10">
+                            <optgroup label="Normal answers">
+                                <option selected="">No</option>
+                                <option selected="">I hate them</option>
+                                <option>Selects are kinda fine</option>
+                                <option>I just love selects!!!</option>
+                            </optgroup>
+                            <optgroup label="Abnormal answers">
+                                <option>Noooooooo!</option>
+                            </optgroup>
+                            <optgroup label="Paranormal answers">
+                                <option>oooooOOOOOooooo</option>
+                            </optgroup>                
+                        </select>
+                    </label>
+                </p>
+            </form>
+        </step>
+        <step  name="Survey" class="">
+            <h1>SurveyXact</h1>
+            <p>Assignment step HTML can link to external surveys on the SurveyXact platform. The only requirement
+                is that the survey is set up to link back this <em>domain</em> when the survey is completed - this is
+            a setting in the SurveyXact survey and only the domain is required, not the page.</p>
+            <p>If you haven't already, please take this <a href="#" onclick="showSurvey('NGRJXHHKU19K')">short test survey</a>.</p>
+        </step>      
+    </steps>
+</assignment>

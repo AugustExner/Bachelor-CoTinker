@@ -1,0 +1,11 @@
+/* MenuBar */
+.w3-white, .w3-hover-white:hover {
+  color: rgb(0, 0, 0)!important;
+  background-color:rgb(255, 165, 0)!important;
+
+}
+
+
+.hoover:hover{
+  background-color:rgb(255, 165, 0)!important;
+}

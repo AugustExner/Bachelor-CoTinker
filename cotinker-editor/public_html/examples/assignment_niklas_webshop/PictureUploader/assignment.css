@@ -1,0 +1,456 @@
+
+
+#div2{
+    display: none;
+    margin-top: 35%;
+}
+                    .navPic{
+                      max-height: 100%;
+                      max-width: 100%;
+
+                    }
+
+                  .u-under, .u-over, .u-axis {
+                      display: none;
+                  }
+                  body {font-family: "Times New Roman", Georgia, Serif;}
+                          h1, h2, h3, h4, h5, h6 {
+                          font-family: "Playfair Display";
+                          letter-spacing: 5px;
+                          }
+
+                  .cotinker-top-bar {
+                      background-color: rgba(0, 0, 0, 1);
+                      visibility: hidden;
+                  }
+
+                  .w3-top, .w3-bottom {
+                  position: absolute;
+                  width: 100%;
+                  z-index: 1;
+                  left: 0;
+                  margin-top: 3cm;
+                  }
+
+  .webshopNavn{
+    font-size: 1cm;
+    margin-top:-1 cm;
+  }
+
+
+#welcome{
+    background: linear-gradient(to bottom, #003d73, #004581);
+}
+#switch{
+    position: absolute;
+    bottom: 0;
+}
+
+
+
+#div1{
+
+}
+
+#div2{
+
+}
+.pic {
+    background-position: center;
+    /* position: absolute; */
+    /* left: 50%; */
+    /* right: 50%; */
+    /* transform: translate(-50%, -50%); */
+    /* margin-top: 11.1cm; */
+    height: 14cm;
+    width: 100%;
+}
+
+#about{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* width: 20cm; */
+    margin-top: 19cm;
+    /* height: 20cm; */
+    }
+    #features{
+        position: relative;
+    }
+
+    .list1 {
+        position: relative;
+        margin-top: 8.5cm;
+       display: grid;
+       grid-template-columns: repeat(3, minmax(200px, 1fr));
+       grid-gap: 5px;
+   }
+
+   .grid-item {
+       padding: 15px;
+       text-align: center;
+       border: 10px grey;
+       border-radius: 15%;
+       margin: 20px;
+   }
+
+
+
+   .grid-item:hover {
+    transform: scale(1.1);
+   }
+
+
+      .item {
+        flex: 1;
+        text-align: center;
+        padding: 16px;
+        border: 1px solid #000;
+        border-radius: 15%;
+      }
+
+    #footer{
+        position: relative;
+        bottom: -450px;
+        }
+
+/*
+                    #editor6 {
+                    max-height: 8em;
+                    margin-left: 1em;
+                    margin-right: 1em;
+                }
+
+                       #editor7 {
+                    max-height: 8em;
+                    margin-left: 1em;
+                    margin-right: 1em;
+                }
+                #editor5 {
+                    max-height: 8em;
+                    margin-left: 1em;
+                    margin-right: 1em;
+                }
+                #editor2 {
+                    max-height: 8em;
+                    margin-left: 1em;
+                    margin-right: 1em;
+                }
+                #editor10 {
+                    max-height: 8em;
+                    margin-left: 1em;
+                    margin-right: 1em;
+                }
+                #editor1 {
+                    max-height: 8em;
+                    margin-left: 1em;
+                    margin-right: 1em;
+                }
+*/
+
+StrateComposerLoader {
+    background: url(img/pizza2.jpg);
+    background: url(img/honey_512.png);
+    background: url(img/holger_512.png);
+    background: url(img/cup_512.png);
+    background: url(img/book_512.png);
+}
+
+.cauldron-embedded .cauldron-base-content {
+    padding-top: 3.5rem;
+    box-sizing: border-box;
+    background: transparent;
+    line-height: initial;
+}
+
+.cauldron-embedded .cauldron-layout {
+    height: calc(100% - 3.5rem);
+}
+
+/*
+.imageAssetUploader {
+    background: rgba(255,255,255,0.1);
+    width: 100%;
+    position: relative;
+    transition: opacity 0.3s ease-in-out;
+    margin-bottom: 1em;
+}
+.imageAssetUploader:after {
+    content: "-> Drag Files Here <-";
+    display: block;
+    text-align: center;
+    padding: 1em;
+    opacity: 0.3;
+}
+.imageAssetUploader[transient-class="uploading"]{
+    opacity: 0.6;
+}
+.imageAssetUploader[transient-class="highlight"]{
+    background: rgba(200, 200, 255, 0.6);
+}
+.imageAssetUploader[transient-class="uploading"]:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 3em;
+    height: 3em;
+    background: pink;
+    opacity: 0.6;
+}
+.imageAssetUploader .preview {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #0000513d;
+    margin: 2px;
+}
+.imageAssetUploader .preview img {
+    height: 3em;
+    width: 4em;
+    object-fit: cover;
+    background: rgba(0,0,0,0.2);
+    padding: 0.25em 1em;
+}
+.imageAssetUploader .description {
+    flex: 1 1 auto;
+    padding: 1em;
+}
+
+.imageAssetUploader .deleter {
+    color: red;
+    background: rgba(255,0,0,0.1);
+    border: none;
+    font-size: 1.2em;
+    border-radius: 0.3em;
+    margin: 0.5em;
+    cursor: pointer;
+    padding: 0.1em 0.25em;
+}
+.imageAssetUploader .deleter:hover {
+    background: rgba(255,0,0,0.3);
+}
+*/
+
+#imageAssetUploader {
+    background: rgba(255,255,255,0.1);
+    width: 100%;
+    position: relative;
+    transition: opacity 0.3s ease-in-out;
+    margin-bottom: 1em;
+    max-height: calc(3 * 5em);
+    overflow-y: auto;
+}
+#imageAssetUploader:before {
+    content: "-> Drag Files Here <-";
+    display: block;
+    text-align: center;
+    padding: 1em;
+    opacity: 0.3;
+}
+#imageAssetUploader[transient-class="uploading"]{
+    opacity: 0.6;
+}
+#imageAssetUploader[transient-class="highlight"]{
+    background: rgba(200, 200, 255, 0.6);
+}
+#imageAssetUploader[transient-class="uploading"]:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 3em;
+    height: 3em;
+    background: pink;
+}
+#imageAssetUploader:before {
+    content: "-> Smid billederne her <-";
+    display: block;
+    text-align: center;
+    padding: 1em;
+    opacity: 0.3;
+}
+
+#imageAssetUploader .preview {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #0000513d;
+    margin: 2px;
+}
+#imageAssetUploader .preview img {
+    height: 3em;
+    width: 4em;
+    object-fit: cover;
+    background: rgba(0,0,0,0.2);
+    padding: 0.25em 1em;
+}
+#imageAssetUploader .description {
+    flex: 1 1 auto;
+    padding: 1em;
+}
+
+#imageAssetUploader .deleter {
+    color: red;
+    background: rgba(255,0,0,0.1);
+    border: none;
+    font-size: 1.2em;
+    border-radius: 0.3em;
+    margin: 0.5em;
+    cursor: pointer;
+    padding: 0.1em 0.25em;
+}
+
+#imageAssetUploader .deleter:hover {
+    background: rgba(255,0,0,0.3);
+}
+
+.cotinker-top-bar {
+    background-color: rgba(0, 0, 0, 1);
+    visibility: hidden;
+}
+
+/*
+#editor6 {
+  height: 12em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+#editor5 {
+  height: 12em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+#editor2{
+  height: 18em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+#editor4{
+    height: 18em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+*/
+.w3-sidebar a {font-family: "Roboto", sans-serif}
+body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+
+
+
+.webshopname{
+    position: absolute;
+    top: 0;
+    margin-top: 1cm;
+}
+
+#header{
+    position: absolute;
+    top: 0;
+    margin-top: 6cm;
+}
+
+
+
+/*
+.imageAssetUploaderProduct {
+    background: rgba(255,255,255,0.1);
+    width: 100%;
+    position: relative;
+    transition: opacity 0.3s ease-in-out;
+    margin-bottom: 1em;
+}
+.imageAssetUploaderProduct:after {
+    content: "-> Drag Files Here <-";
+    display: block;
+    text-align: center;
+    padding: 1em;
+    opacity: 0.3;
+}
+.imageAssetUploaderProduct[transient-class="uploading"]{
+    opacity: 0.6;
+}
+.imageAssetUploaderProduct[transient-class="highlight"]{
+    background: rgba(200, 200, 255, 0.6);
+}
+.imageAssetUploaderProduct[transient-class="uploading"]:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 3em;
+    height: 3em;
+    background: pink;
+}
+.imageAssetUploaderProduct:after {
+    content: "-> Drag Files Here <-";
+    display: block;
+    text-align: center;
+    padding: 1em;
+    opacity: 0.3;
+}
+.imageAssetUploaderProduct[transient-class="uploading"]{
+    opacity: 0.6;
+}
+.imageAssetUploaderProduct[transient-class="highlight"]{
+    background: rgba(200, 200, 255, 0.6);
+}
+.imageAssetUploaderProduct[transient-class="uploading"]:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 3em;
+    height: 3em;
+    background: pink;
+    opacity: 0.6;
+}
+.imageAssetUploaderProduct .preview {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #0000513d;
+    margin: 2px;
+}
+.imageAssetUploaderProduct .preview img {
+    height: 3em;
+    width: 4em;
+    object-fit: cover;
+    background: rgba(0,0,0,0.2);
+    padding: 0.25em 1em;
+}
+.imageAssetUploaderProduct .description {
+    flex: 1 1 auto;
+    padding: 1em;
+}
+
+.imageAssetUploaderProduct .deleter {
+    color: red;
+    background: rgba(255,0,0,0.1);
+    border: none;
+    font-size: 1.2em;
+    border-radius: 0.3em;
+    margin: 0.5em;
+    cursor: pointer;
+    padding: 0.1em 0.25em;
+}
+.imageAssetUploaderProduct .deleter:hover {
+    background: rgba(255,0,0,0.3);
+}*/
+
+steps{
+    background: linear-gradient(to bottom, #003d73, #004581);
+  }
+  step{
+    background: linear-gradient(to bottom, #003d73, #004581);
+  }
+
+  assignment .assignment-navigation{
+    background: linear-gradient(to bottom, #003d73, #004581);
+  }

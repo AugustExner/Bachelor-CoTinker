@@ -1,0 +1,80 @@
+<assignment>
+    <steps>
+        <step class="" name="Program MicroBit" data-slide="microbitProgramming" data-slide-mode="program1">
+            <h1>MicroBit</h1>
+            <p>Programmer din microbit, og send nogle værdier ind i unity!</p>
+        </step>
+        <step class="" name="Unity" data-slide="unity">
+            <h1>Test din unity scene</h1>
+        </step>
+    </steps>
+    <slides>
+        <slide id="microbitProgramming">
+            <code-fragment data-type="text/javascript" name="MakeCode setup">
+                if (window.makeController == null) {
+                    await WPMv2.require(["cotinker-pxt-microbit"]);
+
+                    let slide = document.querySelector("#microbitProgramming");
+                    let transient = document.createElement("transient");
+                    transient.classList.add("makecode-view");
+                    slide.appendChild(transient);
+                    let makeController = new MakeController(transient);
+                    window.makeController = makeController;
+                }
+
+                /*
+                onSlideUnloaded(() => {
+                    makeController.destroy();
+                    window.makeController = null;
+                    transient.remove();
+                });
+                */
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                setupBTButton();
+                setupSaveButton();
+                setupResetButton();
+
+                onSlideUnloaded(()=>{
+                    cQuery(".saveButton").remove();
+                    cQuery(".resetButton").remove();
+                    cQuery(".btButton").remove();
+                });
+            </code-fragment>
+
+            <code-fragment id="program1" data-type="application/json" class="cotinker-noauto" data-restrict="program1">{
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program1"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.1.14",
+                "id": "9de60826-7a1b-4ad4-a972-a00622ebfc47",
+                "recentUse": 1647435983,
+                "modificationTime": 1647435983,
+                "path": "Ikke-navngivet",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"9\" y=\"10\"></block><block type=\"basic_show_icon\" disabled=\"true\" x=\"365\" y=\"6\"><field name=\"i\">IconNames.Skull</field></block><block type=\"basic_show_icon\" disabled=\"true\" x=\"366\" y=\"153\"><field name=\"i\">IconNames.Ghost</field></block><block type=\"device_forever\" x=\"8\" y=\"212\"></block><block type=\"device_pause\" disabled=\"true\" x=\"366\" y=\"312\"><value name=\"pause\"><shadow type=\"timePicker\" disabled=\"true\"><field name=\"ms\">100</field></shadow></value></block><block type=\"device_pause\" disabled=\"true\" x=\"365\" y=\"458\"><value name=\"pause\"><shadow type=\"timePicker\" disabled=\"true\"><field name=\"ms\">100</field></shadow></value></block></xml>",
+                "main.ts": "basic.forever(function () {\n\t\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"radio\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program1">
+                const codeFragment = Fragment.one("#program1");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+        </slide>
+    </slides>
+</assignment>

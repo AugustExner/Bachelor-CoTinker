@@ -1,0 +1,8 @@
+.grid-item{
+background-color: rgb(255, 255, 255);
+}
+
+#add-to-cart-button{
+  background-color: rgb(0, 255, 255);
+  color: black;
+}

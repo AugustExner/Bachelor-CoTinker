@@ -1,0 +1,290 @@
+<script>
+    // Switch layout to put mobile controller on the view screen as a sidebar
+    window.cotinkerConfig.sidebarController = true;
+    window.cotinkerConfig.hideSendNote = true;
+    window.cotinkerConfig.disableCollaboration = true;
+    window.cotinkerConfig.disableSidebarNavigation = true;
+    window.cotinkerConfig.disableNotifications = true;
+</script>
+
+<inline src="templates.html"></inline>
+
+<link href="assignment.css" type="text/css" rel="stylesheet" />
+<script src="assignment.js" type="application/javascript"></script>
+
+<assignment>
+    <steps class="staticNavigation">
+        <step name="Velkommen" data-description="Welcome" data-slide="welcome">
+            <h1>Temperature sensor and data logging</h1>
+        </step>
+
+        <step name="Temperature programming" data-description="Programming Temperature Sensor" data-slide="programming" data-slide-mode="tempProgram" class="current">
+            <h1>Programming Temperature Sensor</h1>
+            <div class="activity-flex">
+                <p>Create a temperature sensor, that broadcasts the value over BT, every X seconds.</p>
+            </div>
+        </step>
+        <step name="Chart data" data-slide="chart" data-description="Chart the logged data">
+            <h1>Chart all the data</h1>
+        </step>
+    </steps>
+
+    <code-fragment data-type="application/json" id="data" op-compose="250">{}</code-fragment>
+
+    <slides>
+        <slide id="welcome">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../../img/logo_light.svg">
+        </slide>
+
+        <slide id="programming">
+            <code-fragment data-type="text/javascript" name="MakeCode setup">
+                if (window.makeController == null) {
+                    await WPMv2.require(["cotinker-pxt-microbit"]);
+
+                    let slide = document.querySelector("#programming");
+                    let transient = document.createElement("transient");
+                    transient.classList.add("makecode-view");
+                    slide.appendChild(transient);
+                    let makeController = new MakeController(transient);
+                    window.makeController = makeController;
+                }
+
+                onSlideUnloaded(() => {
+                    window.makeController.stopSimulator();
+                });
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                setupResetButton();
+
+                onSlideUnloaded(()=>{
+                    cQuery(".resetButton").remove();
+                });
+            </code-fragment>
+
+            <code-fragment id="tempProgram" data-type="application/json" class="cotinker-noauto" data-restrict="tempProgram">{
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "tempProgram"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "5.0.14",
+                "id": "e0971f15-1e3b-41dd-e334-359af2380ebb",
+                "recentUse": 1668677003,
+                "modificationTime": 1668677003,
+                "path": "Ikke-navngivet",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"0\" y=\"0\"><statement name=\"HANDLER\"><block type=\"basic_show_icon\"><field name=\"i\">IconNames.Scissors</field></block></statement></block><block type=\"every_interval\" x=\"-3\" y=\"162\"><value name=\"interval\"><shadow type=\"longTimePicker\"><field name=\"ms\">5000</field></shadow></value><statement name=\"HANDLER\"><block type=\"publish_publishSensor\"><field name=\"s\">SensorEnum.Temperature</field></block></statement></block></xml>",
+                "main.ts": "basic.showIcon(IconNames.Scissors)\nloops.everyInterval(5000, function () {\n    publish.publishSensor(SensorEnum.Temperature)\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"bluetooth\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\",\n        \"custom.ts\"\n    ],\n    \"preferredEditor\": \"blocksprj\",\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"open\": 1,\n                    \"whitelist\": 0,\n                    \"security_level\": null\n                }\n            }\n        }\n    }\n}\n",
+                ".simstate.json": "{}",
+                "custom.ts": "enum SensorEnum {\n    //% block=\"sound level\"\n    //% block.loc.da=\"lydniveau\"\n    Sound,\n    //% block=\"light level\"\n    //% block.loc.da=\"lysniveau\"\n    Light,\n    //% block=\"temperature\"\n    //% block.loc.da=\"temperatur\"\n    Temperature,\n    //% block=\"compas direction\"\n    //% block.loc.da=\"kompas retning\"\n    Compas,\n    //% block=\"acceleration\"\n    //% block.loc.da=\"acceleration\"\n    Accel,\n    //% block=\"magnetic strength\"\n    //% block.loc.da=\"magnetisk styrke\"\n    Magnetic,\n    //% block=\"rotation\"\n    //% block.loc.da=\"rotation\"\n    Rotation,\n}\n\n/**\n * Custom blocks\n */\n//% weight=100 color=#0fbc11 icon=\"\"\n//% block=\"Publish\"\n//% block.loc.da=\"Publicer\"\nnamespace publish {\n    /**\n     * Publishes a sensor value via BlueTooth\n     * @param s The sensor to publish\n     */\n    //% block=\"publish sensor $s\"\n    //% block.loc.da=\"udgiv sensor $s\"\n    //% jsdoc.loc.da=\"Udgiv en sensor værdi over BlueTooth\"\n    //% s.loc.da=\"Sensoren der skal udgives\"\n    export function publishSensor(s: SensorEnum): void {\n        let btMsg = null;\n\n        switch (s) {\n            case SensorEnum.Accel: {\n                let x = input.acceleration(Dimension.X);\n                let y = input.acceleration(Dimension.Y);\n                let z = input.acceleration(Dimension.Z);\n\n                btMsg = \"a:\" + x + \":\" + y + \":\" + z;\n\n                break;\n            }\n            case SensorEnum.Sound: {\n                let level = input.soundLevel();\n\n                btMsg = \"s:\" + level;\n\n                break;\n            }\n            case SensorEnum.Light: {\n                let level = input.lightLevel();\n\n                btMsg = \"l:\" + level;\n\n                break;\n            }\n            case SensorEnum.Temperature: {\n                let level = input.temperature();\n\n                btMsg = \"t:\" + level;\n\n                break;\n            }\n            case SensorEnum.Magnetic: {\n                let x = input.magneticForce(Dimension.X);\n                let y = input.magneticForce(Dimension.Y);\n\n                btMsg = \"m:\" + x + \":\" + y;\n\n                break;\n            }\n            case SensorEnum.Compas: {\n                let heading = input.compassHeading();\n\n                btMsg = \"c:\" + heading;\n\n                break;\n            }\n            case SensorEnum.Rotation: {\n                let pitch = input.rotation(Rotation.Pitch);\n                let roll = input.rotation(Rotation.Roll);\n\n                btMsg = \"r:\" + pitch + \":\" + roll;\n\n                break;\n            }\n        }\n\n        if (btMsg != null) {\n            sendMessage(btMsg);\n        }\n    }\n\n    /**\n     * Publishes a value via BlueTooth\n     * @param v The value to publish\n     */\n    //% block=\"publish value $v\"\n    //% block.loc.da=\"publicer værdi $v\"\n    //% jsdoc.loc.da=\"Udgiv en værdi over BlueTooth\"\n    //% v.loc.da=\"Værdien der skal udgives\"\n    export function publishValue(v: number): void {\n        let btMsg = \"v:\" + v;\n\n        if (btMsg != null) {\n            sendMessage(btMsg);\n        }\n    }\n\n    /**\n     *\n     * @param address\n     * @param values\n     */\n    //%block=\"send to unity OscAddress: $address Values: $values\"\n    export function sendToUnity(address: string, values: number[]) {\n        let btMsg = \"u:\" + address;\n\n        values.forEach((v) => {\n            btMsg = btMsg + \":\" + v;\n        });\n\n        sendMessage(btMsg);\n    }\n\n    //Support 100 messages at a time, to prevent threading to mess up fragments\n    let msgId = 0;\n\n    function sendMessage(payload: string) {\n        let idString = \"\" + msgId;\n        msgId = (msgId + 1) % 100;\n\n        if (idString.length < 2) {\n            idString = \"0\" + idString;\n        }\n        let header = idString;\n\n        //Full Message form ^msgId:payload$\n\n        /**\n         * Parts:\n         * ^01something\n         * 01someMoreThing\n         * 01theLastThing$\n         */\n\n        // The +2 is for $ and ^\n        let headerLength = header.length + 2;\n\n        let maxFragmentSize = 20 - headerLength;\n\n        let first = true;\n\n        while (payload.length > 0) {\n            //Get as much of the payload as we can fit\n            let fragment = payload.slice(0, maxFragmentSize);\n\n            //Construct the bt message\n            let btMsg = header + fragment;\n\n            //Reduce the payload we still need to send\n            payload = payload.slice(maxFragmentSize);\n\n            if (payload.length == 0) {\n                btMsg += \"$\";\n            }\n\n            if (first) {\n                first = false;\n                btMsg = \"^\" + btMsg;\n            }\n\n            bluetooth.uartWriteLine(btMsg);\n        }\n    }\n\n    bluetooth.startUartService();\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="tempProgram">
+                const codeFragment = Fragment.one("#tempProgram");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+        </slide>
+
+        <slide id="chart">
+            <h1>Do your charting now!</h1>
+            <p>Select a series from below to chart it:</p>
+            <ul class="series">
+            </ul>
+
+            <div class="chartArea"></div>
+
+            <div><button class="csv">Export to CSV</button></div>
+
+            <code-fragment data-type="text/javascript">
+                await wpm.require({"repository": "wpm_js_libs", "package": "uPlot"});
+                await wpm.requireExternal("https://cdn.jsdelivr.net/npm/uplot@1.6.22/dist/uPlot.min.css");
+
+                let ourSlide = fragmentSelfReference.html.parent("slide")[0];
+
+                console.log("Chart slide loaded:", ourSlide);
+
+                function lookupNameFromSeries(type) {
+                    switch(type) {
+                        case "t": return "Temperature";
+                        case "s": return "Sound Level";
+                        case "l": return "Light Level";
+                        case "v": return "Custom value";
+                    }
+
+                    //Unknown type, return type itself
+                    return type;
+                }
+
+                let currentCallback = null;
+                let currentType = null;
+                let oldSeriesType = null;
+                let plot = null;
+                let currentData = null;
+
+                function updateSeries(series) {
+                    console.log("Updating series:", series);
+                    let seriesList = ourSlide.querySelector(".series");
+                    seriesList.innerHTML = "";
+
+                    if (series != null) {
+                        series.forEach((serie) => {
+                            let li = document.createElement("li");
+
+                            let name = lookupNameFromSeries(serie);
+
+                            li.textContent = name;
+                            li.setAttribute("data-series", serie);
+                            seriesList.appendChild(li);
+
+                            li.addEventListener("click", ()=>{
+                                window.dataLogger.getSeries(serie).then((serieData)=>{
+                                    updateChart(serie, serieData);
+                                });
+
+                                if(currentCallback != null) {
+                                    window.dataLogger.unregisterUpdateCallback(currentType, currentCallback);
+                                }
+
+                                currentType = serie;
+                                currentCallback = (seriesData)=>{
+                                    updateChart(serie, seriesData);
+                                };
+
+                                window.dataLogger.registerUpdateCallback(serie, currentCallback);
+                            });
+                        });
+                    }
+                }
+
+                window.dataLogger.registerUpdateCallback("series", updateSeries);
+
+                //Trigger first update
+                updateSeries(await window.dataLogger.getDataSeries());
+
+                async function updateChart(type, seriesData) {
+                    let chartArea = ourSlide.querySelector(".chartArea");
+
+                    if(oldSeriesType != type) {
+                        chartArea.innerHTML = "";
+
+                        oldSeriesType = type;
+                        let opts = {
+                            title: "My Chart",
+                            id: "chart1",
+                            class: "my-chart",
+                            width: 800,
+                            height: 600,
+                            scales: {
+                                x: {
+                                    range(u, dataMin, dataMax) {
+                                        if (dataMin == null)
+                                            return [0, 1];
+                                        return [dataMin, dataMax];
+                                    },
+                                    time: false,
+                                },
+                                y: {
+                                    range(u, dataMin, dataMax) {
+                                        if (dataMin == null)
+                                            return [0, 100];
+                                        return uPlot.rangeNum(dataMin, dataMax, 0.1, true);
+                                    }
+                                },
+                            },
+
+                            series: [
+                                {
+                                    label: "Time"
+                                },
+                                {
+                                    // initial toggled state (optional)
+                                    show: true,
+
+                                    spanGaps: false,
+
+                                    // in-legend display
+                                    label: lookupNameFromSeries(type),
+                                    value: (self, rawValue) => rawValue,
+
+                                    // series style
+                                    stroke: "red",
+                                    width: 1,
+                                    fill: "rgba(255, 0, 0, 0.3)",
+                                    dash: [10, 5],
+                                }
+                            ],
+                        };
+
+                        plot = new uPlot(opts, [[], []], chartArea);
+                    }
+
+                    let data = [];
+
+                    let timeValues = [];
+                    let valueValues = [];
+
+                    data.push(timeValues);
+                    data.push(valueValues);
+
+                    let firstTimestamp = null;
+
+                    seriesData.forEach((d) => {
+                        if(firstTimestamp == null) {
+                            firstTimestamp = d.time;
+                        }
+
+                        timeValues.push((d.time - firstTimestamp) / 1000.0);
+                        valueValues.push(d.value);
+                    });
+
+                    plot.setData(data);
+
+                    currentData = data;
+                }
+
+                onSlideUnloaded(() => {
+                    window.dataLogger.unregisterUpdateCallback("series", updateSeries);
+
+                    ourSlide.querySelector(".chartArea").innerHTML = "";
+                });
+
+                //Exporting
+                document.querySelector("button.csv").addEventListener("click", () => {
+                    console.log("Exporting to CSV...", currentData, currentType);
+
+                    let seriesName = lookupNameFromSeries(currentType);
+
+                    let csv = "data:text/csv;charset=utf-8,Time, Value\n";
+
+                    for(let i = 0; i<currentData[0].length; i++) {
+                        csv += currentData[0][i] + ", " + currentData[1][i]+"\n";
+                    }
+
+                    let encodedUri = encodeURI(csv);
+                    console.log(encodedUri);
+                    let link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", "data.csv");
+                    document.body.appendChild(link); // Required for FF
+
+                    link.click(); // This will download the data file named "my_data.csv".
+                    link.remove();
+                });
+            </code-fragment>
+        </slide>
+    </slides>
+</assignment>
+

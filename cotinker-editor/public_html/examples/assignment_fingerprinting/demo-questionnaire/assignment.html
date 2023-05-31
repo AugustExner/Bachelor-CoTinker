@@ -1,0 +1,144 @@
+<script>
+    window.cotinkerConfig.hideCollabButtons = true;
+    window.cotinkerConfig.sidebarController = true;
+    window.questionnaireURL = "https://demo.webstrates.net/black-elephant-65/";
+    //window.questionnaireURL = "https://webstrate.simstrup.dk/new-panther-28";
+</script> 
+<assignment>
+        <link rel="stylesheet" href="../tables.css">
+        <style>
+        #comparison, #trackingtable {
+            padding-top: 3.5rem;
+            line-height: normal;
+            position: relative;
+            box-sizing: border-box;
+            width: 100%;
+        }
+            
+        </style>
+    <script src="../tables.js"></script>
+    <steps>
+        <step class="" name="Getting Started" data-slide="welcome">
+            <h1>Intro</h1>
+            <p>Velkommen! I det følgende forløb skal vi lære om fingerprinting og tracking på nettet!</p>
+            <p>Når alle er klar til at begynde så scroll ned til bunden og tryk på "Next" for at fortsætte.</p>
+        </step>
+        <step class="" name="Tracking" data-slide="questionnaire">
+            <code-fragment data-type="text/markdown" auto="true"># Udfyld Spørgeskemaet
+                
+På computeren er der et spørgeskema som I skal udfylde. Det er vigtigt at i koncentrerer jer om at udfylde det så korrekt som muligt.
+
+Vent med at klikke på næste på mobilen indtil alle er helt færdige med at udfylde skemaet.
+            </code-fragment>            
+        </step>
+        
+        <step class="" name="Collection" data-slide="statisticstable">
+            <code-fragment data-type="text/markdown" auto="true"># Browser Fingerprinting
+Da I besøgte spørgeskemaet blev der samtidigt opsamlet en masse data omkring browseren som viste spørgeskemaet. Den information kan nu bruges til at genkende Jer igen på et senere tidspunkt.
+
+For hver enkelt browser kan man kombinere al informationen til et enkelt ID som mere eller mindre identificerer computeren eller telefonen unikt.
+
+I tabellen på computeren vises en oversigt over de besøgene fra gruppen og de forskellige data som ligger til grund for hver af de besøgendes fingerprints. Mange af datapunkterne er identiske, men nogle er formentlig forskellige.
+
+* Undersøg hvad det er der gør folks computere forskellige fra hinanden (ifølge sliden)
+* Undersøg hvad der ens for alle
+            </code-fragment>            
+        </step>
+        <step class="" name="ServerSide" data-slide="trackingtable">
+            <code-fragment data-type="text/markdown" auto="true"># Hjemmesidens Server
+Det er ikke kun browseren som kan opsnappe information. For at hente spørgeskemaet på hjemmesiden blev der snakket med en webserver som også havde mulighed for at gemme information omkring det data der blev sendt frem og tilbage over netværket.
+
+På computeren vises nu en tabel med en oversigt over den information som hjemmesidens server kunne opsnappe og som nu kan bruges til at profilere hver af besvarelserne af spørgeskemaet.
+
+* Undersøg hvad serverne fik af information fra netværkskommunikationen
+* Sammenlign de forskellige besøgende og se om der er noget der går igen på tværs af alle besøgende
+            </code-fragment>            
+        </step>
+        <step class="" name="Profiling" data-slide="statisticstable">
+            <code-fragment data-type="text/markdown" auto="true"># Profilering af Opførsel
+Ud over en analyse af de tekniske aspekter af browseren og netværkskommunikationen kan hjemmesider også benytte sig af andre metoder til at profilere de besøgende.
+
+Da I besøgte spørgeskemaet sendte hjemmesiden automatisk data omkring jeres opførsel på siden til et tracking framework et helt andet sted på internettet.
+
+På computeren vises nu en tabel med disse data.
+
+* Find ud af hvilke typer af data der er blevet gemt om besøget
+* Fortæller de gemte data noget omkring de tanker I havde imens I udfyldte skemaet?
+            </code-fragment>            
+        </step>                     
+    </steps>
+    <slides>
+        <slide id="welcome">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../../img/logo_light.svg">
+        </slide>
+
+        <slide id="questionnaire">
+            <style>
+                #qopener {
+                    font-size: 1.5em;
+                }
+            </style>  
+            <a id="qopener" href="#">Klik her for at starte spørgeskemaet</a>
+            (åbner i nyt faneblad)
+            <code-fragment data-type="text/javascript">
+                let uberTracker = await getUberTracker();
+                await uberTracker.ready();
+
+                async function clickListener(evt) {
+                    evt.preventDefault();
+
+                    console.log("Preparing UberTracker...");
+
+                    let session = uberTracker.clientData;
+                    console.log("Tracking ready with", session);
+
+                    // Send them along
+                    let url = new URL(window.questionnaireURL);
+                    let utrack = await uberTracker.generateCrossDomainKey(url.hostname);
+                    window.open(window.questionnaireURL+"?_utrack="+utrack.key, "_blank");
+                }
+                document.querySelector("#qopener").addEventListener("click", clickListener);
+
+                onSlideUnloaded(()=>{
+                    document.querySelector("#qopener").removeEventListener("click", clickListener);
+                    
+                    // Store the subsession if we can find it
+                    // Fetch session info from the last subsession that had our questionnaire URL
+                    let subsessions = (await uberTracker.getSubsessions());
+                    console.log("Foudn ", subsessions);
+                    let ourSubsessions = subsessions.filter(s => (s.data && s.data.url && s.data.url.startsWith(window.questionnaireURL)));
+                    if (ourSubsessions.length === 0) {
+                        console.log("Couldn't find any subsessions for ", window.questionnaireURL);
+                    }
+                    let subsession = ourSubsessions[ourSubsessions.length - 1];
+
+                    let data = getStudentData();
+                    data.ubertracked = [subsession];
+                    saveStudentData(data);
+                });
+            </code-fragment>            
+        </slide>        
+
+        <slide id="comparison">
+            <div class="comparison-table" data-seed="42"></div>
+            <inline src="../tables.html"></inline>
+
+            <code-fragment data-type="text/javascript">
+                storeFingerprint();
+                embedFingerprintingTable(document.querySelector("#fingerprint .comparison-table");                
+            </code-fragment>
+        </slide>
+        <slide id="trackingtable">
+            <div class="comparison-table" data-seed="60"></div>
+            <code-fragment data-type="text/javascript">
+                embedServersideTable(document.querySelector("#trackingtable .comparison-table");                
+            </code-fragment>
+        </slide>
+        <slide id="statisticstable" data-seed="4260">
+            <div class="comparison-table"></div>
+            <code-fragment data-type="text/javascript">
+                embedStatisticsTable(document.querySelector("#statisticstable .comparison-table");
+            </code-fragment>
+        </slide>
+    </slides> 
+</assignment>

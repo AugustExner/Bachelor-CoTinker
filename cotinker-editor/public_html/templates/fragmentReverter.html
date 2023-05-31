@@ -1,0 +1,19 @@
+<template id="fragmentReverterDialogTpl">
+    <div class="fragmentReverterDialog">
+        <div class="revisionNavigator">
+            <ul class="mdc-list mdc-list--two-line tags" data-mdc-auto-init="MDCList"></ul>
+        </div>
+        <div class="revisionPreview">
+            <div class="editorArea"></div>
+            <div class="actions">
+                <label title="Revision Number">
+                    Revision
+                    <input type="number" min="1" class="version" />
+                </label>
+                <div class="flex-spacer"></div>
+                <button class="mdc-button cancel"><span class="mdc-button__ripple"></span><span class="mdc-button__label">Cancel</span></button>
+                <button class="mdc-button mdc-button--raised revert"><span class="mdc-button__ripple"></span><span class="mdc-button__icon material-icons-outlined wsc-registry-icon">restore</span><span class="mdc-button__label">Revert</span></button>
+            </div>
+        </div>
+    </div>
+</template>

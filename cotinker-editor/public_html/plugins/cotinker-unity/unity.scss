@@ -1,0 +1,12 @@
+.uploader {
+  .uploadArea {
+    width: 10em;
+    height: 10em;
+    background: #2b83da;
+    display: inline-block;
+
+    &.highlight {
+      border: 1px dashed blue;
+    }
+  }
+}

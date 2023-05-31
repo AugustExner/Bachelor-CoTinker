@@ -1,0 +1,33 @@
+{
+    "creator": "WPMPackageManager",
+    "created": 1646315310894,
+    "require": [
+        {
+            "repositories": {
+                "codestrates-repos":"https://raw.githubusercontent.com/Webstrates/Codestrates-v2/master/codestrates.html",
+                "webstrate-components-repos":"https://raw.githubusercontent.com/Webstrates/WebstrateComponents/master/components.html",
+                "cauldron-repos":"https://raw.githubusercontent.com/Webstrates/Cauldron/master/cauldron.html",
+                "wpm_js_libs":"https://raw.githubusercontent.com/Webstrates/WebstrateLibraryRepository/master/libraries.html",
+                "wpm-repos":"https://raw.githubusercontent.com/Webstrates/WPM/master/build.html"},            
+            "dependencies": [
+                {"package": "fragment_js", "repository": "codestrates-repos"},
+                {"package": "fragment_css", "repository": "codestrates-repos"},
+                {"package": "fragment_html", "repository": "codestrates-repos"},
+                {"package": "fragment_json", "repository": "codestrates-repos"},
+                {"package": "fragment_markdown", "repository": "codestrates-repos"},
+                {"package": "fragment_wpm-descriptor", "repository": "codestrates-repos"},
+                {"package": "editor_monaco", "repository": "codestrates-repos"},
+                {"package": "editor_preview", "repository": "codestrates-repos"},
+                {"package": "plugin_codestrates_namespace", "repository": "codestrates-repos"},
+                {"package": "WebstrateComponents_Tools", "repository": "webstrate-components-repos"},
+                {"package": "LiveElement", "repository": "wpm_js_libs"},
+                {"package": "Uploader", "repository": "wpm_js_libs"},
+                {"package": "PixiCanvas", "repository": "wpm_js_libs"},
+                {"package": "CaviTouch", "repository": "wpm_js_libs"},
+                {"package": "dialog-polyfill", "repository": "wpm_js_libs"}
+            ],
+            "options": {}
+        }
+    ],
+    "updated": 1646315312580
+}

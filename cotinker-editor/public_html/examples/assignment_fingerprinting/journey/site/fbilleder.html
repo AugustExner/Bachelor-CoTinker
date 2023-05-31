@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+      <link rel="stylesheet" href="main.css">
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript">
+      var h=150; //global
+      function lille_stor(nr) {
+        if (h==50) {
+          if (nr==1){
+            document.images.f1.width=h*5/3;
+            document.images.f1.height=h;
+          };
+          if (nr==2){
+            document.images.f2.width=h*5/3;
+            document.images.f2.height=h;
+          };
+          if (nr==3){
+            document.images.f3.width=h*5/3;
+            document.images.f3.height=h;
+          };
+          if (nr==4){
+            document.images.f4.width=h*5/3;
+            document.images.f4.height=h;
+          };
+          h=150;
+        }
+      else {
+          if (nr==1){
+            document.images.f1.width=h*5/3;
+            document.images.f1.height=h;
+          };
+          if (nr==2){
+            document.images.f2.width=h*5/3;
+            document.images.f2.height=h;
+          };
+          if (nr==3){
+            document.images.f3.width=h*5/3;
+            document.images.f3.height=h;
+          };
+          if (nr==4){
+            document.images.f4.width=h*5/3;
+            document.images.f4.height=h;
+          };
+          h=50;
+        };
+      };
+    </script>
+  </head>
+<body class="impage" style="background-color:#57A">
+  <div class="ad floating" id="primaryAd"></div>
+  <a href="menu2.html"><img src="ungfri.jpg" style="float:left" width="100px"></a>
+
+<div style="width:60%;float:left;margin-right:15%;margin-left:10%;padding:15px;background-color:#469;position:fixed"><p>
+      <H1>Hvordan er et sportsår<br></H1>
+Du får en intens og uforglemmelig oplevelse med masser af nye venskaber – uanset hvilket land du tager til, og uanset hvor længe.
+
+<br>
+Et sports sabbat år er én af de mest intense oplevelser, du kan få i dit liv. Der er både fart på og plads til fordybelse i det du lærer og i mødet med en masse nye mennesker. Du bor sammen med andre unge, og bliver en del af et stort fællesskab.
+    </p>
+      <div style="padding:15px;background-color:#68B;"><p>
+    <img src="f1.jpg" name="f1" width="83" border=1  height="50"  onclick=lille_stor(1)>
+    <img src="f2.jpg" name="f2" width="83" border=1 height="50"  onclick=lille_stor(2)>
+    <img src="f3.jpg" name="f3" width="83" border=1  height="50"  onclick=lille_stor(3)>
+    <img src="f4.jpg" name="f4" width="83" border=1  height="50"  onclick=lille_stor(4)>
+  </div>
+  </div>
+
+
+<script src="journey.js"></script>
+  
+  </body>
+</html>

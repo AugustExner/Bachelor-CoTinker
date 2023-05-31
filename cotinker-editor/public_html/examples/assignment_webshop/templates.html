@@ -1,0 +1,43 @@
+<template id="searchResultTemplate">
+    <div class="preview">
+        <img src="{picture}">
+        <h1>{name}</h1>
+        <span class="price">{price}€</span>
+    </div>
+</template>
+
+<template id="productTemplate">
+    <div class="fullView">
+        <div class="navigation"><div class="backButton">&lt; Back</div></div>
+
+        <div class="productSummary">
+            <h1>{name}</h1>
+            <span>{description}</span>
+            <button class="purchase"><span class="material-icons-outlined">shopping_cart</span>Add to Cart</button>
+        </div>
+
+        <div class="imageCarousel">
+            <img src="{picture}">
+        </div>
+
+        <div class="productDetails">
+            <h2>Details</h2>
+            {details}
+        </div>
+        
+        <div class="ratings">
+            <h2>Ratings and Reviews</h2>
+            <div class="review">
+                <div class="stars">★ ★ ★ ★ </div>
+                <div class="username">Bob Marley</div>
+                <div class="comment">I really liked it. The size and weight is amazing and it does have a more premium feel to it.<br />Only reason it is not 5 stars it because the taste wears off a bit after a while. Maybe I shouldn't chew on it?</div>
+            </div>
+            <div class="review">
+                <div class="stars">★ ★ ★ ★ ★</div>
+                <div class="username">Darth V.</div>
+                <div class="comment">Awesome! Got 3 of these already. Use them all the time. 5 death stars - would award more if I could!</div>
+            </div>            
+        </div>
+    </div>
+</template>
+

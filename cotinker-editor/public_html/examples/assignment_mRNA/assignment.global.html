@@ -1,0 +1,42 @@
+    <code-fragment data-type="text/javascript" id="Script"><inline src="Script.frag"></inline></code-fragment>    
+    <code-fragment data-type="text/javascript" id="streaming"><inline src="Streaming.frag"></inline></code-fragment>
+    <code-fragment data-type="text/javascript" id="viz"><inline src="Viz.frag"></inline></code-fragment>
+    <code-fragment data-type="text/javascript" id="constants">
+        // Constants
+        exports.WIDTH = 60;
+        exports.HEIGHT = 60;
+        exports.SCALE = 10;
+        exports.SPEED = 0.3;
+    </code-fragment>
+    <code-fragment data-type="text/javascript" name="utils" id="utils">
+        const { utils } = flocc;
+
+        exports.neighbors = function neighbors(agent, radius) {
+          return window.environment.getAgents().filter((a) =&gt; {
+            return a !== agent &amp;&amp; utils.distance(a, agent) &lt;= radius;
+          });
+        }
+    </code-fragment>
+    <code-fragment data-type="text/javascript" id="agents"><inline src="Agents.frag"></inline></code-fragment>
+    <code-fragment data-type="text/javascript" name="Model streamer" id="streamer">
+const { StreamingCanvas, ReceivingCanvas } = await Fragment.one("#streaming").require();
+const { WIDTH, HEIGHT, SCALE } = await Fragment.one('#constants').require();
+const urlParams = new URLSearchParams(window.location.search);
+const client = urlParams.get('client');
+
+console.log('Initializing streamer:');
+
+['#container', '#RNAstrings', '#free'].forEach(id =&gt; {
+    const node = document.querySelector(id);
+    if (client) {
+        console.log('Is client, setting up receiving canvas.');
+        new ReceivingCanvas(node, node, { 
+            width: id === '#container' ? WIDTH * SCALE : 300,
+            height: id === '#container' ? HEIGHT * SCALE : 200
+        });
+    } else {
+        console.log('Setting up streaming canvas.');
+        const canvas = node.querySelector('canvas');
+        new StreamingCanvas(canvas, node);
+    }
+});</code-fragment>    

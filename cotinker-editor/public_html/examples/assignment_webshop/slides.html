@@ -1,0 +1,118 @@
+        <slide id="welcome">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../img/logo_light.svg">
+        </slide>
+        <slide id="preview-welcome">
+            See computer screen for instructions
+        </slide>
+
+
+        <slide id="simpleHTML" class="cauldron-embedded">
+            <code-fragment data-type="text/javascript">
+                openEditor(["#htmlExample"], document.querySelector("#simpleHTML"), false);
+
+                onSlideUnloaded(()=>{
+                    closeEditor();
+                });
+            </code-fragment>
+        </slide>
+
+        <slide id="preview-simpleHTML" class="cauldron-embedded">
+            <code-fragment data-type="text/html" id="htmlExample" auto=""><div class="food-product">
+    <img src="img/pizza.jpg">
+    <h1>Spicy Pizza</h1>
+    <div class="description">Tomato sauce, mozzarella, pepperoni, bacon, cocktail sausages, mushrooms and bell pepper</div>
+</div>
+            </code-fragment>
+
+            <style>
+                #htmlExample+.autoDom .food-product {
+                    background: linear-gradient(to bottom, #ca7655, #b99d68 20%, #fefff9);
+                    border: 1px solid #b02b2b;
+                    border-radius: 0.5em;
+                    max-width: 30em;
+                    width: 100%;
+                    position: relative;
+                    padding-top: 1em;
+                    padding-bottom: 1em;
+                    padding-right: 1em;
+                    padding-left: 8em;
+                    overflow: hidden;
+                    color: black;
+                    box-sizing: border-box;
+                    box-shadow: 0.5em 0.5em 1em rgba(255, 96, 0, 0.5);
+                    line-height: initial;
+                    font-family: sans-serif;
+                    margin-top: 1.5em;
+                }
+                #htmlExample+.autoDom img {
+                    position: absolute;
+                    height: 100%;
+                    width: 7em;
+                    object-fit: cover;
+                    left: 0;
+                    top: 0;
+                }
+                #htmlExample+.autoDom h1 {
+                    margin-top: 0;
+                    margin-bottom: 0.25em;
+                }
+                #htmlExample+.autoDom .description {
+                    font-style: italic;
+                    color: #4f4f4f;
+                }
+                #htmlExample+.autoDom .price {
+                    color: darkgreen;
+                    text-align: right;
+                }
+            </style>
+
+        </slide>
+
+
+        <slide id="webshop" class="cauldron-embedded">
+            <code-fragment data-type="text/javascript" data-slide-mode="simpleCSS">
+                openEditor(["#cssExample"], document.querySelector("#webshop"), false);
+
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });
+            </code-fragment>
+            <code-fragment data-type="text/javascript" data-slide-mode="simpleJSON">
+                openEditor(["#ShopProducts"], document.querySelector("#webshop"), false);
+
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });
+            </code-fragment>
+            <code-fragment data-type="text/javascript" data-slide-mode="simpleTemplates">
+                openEditor(["#ShopProducts", "#RenderProduct", "#ShopTemplates"], document.querySelector("#webshop"), false);
+
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });
+            </code-fragment>
+            <code-fragment data-type="text/javascript" data-slide-mode="simpleSearch">
+                openEditor(["#ShopProducts", "#SearchFilter"], document.querySelector("#webshop"), false);
+
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });
+            </code-fragment>
+            <code-fragment data-type="text/javascript" data-slide-mode="play">
+                openEditor(["#ShopProducts", "#RenderProduct", "#ShopTemplates", "#SearchFilter", "#cssExample"], document.querySelector("#webshop"), false);
+
+                onSlideModeUnloaded(()=>{
+                    closeEditor();
+                });
+            </code-fragment>
+        </slide>
+        <slide id="preview-webshop">
+            <code-fragment data-type="text/html" id="ShopLayout" auto=""><inline src="webshop.html"></inline></code-fragment>
+            <code-fragment data-type="text/html" id="ShopTemplates" auto=""><inline src="templates.html"></inline></code-fragment>
+            <code-fragment data-type="text/x-scss" id="ShopTheme" auto=""><inline src="webshop.scss"></inline></code-fragment>
+            <code-fragment data-type="text/css" id="cssExample"><inline src="cssExample.css"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" id="RenderProduct"><inline src="renderProduct.js"></inline></code-fragment>
+            <code-fragment data-type="application/json" id="ShopProducts"><inline src="products.json"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" id="SearchFilter"><inline src="searchFilter.js"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" id="ShopCode"><inline src="webshop.js"></inline></code-fragment>
+        </slide>

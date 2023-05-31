@@ -1,0 +1,7 @@
+{
+    "description": "Cauldron Integration for CoTinker creation",
+    "dependencies": [
+        "cauldron-repos #Cauldron"
+    ],
+    "version": "0.1"
+}

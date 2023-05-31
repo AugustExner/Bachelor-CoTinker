@@ -1,0 +1,11 @@
+{
+    "description": "CoTinker Unity Integration",
+    "dependencies": [
+        "webstrate-components-repos #MenuSystem",
+        "webstrate-components-repos #MaterialDesignOutlinedIcons",
+        "codestrates-repos #EventSystem",
+        "wpm_js_libs #UUIDGenerator",
+        "wpm_js_libs #oscjs"
+    ],
+    "version": "0.1"
+}

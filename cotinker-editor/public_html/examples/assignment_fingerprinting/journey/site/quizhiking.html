@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+          <link rel="stylesheet" href="main.css">
+
+  <style>
+      #efter_submit {visibility:"hidden";}
+  </style>
+  <script type="text/jscript">
+     function tjek(){
+
+       if (document.quiz.spg2.value=="1"){
+         document.getElementById("efter_submit").style.visibility="visible";
+         document.getElementById("antal_rigtige").innerHTML="Du bør vælge Kreta";
+       };
+       if (document.quiz.spg2.value=="2"){
+         document.getElementById("efter_submit").style.visibility="visible";
+         document.getElementById("antal_rigtige").innerHTML="Du bør vælge Sicilien";
+       };
+       if (document.quiz.spg2.value=="4"){
+         document.getElementById("efter_submit").style.visibility="visible";
+         document.getElementById("antal_rigtige").innerHTML="Du bør vælge Nepal";
+       };
+
+      }
+  </script>
+</head>
+<body style="width:1000px;margin:80px;background-color:#A83">
+      <div class="ad floating" id="primaryAd"></div>
+
+    <a href="menu2.html"><img src="ungfri.jpg" style="float:left" width="100px"></a>
+  <div style="width:50%;margin:25%">
+  <h1> Områder der passer til dig </h1>      <br>      <br>
+    <form id="quiz" name="quiz">
+        Spørgsmål 1: Emne for hiking?      <br>
+        <input name="spg1" type="radio" value="Bjerge">Bjerge<br>
+        <input name="spg1" type="radio" value="Kultur">Kultur<br>
+        <input name="spg1" type="radio" value="Udsigt">Udsigt<br>
+        <br>
+        Spørgsmål 2: Antal Uger?      <br>
+        <select  name="spg2">
+            <option value="">Vælg:</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="4">4</option>
+        </select>
+        <br><br>
+              <input type="button" id="button" value="Tjek resultat" onclick=tjek()>      <br>
+   </form>
+<div id="efter_submit">
+<p id="antal_rigtige">  </p>
+</div>
+</div>
+    <script src="journey.js"></script>
+
+</body>
+</html>

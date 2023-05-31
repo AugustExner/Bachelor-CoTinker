@@ -1,0 +1,387 @@
+<assignment>
+    <script>
+        window.cotinkerConfig.hideCollabButtons = true;
+        window.cotinkerConfig.sidebarController = true;
+
+        window.siteURL = "https://cotinker.projects.cavi.au.dk/sites/politics/index.html";
+        window.siteBase = "https://cotinker.projects.cavi.au.dk/sites/politics/";
+
+        window.revealAnonymous = (options)=>{
+            let slide = document.querySelector("#"+options.slide);
+            let input = slide.querySelector("input.reveal");
+
+            if(input != null && input.checked !== true) {
+                input.click();
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="../tables.css">
+    <script src="../tables.js"></script>
+    <script src="../d3-tree.js"></script>
+    <inline src="../tables.html"></inline>
+
+    <steps>
+        <step class="" name="Getting Started" data-slide="welcome">
+            <h1>Intro</h1>
+            <p>Velkommen!</p>
+            <p>Dette forløb bruger nogle web teknologier, der kræver at man bruger en Chromium baseret browser som fx Chrome eller Microsoft Edge.</p>
+            <p>Når i undervejs skal tage noter, kan i bruge note værktøjet "Send Note" i bunden herunder.</p>
+            <p>Når alle er klar til at begynde så scroll ned til bunden og tryk på "Next" for at fortsætte.</p>
+        </step>
+        <step class="" name="Explore" data-slide="website" data-slide-mode="explore">
+            <code-fragment data-type="text/markdown" auto="true"># Udforskning
+Du skal i forbindelse med arbejdet på denne side fokusere på to ting:
+
+* Normalt er du måske vant til at tage noter undervejs, når du læser eller lytter til oplæg fra din lærer. I denne lille øvelse skal du vente med at tage noter, til efter øvelsen er overstået. Det er altså et lille eksperiment, hvor vi fokuserer på den meningsgivende note-tagning.
+* Øvelsen her på siden er simpel. Bevæg dig rundt på denne hjemmeside og læs, det du finder interessant og relevant. Du må gerne tænke undervejs i læsningen, men der er ingen opgaver, der skal besvares under eller efter læsningen. Men husk, du skal ikke skrive noter undervejs.
+
+Når alle er færdige med at udforske hjemmesiden, tryk da på "Next".
+            </code-fragment>
+        </step>
+    <step class="" name="TrackingIntro" data-slide="welcome">
+    <code-fragment data-type="text/markdown" auto=""># Hvad gik det egentligt ud på?
+Arbejdet med hjemmesiden handlede hverken om at forstå klassiske samfundsfaglige tekster eller at arbejde med note-tagning.
+
+Det var et socialt eksperiment.
+
+Klassisk sociologi handler om at afdække menneskers adfærd, relationer, normer og samfundsstrukturer, der påvirker os.
+
+Med denne lille øvelse har vi haft til henblik at kortlægge din adfærd i forbindelse med faglige hjemmesider.
+
+Du har efterladt et spor rundt på hjemmesiden og det er netop de spor du skal forholde dig til nu.
+
+For hvad siger din og dine klassekammeraters adfærd på hjemmesiden egentlig om os selv?
+    </code-fragment></step>
+        <step class="" name="Collection" data-slide="fingerprint">
+            <code-fragment data-type="text/markdown" auto="true"># Browser Fingerprinting
+Da I besøgte hjemmesiden blev der samtidigt opsamlet en masse data omkring de browsers som viste hjemmesiden. Den information kan nu bruges til at genkende Jer igen på et senere tidspunkt.
+
+For hver enkelt browser kan man kombinere al informationen til et ID som mere eller mindre identificerer computeren eller telefonen unikt.
+
+I tabellen her til venstre vises en oversigt over de besøgene fra gruppen og de forskellige data som ligger til grund for hver af de besøgendes fingerprints. Mange af datapunkterne er identiske, men nogle er formentlig forskellige.
+
+* Undersøg hvad det er der gør folks computere forskellige fra hinanden (ifølge sliden)
+* Undersøg hvad der ens for alle
+* Kan i på forhånd gætte hvem der er hvem i gruppen?
+* Tryk <a href="#" class="revealAnonymous">her</a> for at afsløre navnene - gættede i rigtigt?
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="ServerSide" data-slide="trackingtable">
+            <code-fragment data-type="text/markdown" auto="true"># Hjemmesidens Server
+Det er ikke kun browseren som kan opsnappe information. For at hente hjemmesiden blev der snakket med en webserver som også havde mulighed for at gemme information omkring det data der blev sendt frem og tilbage over netværket.
+
+Til venstre er nu en tabel med en oversigt over den information som hjemmesidens server kunne opsnappe og som nu kan bruges til at profilere hver af besøgene.
+
+* Undersøg hvad serverne fik af information fra netværkskommunikationen
+* Sammenlign de forskellige besøgende og se om der er noget der går igen på tværs af alle besøgende
+* Hvordan kan to besøgende have samme IP-addresse?
+* Tryk <a href="#" class="revealAnonymous">her</a> for at afsløre navnene
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="Profiling" data-slide="statisticstable">
+            <code-fragment data-type="text/markdown" auto="true"># Profilering af Opførsel
+
+Ud over en analyse af de tekniske aspekter af browseren og netværkskommunikationen kan hjemmesider også benytte sig af andre metoder til at profilere de besøgende.
+
+Da I første gang udforskede hjemmesiden sendte hjemmesiden automatisk data omkring jeres opførsel på siden til et tracking framework et helt andet sted på internettet.
+
+På computeren vises nu en tabel med disse data.
+
+* Find ud af hvilke typer af data der er blevet gemt om besøget
+* Er der nogle besøgende hvor der er særligt stor forskel?
+* Kan i på forhånd gætte hvem der er hvem i gruppen?
+* Tryk <a href="#" class="revealAnonymous">her</a> for at afsløre navnene
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="Din opførsel" data-slide="profilingnavigation">
+            <code-fragment data-type="text/markdown" auto=""># Din opførsel
+
+Tabellen til venstre viser visuelt hvad tracking-frameworket i det skjulte lærte omkring jeres færd igennem hjemmesiden.
+
+Start med at identificer din egen data:
+
+* Hvad kendetegner din ageren på hjemmesiden?
+* Hvor meget tid bruger du på de enkelte delsider på hjemmesiden?
+* Hvor hurtigt læser du indholdet?
+* Hvor mange gange er du væk fra selve hjemmesiden?
+* Hvor lang tid er du væk fra siden før du kommer tilbage?
+* Hvilke forklaringer har du til din egen ageren på siden?
+            </code-fragment>
+        </step>
+        <step class="" name="Gruppens opførsel" data-slide="profilingnavigation">
+            <code-fragment data-type="text/markdown" auto=""># Gruppens opførsel
+
+Sammenlign nu med data fra de andre medlemmer i gruppen:
+
+* Hvad kendetegner deres adfærd?
+* Er de sammenlignelige med din adfærd?
+* Kan vi se nogle tendenser i den måde gruppen bruger siden på?
+* Kan vi forklare disse tendenser?
+* Sammenlign nu gruppens data med de data, som I får udleveret. De indeholder de samme type data blot fra en gruppe tilfældig udvalgte gymnasielærere.
+* Kan vi se forskelle?
+* Hvad kan forklare disse forskelle?
+            </code-fragment>
+        </step>
+        <step class="" name="Andres opførsel" data-slide="profilingnavigation">
+            <code-fragment data-type="text/markdown" auto=""># Andres opførsel
+
+Sammenlign nu gruppens data med de data, som I får udleveret. De indeholder de samme type data blot fra en gruppe tilfældig udvalgte gymnasielærere:
+
+* Kan vi se forskelle?
+* Hvad kan forklare disse forskelle?
+            </code-fragment>
+        </step>        <step class="" name="End" data-slide="thanks">
+            <code-fragment data-type="text/markdown" auto=""># Godt Klaret!
+
+* Hvis I har tid så diskutér i gruppen hvad I føler omkring hjemmesidens opsamling af data
+
+Heldigvis har vi i Europa og Danmark <a href=" https://gdpr.dk/persondataforordningen/" target="_blank">persondataforordningen</a> som hjælper med at beskytte os når vi bevæger os på nettet. GDPR stiller krav om at virksomheder gør opmærksomme på at de opsamler og deler vores data.
+            </code-fragment>
+        </step>
+-->
+    </steps>
+    <slides>
+        <slide id="welcome">
+            <img style="width: 80%; height: 80%; object-fit: contain;" src="logo_light.svg">
+        </slide>
+
+        <slide id="website">
+            <code-fragment data-type="text/javascript">
+                let slide = document.querySelector("#website");
+                let iframe = slide.querySelector("iframe");
+
+                // Insert the iframe for the student
+                if (!iframe){
+                    iframe = document.createElement("iframe");
+                    iframe.classList.add("fullframe");
+                    slide.appendChild(iframe);
+                }
+
+                onSlideUnloaded(()=>{
+                    let completedCode = "<"+"html><"+"/html>";
+                    iframe.setAttribute("src", "data:text/html;charset=utf-8," + escape(completedCode));
+                    console.log("Its dead jim!");
+                });
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="explore">
+                let studentData = await getStudentData();
+                let iframe = document.querySelector("#website iframe");
+                if (studentData.alreadyStoredSubsessions){
+                    // Already completed the recording and made a choice, go to completed
+                    let completedCode = "<"+"html><"+"/html>";
+                    iframe.setAttribute("src", "data:text/html;charset=utf-8," + escape(completedCode));
+                } else {
+                    // Show the site, start the recording
+                    // Prepare UberTracker session to ensure crossdomain coalescing
+                    let uberTracker = await getUberTracker();
+                    await uberTracker.ready();
+                    let session = uberTracker.clientData;
+                    console.debug("UberTracker ready:", session);
+                    let url = new URL(window.siteURL);
+                    let utrack = await uberTracker.generateCrossDomainKey(url.hostname);
+                    iframe.setAttribute("src", window.siteURL+"?_utrack="+utrack.key);
+
+                    iframe.addEventListener("load", ()=>{
+                        iframe.contentWindow.focus();
+                    }, {once: true});
+
+                    // Grab some serverside info
+                    await storeServersideInfo();
+
+                    // Also grab a fingerprint
+                    await storeFingerprint();
+                }
+            </code-fragment>
+            <code-fragment data-type="text/javascript" data-slide-mode="frontpage">
+                let uberTracker = await getUberTracker();
+                let url = new URL(window.siteURL);
+                let utrack = await uberTracker.generateCrossDomainKey(url.hostname);
+                document.querySelector("#website iframe").setAttribute("src", window.siteURL+"?_utrack="+utrack.key);
+            </code-fragment>
+            <code-fragment data-type="text/javascript" data-slide-mode="opportunity">
+                let uberTracker = await getUberTracker();
+                let url = new URL(window.siteURL);
+                let utrack = await uberTracker.generateCrossDomainKey(url.hostname);
+                document.querySelector("#website iframe").setAttribute("src", window.opportunityURL+"?_utrack="+utrack.key);
+            </code-fragment>
+        </slide>
+
+        <slide id="fingerprint" class="headerAware">
+            <code-fragment data-type="text/javascript">
+                async function storeSubSessions(){
+                    data = await getStudentData();
+
+                    if(data.alreadyStoredSubsessions) {
+                        console.log("Already stored subsessions, skipping...");
+                        return;
+                    }
+
+                    let iframe = document.querySelector("#website iframe");
+                    let completedCode = "<"+"html><"+"/html>";
+                    iframe.setAttribute("src", "data:text/html;charset=utf-8," + escape(completedCode));
+
+                    // Query the UberTracker session to store relevant subsessions
+                    let uberTracker = await getUberTracker();
+                    await uberTracker.ready();
+                    let session = uberTracker.clientData;
+                    console.debug("UberTracker ready:", session);
+                    let subsessions = await uberTracker.getSubsessions();
+
+                    // Only pick the ones with the target site from the past hours
+                    let timeLimit = Date.now() - 2*3600*1000;
+                    let ourSubsessions = subsessions.filter(s => (s.data && s.data.time && s.data.time > timeLimit && s.data.url && s.data.url.startsWith(window.siteBase)));
+                    if (ourSubsessions.length === 0) {
+                        console.warn("Couldn't find any subsessions for ", window.questionnaireURL);
+                        // TODO: Abort?
+                    }
+
+                    // Intentionally leak them into the webstrate
+                    data.ubertracked = ourSubsessions;
+                    data.alreadyStoredSubsessions = true;
+                    await saveStudentData(data);
+                }
+
+                storeSubSessions();
+            </code-fragment>
+
+            <div class="comparison-table" data-seed="42"></div>
+            <code-fragment data-type="text/javascript">
+                embedFingerprintingTable(document.querySelector("#fingerprint .comparison-table",
+                    {anonymous:true}
+                ));
+            </code-fragment>            
+        </slide>
+        <slide id="trackingtable" class="headerAware">
+            <div class="comparison-table" data-seed="60"></div>
+            <code-fragment data-type="text/javascript">
+                embedServersideTable(document.querySelector("#trackingtable .comparison-table"));
+            </code-fragment>
+        </slide>
+        <slide id="statisticstable" class="headerAware">
+            <div class="comparison-table" data-seed="4260"></div>
+            <code-fragment data-type="text/javascript">
+                embedStatisticsTable(document.querySelector("#statisticstable .comparison-table"));
+            </code-fragment>
+        </slide>
+        <slide id="profilingnavigation">
+            <div class="comparison-table" data-seed="42609000"></div>
+            <div class="element-inspector"></div>
+
+            <style>
+                #profilingnavigation {
+                    z-index: 99;
+                    background: linear-gradient(to bottom, #003d73, #004581);
+                }
+            </style>
+
+            <code-fragment data-type="text/javascript">
+                await wpm.requireExternal("https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js");
+                await wpm.requireExternal("https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js");
+                await wpm.requireExternal("https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css");
+
+                let labelMapper = function mapLabel(data, node){
+                    if (data.subsession && data.subsession.url){
+                        let url = data.subsession.url.split("?")[0];
+                        let replacements = {
+                            "index.html": "Forside",
+                            "/politics.html": "Politik",
+                            "/politics-bio.html": "Politik: Biografi",
+                            "/politics-empiri.html": "Politik: Empiri",
+                            "/politics-teori.html": "Politik: Teori",
+                            "/politics-quiz.html": "Politik: Quiz",
+                            "intpolitics.html": "Int. Politik",
+                            "intpolitics-bio.html": "Int. Politik: Biografi",
+                            "intpolitics-empiri.html": "Int. Politik: Empiri",
+                            "intpolitics-teori.html": "Int. Politik: Teori",
+                            "intpolitics-quiz.html": "Int. Politik: Quiz",
+                            "economics.html": "Økonomi",
+                            "economics-bio.html": "Økonomi: Biografi",
+                            "economics-empiri.html": "Økonomi: Empiri",
+                            "economics-teori.html": "Økonomi: Teori",
+                            "economics-quiz.html": "Økonomi: Quiz",
+                            "sociologi.html": "Sociologi",
+                            "sociologi-bio.html": "Sociologi: Biografi",
+                            "sociologi-empiri.html": "Sociologi: Empiri",
+                            "sociologi-teori.html": "Sociologi: Teori",
+                            "sociologi-quiz.html": "Sociologi: Quiz"
+                        }
+                        for (const [target,replacement] of Object.entries(replacements)){
+                            if (url.endsWith(target)){
+                                return replacement;
+                            }
+                        }
+                    }
+                    return data.name;
+                };
+
+                embedNavigationTable(document.querySelector("#profilingnavigation .comparison-table"),{
+                    showExternalNavigation: true,
+                    showWindowBlur: true,
+                    clickHandler: async function handleClickSubsession(data,node){
+                        let out = document.querySelector(".element-inspector");
+                        out.innerHTML = "";
+
+                        // Some nicely styleable template with a header goes here
+                        let header = document.querySelector("#navigation-inspector-header").content.cloneNode(true);
+                        let label = labelMapper(data,node);
+                        header.querySelector(".title").innerText = label;
+                        header.querySelector(".subheader").innerText = data.name;
+                        out.appendChild(header);
+
+                        let views = document.createElement("div");
+                        views.classList.add("views");
+                        if (data.subsession){
+                            views.appendChild(await renderEventVisualizer(data.subsession));
+                            views.appendChild(await renderEventLog(data.subsession, {
+                                eventTypes: ["navigation", "noget med tags som viser/klikker på reklamer"]
+                            }));
+                        } else if (data.navigation){
+                            // TODO: Show iframe + target URL?
+                        }
+
+                        out.appendChild(views);
+                    },
+                    labelMapper: labelMapper
+                });
+            </code-fragment>
+        </slide>
+    </slides> 
+</assignment>

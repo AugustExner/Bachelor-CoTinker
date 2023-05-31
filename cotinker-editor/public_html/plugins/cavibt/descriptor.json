@@ -1,0 +1,6 @@
+{
+    "description": "CaviBT - Microbit BT connection library",
+    "dependencies": [
+    ],
+    "version": "0.1"
+}

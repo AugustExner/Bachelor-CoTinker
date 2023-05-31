@@ -1,0 +1,65 @@
+<template id="cart-item-template">
+    <div class="cart-item">
+        <img class="cart-item-image" src="" alt="">
+        <p class="cart-item-product-name">Name of product</p>
+        <button class="cart-item-minus-button" onclick="subtractQuantity(this.parentElement)">-</button>
+        <p class="cart-item-count">1</p>
+        <button id="cart-item-plus-button" class="cart-item-plus-button">+</button>
+    </div>
+</template>
+
+<style>
+.cart-item {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f8f8f8;
+    color: #757575;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+.cart-item-image {
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.cart-item-product-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    flex-grow: 1;
+    padding: 0 10px;
+    text-align: left;
+}
+
+.cart-item-minus-button,
+.cart-item-plus-button {
+    text-align:center;
+    height: 25px;
+    width: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cart-item-minus-button:hover,
+.cart-item-plus-button:hover {
+    background-color: #e0e0e0;
+}
+
+.cart-item-count {
+    margin: 0 5px;
+    font-size: 16px;
+}
+</style>

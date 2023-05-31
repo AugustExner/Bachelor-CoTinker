@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>CoTinker Teacher Interface</title>
+        <link rel="stylesheet" href="scss/main.scss">
+        <script id="WPMv2-script" src="https://cdn.jsdelivr.net/gh/Webstrates/WPM@master/WPMv2.js"></script>
+        <script src="js/main.js" type="application/javascript"></script>
+    </head>
+    <body>
+        <h1 class="header">Teacher Page <button class="toggleSetup" title="Settings">⚙</button></h1>
+        <div class="setup configBlock">
+            <h2>Settings</h2>
+            <div class="settings">
+                <label>Template CoTinker webstrate name</label><div class="setting template" spellcheck="false" contenteditable="true">cotinker-editor</div>
+                <label>Sensor publish webstrate</label><div class="setting sensorPublish" spellcheck="false" contenteditable="true">evil-liger-35</div>
+                <label>Code library webstrate:</label><div class="setting codeLibrary" spellcheck="false" contenteditable="true">great-eagle-46</div>
+            </div>
+        </div>
+        <div class="app">
+            <div class="configBlock groupOverview">
+                <h2>Group Overview</h2>
+                <div class="groupList">
+                    <div class="allHeader">
+                        <span class="groupName cell">All Groups</span>
+                        <controls class="cell"></controls>
+                        <select class="steps cell"></select>
+                    </div>
+                    <ul class="groups"></ul>
+                    <br />
+                    <button class="create">Add Group</button>
+                </div>
+            </div>
+            
+            <br />
+            <div class="configBlock other">
+                <h2>Additional features</h2>
+                <button class="sensorPublishPage">Sensor Publish Page</button>                
+            </div>
+        </div>
+    </body>
+</html>
+

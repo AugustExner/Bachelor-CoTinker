@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Sociologi - Quiz</title>
+        <link rel="stylesheet" href="main.css">
+        <script src="politics.js"></script>
+         <meta http-equiv="resfresh" content="1">
+    </head>
+    <body>
+        <include template="sociologi-menu"></include>
+        
+        <template id="sociologi-answers">
+            <form>
+                <ul class="answers">
+                    <li><label><input type="radio" name="d">Bourdieu</input></label></li>
+                    <li><label><input type="radio" name="d">Giddens</input></label></li>
+                    <li><label><input type="radio" name="d">Foucault</input></label></li>
+                    <li><label><input type="radio" name="d">Habermas</input></label></li>
+                </ul>                                 
+            </form>
+        </template>
+
+        <article>
+            <h1>Multiple choice quiz om sociologi</h1>
+
+            <div class="multiple-choice">
+                <p class="question" data-answer="Bourdieu">
+                    Hvem af følgende sociologer mente at klasseposition og kulturelle kapitaler var afgørende for individernes sociale mobilisering?
+                </p>
+                <include template="sociologi-answers"></include>
+
+                <p class="question" data-answer="Foucault">
+                     Hvem af følgende sociologer mente at køn, race, alder og andre sociale kategorier var produkter af diskurser, der skabes og forvaltes af magtstrukturer i samfundet?
+                </p>
+                <include template="sociologi-answers"></include>
+
+                <p class="question" data-answer="Giddens">
+                     Hvem af følgende sociologer mente at individet er aktivt involveret i at skabe sin egen sociale identitet gennem interaktion med andre individer?
+                </p>
+                <include template="sociologi-answers"></include>
+                
+                <p class="question" data-answer="Giddens">
+                    Hvem af følgende sociologer mente at samfundet konstrueres af individers handlinger og interaktioner i det daglige liv? 
+                </p>
+                <include template="sociologi-answers"></include>                            
+                                
+                <p class="question" data-answer="Habermas">
+                    Hvem af følgende sociologer mente at der findes en universell menneskelig kommunikation, der bygger på logiske, rasjonelle principper, og at denne kan anvendes til at forbedre samfundet?
+                </p>
+                <include template="sociologi-answers"></include>                      
+            </div>
+            
+            <div class="multiple-choice">
+                <p class="question" data-answer="Giddens">
+                    Hvem af følgende sociologer mente at sociale strukturer og magtforhold kan reproduceres gennem individernes daglige praksisser og handlinger?
+                </p>
+                <include template="sociologi-answers"></include>
+                
+                <p class="question" data-answer="Bourdieu">
+                     Hvem af følgende sociologer mente at individet er underlagt strukturer og magtforhold, der bestemmer dets muligheder og begrænsninger i samfundet?
+                </p>
+                <include template="sociologi-answers"></include>                
+                
+                <p class="question" data-answer="Giddens">
+                     Hvem af følgende sociologer mente at individet er aktivt involveret i at skabe sin egen virkelighed gennem interaktion med andre individer og deres verdensbilleder?
+                </p>
+                <include template="sociologi-answers"></include>
+                
+                <p class="question" data-answer="Foucault">
+                     Hvem af følgende sociologer mente at magtstrukturer i samfundet kan kontrollere og undertrykke individet gennem diskurser og videnproduktion?
+                </p>
+                <include template="sociologi-answers"></include>      
+                
+                <p class="question" data-answer="Habermas">
+                     Hvem af følgende sociologer mente at der findes en kommunikation, der er fri for magtforhold og interessekonflikter, og at denne kan anvendes til at forbedre samfundet? 
+                </p>
+                <include template="sociologi-answers"></include>                     
+            </div>
+        </article>
+    </body>
+</html>

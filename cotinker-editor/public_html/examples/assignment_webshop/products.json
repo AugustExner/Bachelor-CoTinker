@@ -1,0 +1,51 @@
+[
+    {
+        "id": 0,
+        "name": "Eco Honey",
+        "price": 4.99,
+        "description": "An exquisite example of tasty sweet ecological honey",
+        "details": "The finest honey produced by honeybees from Denmark<ul><li>Meticulously made by local bees</li><li>One full glass (glass included)</li><li>Also comes with a plastic lid on top</li><li>Will stay good forever</li>",
+        "picture": "honey_512.png",
+        "tags": [
+            "glas",
+            "food",
+            "yellow"
+        ]
+    },
+    {
+        "id": 1,
+        "name": "Replica: Holger the Dane",
+        "price": 9.99,
+        "description": "1:10 scale authentic replica model in blue plastic",
+        "details": "Also known as Holger Danske or Ogier le Danois this scale replica represents the epitome of cultural enlightenment and will look stunningly perfect on any mantle piece.<br />This product is also available in pink",
+        "picture": "holger_512.png",
+        "tags": [
+            "plastic",
+            "statue",
+            "blue"
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Necronomicon (1st edition)",
+        "price": 5.00,
+        "description": "This is one of only 5 remaining copies of this original work. The product has been refurbished and may contain slight marks of damage from being used. Note of warning: Previous owners have all gone mentally insane.",
+        "details": "This product is being sold AS IS and the seller makes no warranties, express or implied, and hereby disclaims all implied warranties, including any warranty of merchantability and warranty of fitness for a particular purpose. <ul><li>Contains most of the pages</li><li>Has a cover with a cool skull on it</li><li>For some reason the book has been perforated with screws to permanently keep it shut</li></ul>No guarantees are given for the safety of the reader.<br /><br />No returns accepted",
+        "picture": "book_512.png",
+        "tags": [
+            "book"
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Authentic Coffee Cup",
+        "price": 27.99,
+        "description": "High-quality black coffee cup with white print (one piece)",
+        "details": "This coffee cup is a container that will allow you to transport coffee and espresso-based drinks. The glazed black exterior is nicely matched by a lively yellow interior decoration.<ul><li>Has a handle (singular)</li><li>Do not eat</li><li>Can be re-used more than once</li><li>Coffee not included</li></ul>For additional information and nutritional values please contact the seller directly",
+        "picture": "cup_512.png",
+        "tags": [
+            "container"
+        ]
+    }
+]
+

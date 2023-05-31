@@ -1,0 +1,35 @@
+.helpBox {    
+    .mdc-dialog__surface {
+        max-width: 25em;
+    }
+
+    .requesting, .cancelling {
+        opacity: 0.8;
+        position: relative;
+        padding-left: 2em;
+
+        @keyframes spinner {
+            to {transform: rotate(360deg);}
+        }
+
+        &:before {
+            content: '';
+            box-sizing: border-box;
+            position: absolute;
+            top: 50%;
+            left: 1em;
+            width: 1.5em;
+            height: 1.5em;
+            margin-top: -0.75em;
+            margin-left: -0.75em;
+            border-radius: 50%;
+            border-top: 2px solid #07d;
+            border-right: 2px solid transparent;
+            animation: spinner .6s linear infinite;
+        }        
+    }
+}
+
+.helpButton.helpRequested {
+    background-color: coral;
+}

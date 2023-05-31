@@ -1,0 +1,866 @@
+<script>
+    // Switch layout to put mobile controller on the view screen as a sidebar
+    window.cotinkerConfig.sidebarController = true;
+    window.cotinkerConfig.hideSendNote = true;
+    window.cotinkerConfig.disableCollaboration = true;
+    window.cotinkerConfig.disableSidebarNavigation = true;
+    window.cotinkerConfig.disableNotifications = true;
+</script>
+
+<inline src="templates.html"></inline>
+
+<link href="assignment.css" type="text/css" rel="stylesheet" />
+<script src="assignment.js" type="application/javascript"></script>
+
+<dialog id="loadCode">
+    <form method="dialog">
+        <label>Vælg kode: <select class="codeSelector"></select></label>
+        <menu>
+            <button value="load">Hent</button>
+            <button value="cancel">Afbryd</button>
+        </menu>
+    </form>
+</dialog>
+
+<assignment>
+    <steps class="staticNavigation">
+        <step name="Velkommen" data-description="Welcome" data-slide="welcome">
+            <h1>Introduktion til programmering af micro:bit</h1>
+            <div class="activity-flex centeredItems">
+                <img src="img/microbit-actuators.png">
+                <img src="img/microbit-sensors.png">
+                <img src="img/sensor-types.png" style="width: 50%">
+            </div>
+        </step>
+
+        <step name="slide - intro" data-description="" data-slide="microbit-intro">
+        </step>
+
+        <!-- Forløb med LED og lyd -->
+
+        <step name="aktivitet - led 1" data-description="Programming LED" data-slide="programming" data-slide-mode="program1">
+            <h1>LED animation</h1>
+            <div class="activity-flex">
+                <img src="img/opgave1-simulator.png">
+                <p>Flyt de 4 skraverede programerringsblokke ind i</p>
+                <img src="img/forever.png" style="width: 50%">
+                <p>så den simulerede micro:bit øverst til venstre viser samme animation som ovenfor</p>
+            </div>
+        </step>
+        <step name="aktivitet - led 2" data-description="Programming LED" data-slide="programming" data-slide-mode="program1">
+            <h1>LED animation</h1>
+            <div class="activity-flex">
+                <img src="img/led-figurer.png">
+                <div class="inline-flex-row">
+                    <p>Lav ændringer i animationen ved at ændre lysmønstre eller pause tider. <br/> Tryk på hvid eller sort trekant for at se mulighederne.</p>
+                    <img src="img/pause.png" style="width: 50%">
+                </div>
+                <div class="inline-flex-row">
+                    <img src="img/opgave1-rightclickmenu.png" style="width: 50%">
+                    <p>Højre klik på blok og få mulighed for at kopierer blok.<br />
+                        <br />
+                        Lav på den måde flere end to lysmønstre.</p>
+                </div>
+            </div>
+        </step>
+        <step name="aktivitet - lyd 1" data-description="" data-slide="programming" data-slide-mode="program2">
+            <h1>Lyd</h1>
+            <div class="activity-flex">
+                <div class="videoContainer" onclick="playPause(this)">
+                    <video loop="true" preload="auto" id="opgave2-simulator">
+                        <source src="img/opgave2-simulator.mp4" type="video/mp4">
+                    </video>
+                    <div class="button"></div>
+                </div>
+                <p>Start video ovenfor og se en animation akkompagneret af lyde.</p>
+                <p>Flyt de 4 skraverede programmeringsblokke ind i</p>
+                <img src="img/forever.png" style="width: 50%">
+                <p>så den simulerede micro:bit øverst til venstre viser samme animation som videoen ovenfor.</p>
+            </div>
+            <code-fragment data-type="text/javascript">
+                onStepUnloaded(() => {
+                    killVideoPlayback();
+                });
+            </code-fragment>
+        </step>
+        <step name="aktivitet - pairing" data-description="" data-slide="programming" data-slide-mode="program2">
+            <h1>Forbind micro:bit til computer</h1>
+            <div class="activity-flex">
+                <p>Se på videoen nedenfor hvordan micro:bit forbindes via USB til en computer og hvordan et program overføres fra computer til micro:bit.</p>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/qSjMDG84bMY?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen allowscriptaccess="always"></iframe>
+                <p>Overfør programmet med de to lyde til micro:bit.<br/>
+                    Lav dernæst andre lyde og lysmønstre i animationen akkompagneret af lyde.</p>
+            </div>
+            <code-fragment data-type="text/javascript">
+                onStepUnloaded(()=>{
+                    fragmentSelfReference.html[0].closest("step").querySelectorAll("iframe").forEach((iframe)=>{
+                        iframe.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+                    });
+                });
+            </code-fragment>
+        </step>
+        <step name="slide - programmeringsblokke" data-description="" data-slide="programerringsblokke"></step>
+        <step name="aktivitet - kaa's øje" data-description="" data-slide="programming" data-slide-mode="program3">
+            <h1>Kaa's øje</h1>
+            <div class="activity-flex">
+                <img src="img/opgave3-slange.png">
+                <img src="img/opgave3-hypnose.png">
+                <p>Brug lysmønstre og lyde til at lave en hyptoniserende animation inspireret af Junglebogens slange Kaa.</p>
+            </div>
+        </step>
+
+        <!-- Forløb med sensorer -->
+        <step name="slide - sensorer 1" data-slide="microbit-sensorer">
+        </step>
+        <step name="slide - sensorer 2" data-slide="microbit-sensorer2">
+        </step>
+        <step name="aktivitet - sensorer 1" data-slide="programming" data-slide-mode="program4">
+            <h1>Mikrofon, måler lydniveau</h1>
+            <div class="activity-flex">
+                <p>Mikrofonen kan måle lydniveauet omkring en micro:bit som et tal imellem 0 og 255. I programmet bruges det aflæste lydniveau til at sætte lysintensiteten i de 25 lysdioder i displayet:</p>
+                <img src="img/brightness.png">
+                <p>Den lilla blok <i>sound level</i> er værdien af det aflæste lydniveau.</p>
+                <p>Prøv med musen at bevæge den røde søjle i simulatoren øverst til venstre og se virkningen på lysdioderne.</p>
+                <p>Værdien af den røde søjle er en simuleret lydniveauværdi.</p>
+            </div>
+        </step>
+        <step name="aktivitet - sensorer 2" data-slide="programming" data-slide-mode="program4">
+            <h1>Mikrofon, måler lydniveau</h1>
+            <div class="activity-flex">
+                <img src="img/klap.png">
+                <p>Overfør programmet til micro:bit og se hvordan lydniveauet ændres ved:</p>6
+                <p>
+                    Klap<br />
+                    Sang<br/>
+                    Råben<br/>
+                    Pust<br/>
+                </p>
+            </div>
+        </step>
+        <step name="Netværk til opsamling af flere målinger" data-slide="microbit-bluetooth">
+        </step>
+        <step name="bluetooth - navn" data-slide="programming" data-slide-mode="program11">
+            <h1>Netværk til opsamling af flere målinger</h1>
+            <div class="activity-flex">
+                <img src="img/bluetooth-connection.png">
+                <p>For at etablere et netværk til at foretage flere malinger skal de enkelte micro:bit forbindes via Bluetooth til en computer.</p>
+                <p>For at kunne gøre det skal navnet på den enkelte micro:bit kendes.</p>
+                <p>Overfør programmet til venstre til en micro:bit og aflæs navnet f.eks. zozuz. <b>Noter navnet.</b></p>
+            </div>
+        </step>
+        <step name="bluetooth - pairing" data-slide="programming" data-slide-mode="program5">
+            <h1>Netværk til opsamling af flere målinger</h1>
+            <div class="activity-flex">
+                <img src="img/bt-laptop.png">
+                <p>Forbindelse imellem de enkelte computere og computeren, som viser de opsamlede målinge, etableres med den grønne programmeringsblok</p>
+                <img src="img/opgave4-publish-sensors.png">
+            </div>
+        </step>
+        <step name="bluetooth - forbind" data-slide="programming" data-slide-mode="program5">
+            <h1>Netværk til opsamling af flere målinger</h1>
+            <div class="activity-flex">
+                <p>Nu benyttes programmet til at etablere netværket:</p>
+                <ol style="padding-inline-start: 1em;">
+                    <li><div class="inline-flex-row"><p>Tryk på knappen:</p><img src="img/bt-button.png" style="width: 64px"></div></li>
+                    <li>I dialogboksen find navnet på micro:bit og tryk på Pair.</li>
+                </ol>
+                <img src="img/microbit-bt-pair.png">
+                <div class="inline-flex-row">
+                    <p>Ny bliver knappen blå og lyd værdierne kan ses på fællessiden.</p>
+                    <img src="img/bt-button-connected.png" style="width: 64px">
+                </div>
+            </div>
+        </step>
+        <step name="bluetooth - lydmålinger 1" data-slide="programming" data-slide-mode="program5">
+            <h1>Netværk til opsamling af flere målinger</h1>
+            <div class="activity-flex">
+                <p>Brug netværket til at eksperimentere med lydmålinger forskellige steder i rummet.</p>
+                <p>Overvej at sætte en pause ind, så det er lettere at nå at se tallene på fællessiden.</p>
+            </div>
+        </step>
+        <step name="bluetooth - lydmålinger 2" data-slide="programming" data-slide-mode="program12">
+            <h1>Netværk til opsamling af flere målinger</h1>
+            <div class="activity-flex">
+                <img src="img/klap.png">
+                <p>Det målte lydniveau kan også vises i lysdioderne som en slags lyssøjle.</p>
+                <p>Overfør programmet og se hvordan.</p>
+            </div>
+        </step>
+        <step name="målinger - slide 1" data-slide="microbit-sensorer3">
+        </step>
+        <step name="målinger - aktivitet 1" data-slide="programming" data-slide-mode="program6">
+            <h1>Opsamling af tidsrække af målinger</h1>
+            <div class="activity-flex">
+                <img src="img/sensorer-graf2.png">
+                <p>Se kurven med en tidsrække af målinger ved at trykke på:</p>
+                <img src="img/show-console.png">
+                <p>Nu kan målinger fra flere mikrofoner vises på fællessiden samtidig med at tidsrækker af målinger kan ses på de enkelte computere.</p>
+            </div>
+        </step>
+        <step name="målinger - aktivitet 2" data-slide="programming" data-slide-mode="program6">
+            <h1>Opsamling af tidsrække af målinger</h1>
+            <div class="activity-flex">
+                <img src="img/other-sensors.png">
+                <p>Prøv at vælge værdier af målinger fra de andre sensorer i stedet for <i>sound level</i>.</p>
+                <p>Find de andre sensorer under blokkategorien Input</p>
+                <img src="img/opgave4-input.png">
+                <img src="img/opgave4-other-sensors.png">
+                <img src="img/accel.png">
+            </div>
+        </step>
+        <step name="bevægelsessensorer - aktivitet 1" data-slide="programming" data-slide-mode="program7">
+            <h1>Bevægelsessensoren, accelerometer</h1>
+            <div class="activity-flex">
+                <img src="img/simulator-shake.png">
+                <p>Prøv at trykke på SHAKE i simulatoren.</p>
+                <p>Overfør programmet til micro:bit</p>
+                <p>Bevæg micro:bit’en og undersøg hvornår der spilles en tone.</p>
+            </div>
+        </step>
+
+        <step name="bevægelsessensorer - aktivitet 2" data-slide="programming" data-slide-mode="program8">
+            <h1>Bevægelsessensoren, accelerometer</h1>
+            <div class="activity-flex">
+                <img src="img/step-counter.png">
+                <p><b>Skridttæller</b></p>
+                <p>Flyt de 4 skraverede programmeringsblokke ind i blokkene:</p>
+                <div class="inline-flex-row">
+                    <img src="img/onstart.png">
+                    <img src="img/onshake.png">
+                </div>
+                <p>så den simulerede micro:bit øverst til venstre tæller antal tryk på SHAKE og viser antal tryk i displayet.</p>
+                <p>Overfør program til en micro:bit monteret på en sko og se om skridt tælles korrekt.</p>
+            </div>
+        </step>
+
+        <step name="bevægelsessensorer - slide 1" data-slide="microbit-stepcounter">
+        </step>
+
+        <step name="bevægelsessensorer - aktivitet 3" data-slide="programming" data-slide-mode="program9">
+            <h1>Bevægelsessensoren, accelerometer</h1>
+            <div class="activity-flex">
+                <img src="img/step-counter.png">
+                <p><b>Registrering af skridt</b></p>
+                <p>Overfør programmet til micro:bit</p>
+                <p>Prøv at ryste med micro:bit’en og se hvad der vises i displayet.</p>
+            </div>
+        </step>
+
+        <step name="bevægelsessensorer - aktivitet 4" data-slide="programming" data-slide-mode="program10">
+            <h1>Bevægelsessensoren, accelerometer</h1>
+            <div class="activity-flex">
+                <img src="img/microbit-step-counter-counter.png">
+                <p><b>Tæller</b></p>
+                <p>Overfør programmet til micro:bit</p>
+                <p>Prøv at ryste med micro:bit’en som registrerer skridt og se om micro:bit’en tæller skridtene.</p>
+            </div>
+        </step>
+
+        <!-- Kodebiblioteket -->
+        <step name="Kodebiblioteket" data-description="" data-slide="programming" data-slide-mode="kodebibliotek" id="kodebiblioteket">
+            <h1>Kodebiblioteket</h1>
+        </step>
+    </steps>
+    <slides>
+        <slide id="welcome">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../../img/logo_light.svg">
+        </slide>
+
+        <slide id="programming">
+            <code-fragment data-type="text/javascript" name="MakeCode setup">
+                if (window.makeController == null) {
+                    await WPMv2.require(["cotinker-pxt-microbit"]);
+
+                    let slide = document.querySelector("#programming");
+                    let transient = document.createElement("transient");
+                    transient.classList.add("makecode-view");
+                    slide.appendChild(transient);
+                    let makeController = new MakeController(transient);
+                    window.makeController = makeController;
+                }
+
+                /*
+                onSlideUnloaded(() => {
+                    makeController.destroy();
+                    window.makeController = null;
+                    transient.remove();
+                });
+                */
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                setupBTButton();
+                setupSaveButton();
+                setupResetButton();
+
+                onSlideUnloaded(()=>{
+                    cQuery(".saveButton").remove();
+                    cQuery(".resetButton").remove();
+                    cQuery(".btButton").remove();
+                });
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="kodebibliotek">
+                setupLoadButton();
+
+                onSlideModeUnloaded(() =>{
+                    cQuery(".loadButton").remove();
+                });
+            </code-fragment>
+
+            <code-fragment id="program1" data-type="application/json" class="cotinker-noauto" data-restrict="program1">{
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program1"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.1.14",
+                "id": "9de60826-7a1b-4ad4-a972-a00622ebfc47",
+                "recentUse": 1647435983,
+                "modificationTime": 1647435983,
+                "path": "Ikke-navngivet",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"9\" y=\"10\"></block><block type=\"basic_show_icon\" disabled=\"true\" x=\"365\" y=\"6\"><field name=\"i\">IconNames.Skull</field></block><block type=\"basic_show_icon\" disabled=\"true\" x=\"366\" y=\"153\"><field name=\"i\">IconNames.Ghost</field></block><block type=\"device_forever\" x=\"8\" y=\"212\"></block><block type=\"device_pause\" disabled=\"true\" x=\"366\" y=\"312\"><value name=\"pause\"><shadow type=\"timePicker\" disabled=\"true\"><field name=\"ms\">100</field></shadow></value></block><block type=\"device_pause\" disabled=\"true\" x=\"365\" y=\"458\"><value name=\"pause\"><shadow type=\"timePicker\" disabled=\"true\"><field name=\"ms\">100</field></shadow></value></block></xml>",
+                "main.ts": "basic.forever(function () {\n\t\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"radio\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program1">
+                const codeFragment = Fragment.one("#program1");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program2" data-type="application/json" class="cotinker-noauto" data-restrict="program2">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program2"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.1.14",
+                "id": "0be1480e-6113-46cf-06fb-7eb919e7aad0",
+                "recentUse": 1647502858,
+                "modificationTime": 1647502858,
+                "path": "Ikke-navngivet-11",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"0\" y=\"0\"><statement name=\"HANDLER\"><block type=\"basic_show_icon\"><field name=\"i\">IconNames.TShirt</field></block></statement></block><block type=\"basic_show_icon\" disabled=\"true\" x=\"336\" y=\"19\"><field name=\"i\">IconNames.Happy</field></block><block type=\"basic_show_icon\" disabled=\"true\" x=\"336\" y=\"154\"><field name=\"i\">IconNames.Sad</field></block><block type=\"device_forever\" x=\"-1\" y=\"233\"></block><block type=\"SoundExpression_playUntilDone\" disabled=\"true\" x=\"333\" y=\"288\"><field name=\"this\">soundExpression.sad</field></block><block type=\"SoundExpression_playUntilDone\" disabled=\"true\" x=\"331\" y=\"421\"><field name=\"this\">soundExpression.happy</field></block></xml>",
+                "main.ts": "basic.showIcon(IconNames.TShirt)\nbasic.forever(function () {\n\t\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"radio\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program2">
+                const codeFragment = Fragment.one("#program2");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program3" data-type="application/json" class="cotinker-noauto" data-restrict="program3">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program3"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.1.14",
+                "id": "39d7cf4f-1f5f-4df7-4b93-2a71826c1d78",
+                "recentUse": 1647503836,
+                "modificationTime": 1647503836,
+                "path": "Ikke-navngivet-6",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"0\" y=\"0\"></block><block type=\"device_forever\" x=\"-1\" y=\"199\"></block></xml>",
+                "main.ts": "basic.forever(function () {\n\t\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"radio\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program3">
+                const codeFragment = Fragment.one("#program3");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program4" data-type="application/json" class="cotinker-noauto" data-restrict="program4">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program4"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.19",
+                "id": "a8e2739b-d5a0-4588-41b1-f4e74acc580d",
+                "recentUse": 1649065250,
+                "modificationTime": 1649065250,
+                "path": "Ikke-navngivet-2",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable id=\"y)$fO5Y)M9?-s8!G:_}(\">visNummer</variable><variable id=\"gh5Jn{2L~n4:`T7Y%Z4Z\">element</variable></variables><block type=\"pxt-on-start\" x=\"60\" y=\"25\"><statement name=\"HANDLER\"><block type=\"device_show_leds\"><field name=\"LEDS\">`\n        # # # # # \n        # # # # # \n        # # # # # \n        # # # # # \n        # # # # #\n        `</field></block></statement></block><block type=\"device_forever\" x=\"67\" y=\"383\"><statement name=\"HANDLER\"><block type=\"device_set_brightness\"><value name=\"value\"><shadow type=\"math_number_minmax\"><mutation min=\"0\" max=\"255\" label=\"Value\" precision=\"0\"/><field name=\"SLIDER\">255</field></shadow><block type=\"device_get_sound_level\"/></value></block></statement></block></xml>",
+                "main.ts": "basic.showLeds(`\n    # # # # #\n    # # # # #\n    # # # # #\n    # # # # #\n    # # # # #\n    `)\nbasic.forever(function () {\n    led.setBrightness(input.soundLevel())\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"radio\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program4">
+                const codeFragment = Fragment.one("#program4");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program5" data-type="application/json" class="cotinker-noauto" data-restrict="program5">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program5"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.19",
+                "id": "72421c77-2282-4121-d017-afbe8d30a628",
+                "recentUse": 1651222827,
+                "modificationTime": 1651222824,
+                "path": "Ikke-navngivet-7",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"0\" y=\"0\"><statement name=\"HANDLER\"><block type=\"device_show_leds\"><field name=\"LEDS\">`\n        # # # # # \n        # # # # # \n        # # # # # \n        # # # # # \n        # # # # #\n        `</field></block></statement></block><block type=\"device_forever\" x=\"6\" y=\"330\"><statement name=\"HANDLER\"><block type=\"device_set_brightness\"><value name=\"value\"><shadow type=\"math_number_minmax\"><mutation min=\"0\" max=\"255\"/><field name=\"SLIDER\">0</field></shadow><block type=\"device_get_sound_level\"/></value><next><block type=\"sensors_publishSensor\"><field name=\"s\">SensorEnum.Sound</field></block></next></block></statement></block></xml>",
+                "main.ts": "basic.showLeds(`\n    # # # # #\n    # # # # #\n    # # # # #\n    # # # # #\n    # # # # #\n    `)\nbasic.forever(function () {\n    led.setBrightness(input.soundLevel())\n    sensors.publishSensor(SensorEnum.Sound)\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"bluetooth\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\",\n        \"custom.ts\"\n    ],\n    \"preferredEditor\": \"blocksprj\",\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"open\": 1,\n                    \"whitelist\": 0,\n                    \"security_level\": null\n                }\n            }\n        }\n    }\n}\n",
+                ".simstate.json": "{}",
+                "custom.ts": "enum SensorEnum {\n    //% block=\"sound level\"\n    //% block.loc.da=\"lydniveau\"\n    Sound,\n    //% block=\"light level\"\n    //% block.loc.da=\"lysniveau\"\n    Light,\n    //% block=\"temperature\"\n    //% block.loc.da=\"temperatur\"\n    Temperature,\n    //% block=\"compas direction\"\n    //% block.loc.da=\"kompas retning\"\n    Compas,\n    //% block=\"acceleration\"\n    //% block.loc.da=\"acceleration\"\n    Accel,\n    //% block=\"magnetic strength\"\n    //% block.loc.da=\"magnetisk styrke\"\n    Magnetic,\n    //% block=\"rotation\"\n    //% block.loc.da=\"rotation\"\n    Rotation,\n}\n\n/**\n * Custom blocks\n */\n//% weight=100 color=#0fbc11 icon=\"\"\n//% block=\"Publish\"\n//% block.loc.da=\"Publicer\"\nnamespace publish {\n    /**\n     * Publishes a sensor value via BlueTooth\n     * @param s The sensor to publish\n     */\n    //% block=\"publish sensor $s\"\n    //% block.loc.da=\"udgiv sensor $s\"\n    //% jsdoc.loc.da=\"Udgiv en sensor værdi over BlueTooth\"\n    //% s.loc.da=\"Sensoren der skal udgives\"\n    export function publishSensor(s: SensorEnum): void {\n        let btMsg = null;\n\n        switch (s) {\n            case SensorEnum.Accel: {\n                let x = input.acceleration(Dimension.X);\n                let y = input.acceleration(Dimension.Y);\n                let z = input.acceleration(Dimension.Z);\n\n                btMsg = \"a:\" + x + \":\" + y + \":\" + z;\n\n                break;\n            }\n            case SensorEnum.Sound: {\n                let level = input.soundLevel();\n\n                btMsg = \"s:\" + level;\n\n                break;\n            }\n            case SensorEnum.Light: {\n                let level = input.lightLevel();\n\n                btMsg = \"l:\" + level;\n\n                break;\n            }\n            case SensorEnum.Temperature: {\n                let level = input.temperature();\n\n                btMsg = \"t:\" + level;\n\n                break;\n            }\n            case SensorEnum.Magnetic: {\n                let x = input.magneticForce(Dimension.X);\n                let y = input.magneticForce(Dimension.Y);\n\n                btMsg = \"m:\" + x + \":\" + y;\n\n                break;\n            }\n            case SensorEnum.Compas: {\n                let heading = input.compassHeading();\n\n                btMsg = \"c:\" + heading;\n\n                break;\n            }\n            case SensorEnum.Rotation: {\n                let pitch = input.rotation(Rotation.Pitch);\n                let roll = input.rotation(Rotation.Roll);\n\n                btMsg = \"r:\" + pitch + \":\" + roll;\n\n                break;\n            }\n        }\n\n        if (btMsg != null) {\n            bluetooth.uartWriteLine(btMsg);\n        }\n    }\n\n    /**\n     * Publishes a value via BlueTooth\n     * @param v The value to publish\n     */\n    //% block=\"publish value $v\"\n    //% block.loc.da=\"publicer værdi $v\"\n    //% jsdoc.loc.da=\"Udgiv en sensor værdi over BlueTooth\"\n    //% s.loc.da=\"Sensoren der skal udgives\"\n    export function publishValue(v: number): void {\n        let btMsg = \"v:\" + v;\n\n        if (btMsg != null) {\n            bluetooth.uartWriteLine(btMsg);\n        }\n    }\n\n    bluetooth.startUartService();\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program5">
+                const codeFragment = Fragment.one("#program5");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program6" data-type="application/json" class="cotinker-noauto" data-restrict="program6">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program6"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.19",
+                "id": "c0090faa-521e-41b6-9d38-2ba5d378a92d",
+                "recentUse": 1649066679,
+                "modificationTime": 1649066679,
+                "path": "Ikke-navngivet-5",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"device_forever\" x=\"46\" y=\"145\"><statement name=\"HANDLER\"><block type=\"device_plot_bar_graph\"><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"device_get_sound_level\"/></value><value name=\"high\"><shadow type=\"math_number\"><field name=\"NUM\">255</field></shadow></value><next><block type=\"sensors_publishSensor\"><field name=\"s\">SensorEnum.Sound</field></block></next></block></statement></block></xml>",
+                "main.ts": "basic.forever(function () {\n    led.plotBarGraph(\n    input.soundLevel(),\n    255\n    )\n    sensors.publishSensor(SensorEnum.Sound)\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"bluetooth\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\",\n        \"custom.ts\"\n    ],\n    \"preferredEditor\": \"blocksprj\",\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"open\": 1,\n                    \"whitelist\": 0,\n                    \"security_level\": null\n                }\n            }\n        }\n    }\n}\n",
+                ".simstate.json": "{}",
+                "custom.ts": "enum SensorEnum {\n    //% block=\"sound level\"\n    //% block.loc.da=\"lydniveau\"\n    Sound,\n    //% block=\"light level\"\n    //% block.loc.da=\"lysniveau\"\n    Light,\n    //% block=\"temperature\"\n    //% block.loc.da=\"temperatur\"\n    Temperature,\n    //% block=\"compas direction\"\n    //% block.loc.da=\"kompas retning\"\n    Compas,\n    //% block=\"acceleration\"\n    //% block.loc.da=\"acceleration\"\n    Accel,\n    //% block=\"magnetic strength\"\n    //% block.loc.da=\"magnetisk styrke\"\n    Magnetic,\n    //% block=\"rotation\"\n    //% block.loc.da=\"rotation\"\n    Rotation,\n}\n\n/**\n * Custom blocks\n */\n//% weight=100 color=#0fbc11 icon=\"\"\n//% block=\"Publish\"\n//% block.loc.da=\"Publicer\"\nnamespace publish {\n    /**\n     * Publishes a sensor value via BlueTooth\n     * @param s The sensor to publish\n     */\n    //% block=\"publish sensor $s\"\n    //% block.loc.da=\"udgiv sensor $s\"\n    //% jsdoc.loc.da=\"Udgiv en sensor værdi over BlueTooth\"\n    //% s.loc.da=\"Sensoren der skal udgives\"\n    export function publishSensor(s: SensorEnum): void {\n        let btMsg = null;\n\n        switch (s) {\n            case SensorEnum.Accel: {\n                let x = input.acceleration(Dimension.X);\n                let y = input.acceleration(Dimension.Y);\n                let z = input.acceleration(Dimension.Z);\n\n                btMsg = \"a:\" + x + \":\" + y + \":\" + z;\n\n                break;\n            }\n            case SensorEnum.Sound: {\n                let level = input.soundLevel();\n\n                btMsg = \"s:\" + level;\n\n                break;\n            }\n            case SensorEnum.Light: {\n                let level = input.lightLevel();\n\n                btMsg = \"l:\" + level;\n\n                break;\n            }\n            case SensorEnum.Temperature: {\n                let level = input.temperature();\n\n                btMsg = \"t:\" + level;\n\n                break;\n            }\n            case SensorEnum.Magnetic: {\n                let x = input.magneticForce(Dimension.X);\n                let y = input.magneticForce(Dimension.Y);\n\n                btMsg = \"m:\" + x + \":\" + y;\n\n                break;\n            }\n            case SensorEnum.Compas: {\n                let heading = input.compassHeading();\n\n                btMsg = \"c:\" + heading;\n\n                break;\n            }\n            case SensorEnum.Rotation: {\n                let pitch = input.rotation(Rotation.Pitch);\n                let roll = input.rotation(Rotation.Roll);\n\n                btMsg = \"r:\" + pitch + \":\" + roll;\n\n                break;\n            }\n        }\n\n        if (btMsg != null) {\n            bluetooth.uartWriteLine(btMsg);\n        }\n    }\n\n    /**\n     * Publishes a value via BlueTooth\n     * @param v The value to publish\n     */\n    //% block=\"publish value $v\"\n    //% block.loc.da=\"publicer værdi $v\"\n    //% jsdoc.loc.da=\"Udgiv en sensor værdi over BlueTooth\"\n    //% s.loc.da=\"Sensoren der skal udgives\"\n    export function publishValue(v: number): void {\n        let btMsg = \"v:\" + v;\n\n        if (btMsg != null) {\n            bluetooth.uartWriteLine(btMsg);\n        }\n    }\n\n    bluetooth.startUartService();\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program6">
+                const codeFragment = Fragment.one("#program6");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program7" data-type="application/json" class="cotinker-noauto" data-restrict="program7">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program7"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.19",
+                "id": "ba2c3ff3-779d-4804-1096-93c770b93caf",
+                "recentUse": 1649069790,
+                "modificationTime": 1649069790,
+                "path": "Ikke-navngivet-31",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"12\" y=\"8\"><statement name=\"HANDLER\"><block type=\"basic_show_icon\"><field name=\"i\">IconNames.TShirt</field></block></statement></block><block type=\"device_gesture_event\" x=\"14\" y=\"186\"><field name=\"NAME\">Gesture.Shake</field><statement name=\"HANDLER\"><block type=\"device_play_note\"><value name=\"note\"><shadow type=\"device_note\"><field name=\"name\">262</field></shadow></value><value name=\"duration\"><shadow type=\"device_beat\"><field name=\"fraction\">BeatFraction.Sixteenth</field></shadow></value></block></statement></block></xml>",
+                "main.ts": "input.onGesture(Gesture.Shake, function () {\n    music.playTone(262, music.beat(BeatFraction.Sixteenth))\n})\nbasic.showIcon(IconNames.TShirt)\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"radio\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n",
+                ".simstate.json": "{}"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program7">
+                const codeFragment = Fragment.one("#program7");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program8" data-type="application/json" class="cotinker-noauto" data-restrict="program8">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program8"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.19",
+                "id": "0339c36e-43e7-454d-abfc-b118de6729d0",
+                "recentUse": 1649069465,
+                "modificationTime": 1649069465,
+                "path": "Ikke-navngivet-16",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</variable></variables><block type=\"pxt-on-start\" x=\"14\" y=\"3\"/><block type=\"variables_set\" disabled=\"true\" x=\"372\" y=\"52\"><field name=\"VAR\" id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</field><value name=\"VALUE\"><shadow type=\"math_number\" disabled=\"true\"><field name=\"NUM\">0</field></shadow></value></block><block type=\"variables_change\" disabled=\"true\" x=\"370\" y=\"170\"><field name=\"VAR\" id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</field><value name=\"VALUE\"><shadow type=\"math_number\" disabled=\"true\"><field name=\"NUM\">1</field></shadow></value></block><block type=\"device_gesture_event\" x=\"25\" y=\"259\"><field name=\"NAME\">Gesture.Shake</field></block><block type=\"device_show_number\" disabled=\"true\" x=\"368\" y=\"285\"><value name=\"number\"><shadow type=\"math_number\" disabled=\"true\"><field name=\"NUM\">0</field></shadow></value></block><block type=\"variables_get\" disabled=\"true\" x=\"367\" y=\"408\"><field name=\"VAR\" id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</field></block></xml>",
+                "main.ts": "input.onGesture(Gesture.Shake, function () {\n\t\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"radio\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n",
+                ".simstate.json": "{}"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program8">
+                const codeFragment = Fragment.one("#program8");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program9" data-type="application/json" class="cotinker-noauto" data-restrict="program9">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program9"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.19",
+                "id": "e1db3b7f-4723-4c88-70d2-f4dc665fc250",
+                "recentUse": 1649073211,
+                "modificationTime": 1649073211,
+                "path": "Ikke-navngivet-46",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</variable></variables><block type=\"pxt-on-start\" x=\"0\" y=\"0\"><statement name=\"HANDLER\"><block type=\"basic_show_icon\"><field name=\"i\">IconNames.TShirt</field><next><block type=\"radio_set_group\"><value name=\"ID\"><shadow type=\"math_number_minmax\"><mutation min=\"0\" max=\"255\" label=\"Id\" precision=\"0\"/><field name=\"SLIDER\">1</field></shadow></value></block></next></block></statement></block><block type=\"device_gesture_event\" x=\"1\" y=\"247\"><field name=\"NAME\">Gesture.Shake</field><statement name=\"HANDLER\"><block type=\"radio_datagram_send\"><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">1</field></shadow></value><next><block type=\"basic_show_icon\"><field name=\"i\">IconNames.Yes</field><next><block type=\"device_pause\"><value name=\"pause\"><shadow type=\"timePicker\"><field name=\"ms\">200</field></shadow></value><next><block type=\"device_clear_display\"/></next></block></next></block></next></block></statement></block></xml>",
+                "main.ts": "input.onGesture(Gesture.Shake, function () {\n    radio.sendNumber(1)\n    basic.showIcon(IconNames.Yes)\n    basic.pause(200)\n    basic.clearScreen()\n})\nbasic.showIcon(IconNames.TShirt)\nradio.setGroup(1)\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"radio\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n",
+                ".simstate.json": "{}"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program9">
+                const codeFragment = Fragment.one("#program9");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program10" data-type="application/json" class="cotinker-noauto" data-restrict="program10">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program10"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.19",
+                "id": "19118f93-acb7-4538-a87f-1bba1868e91a",
+                "recentUse": 1649073278,
+                "modificationTime": 1649073278,
+                "path": "Ikke-navngivet-56",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</variable></variables><block type=\"pxt-on-start\" x=\"19\" y=\"11\"><statement name=\"HANDLER\"><block type=\"basic_show_icon\"><field name=\"i\">IconNames.TShirt</field><next><block type=\"radio_set_group\"><value name=\"ID\"><shadow type=\"math_number_minmax\"><mutation min=\"0\" max=\"255\" label=\"Id\" precision=\"0\"/><field name=\"SLIDER\">1</field></shadow></value><next><block type=\"variables_set\"><field name=\"VAR\" id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</field><value name=\"VALUE\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></block></next></block></next></block></statement></block><block type=\"radio_on_number_drag\" x=\"19\" y=\"298\"><value name=\"HANDLER_DRAG_PARAM_receivedNumber\"><shadow type=\"argument_reporter_number\"><field name=\"VALUE\">receivedNumber</field></shadow></value><statement name=\"HANDLER\"><block type=\"variables_change\"><field name=\"VAR\" id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</field><value name=\"VALUE\"><shadow type=\"math_number\"><field name=\"NUM\">1</field></shadow></value><next><block type=\"device_show_number\"><value name=\"number\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"variables_get\"><field name=\"VAR\" id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</field></block></value></block></next></block></statement></block></xml>",
+                "main.ts": "radio.onReceivedNumber(function (receivedNumber) {\n    steps += 1\n    basic.showNumber(steps)\n})\nlet steps = 0\nbasic.showIcon(IconNames.TShirt)\nradio.setGroup(1)\nsteps = 0\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"radio\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n",
+                ".simstate.json": "{}"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program10">
+                const codeFragment = Fragment.one("#program10");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program11" data-type="application/json" class="cotinker-noauto" data-restrict="program11">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program11"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.21",
+                "id": "5f7b3e25-3cba-46f3-afee-0d9fe828496a",
+                "recentUse": 1653380232,
+                "modificationTime": 1653380232,
+                "path": "Ikke-navngivet-3",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable id=\"=Hu~aCJt|@^/rf+IFe2Z\">steps</variable></variables><block type=\"device_forever\" x=\"23\" y=\"29\"><statement name=\"HANDLER\"><block type=\"device_print_message\"><value name=\"text\"><shadow type=\"text\"><field name=\"TEXT\">Hello!</field></shadow><block type=\"control_device_name\"/></value></block></statement></block></xml>",
+                "main.ts": "basic.forever(function () {\n    basic.showString(control.deviceName())\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"radio\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n",
+                ".simstate.json": "{}"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program11">
+                const codeFragment = Fragment.one("#program11");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="program12" data-type="application/json" class="cotinker-noauto" data-restrict="program12">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "program12"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.0.21",
+                "id": "9e58a60b-ca05-420c-7f88-437ebc5cee31",
+                "recentUse": 1653381135,
+                "modificationTime": 1653381135,
+                "path": "Ikke-navngivet-2",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false,
+                "blobCurrent_": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"device_forever\" x=\"26\" y=\"36\"><statement name=\"HANDLER\"><block type=\"device_plot_bar_graph\"><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"device_get_sound_level\"/></value><value name=\"high\"><shadow type=\"math_number\"><field name=\"NUM\">255</field></shadow></value><next><block type=\"sensors_publishSensor\"><field name=\"s\">SensorEnum.Sound</field></block></next></block></statement></block></xml>",
+                "main.ts": "basic.forever(function () {\n    led.plotBarGraph(\n    input.soundLevel(),\n    255\n    )\n    sensors.publishSensor(SensorEnum.Sound)\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"bluetooth\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\",\n        \"custom.ts\"\n    ],\n    \"preferredEditor\": \"blocksprj\",\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"open\": 1,\n                    \"whitelist\": 0,\n                    \"security_level\": null\n                }\n            }\n        }\n    }\n}\n",
+                ".simstate.json": "{}",
+                "custom.ts": "enum SensorEnum {\n    //% block=\"sound level\"\n    //% block.loc.da=\"lydniveau\"\n    Sound,\n    //% block=\"light level\"\n    //% block.loc.da=\"lysniveau\"\n    Light,\n    //% block=\"temperature\"\n    //% block.loc.da=\"temperatur\"\n    Temperature,\n    //% block=\"compas direction\"\n    //% block.loc.da=\"kompas retning\"\n    Compas,\n    //% block=\"acceleration\"\n    //% block.loc.da=\"acceleration\"\n    Accel,\n    //% block=\"magnetic strength\"\n    //% block.loc.da=\"magnetisk styrke\"\n    Magnetic,\n    //% block=\"rotation\"\n    //% block.loc.da=\"rotation\"\n    Rotation,\n}\n\n/**\n * Custom blocks\n */\n//% weight=100 color=#0fbc11 icon=\"\"\n//% block=\"Publish\"\n//% block.loc.da=\"Publicer\"\nnamespace publish {\n    /**\n     * Publishes a sensor value via BlueTooth\n     * @param s The sensor to publish\n     */\n    //% block=\"publish sensor $s\"\n    //% block.loc.da=\"udgiv sensor $s\"\n    //% jsdoc.loc.da=\"Udgiv en sensor værdi over BlueTooth\"\n    //% s.loc.da=\"Sensoren der skal udgives\"\n    export function publishSensor(s: SensorEnum): void {\n        let btMsg = null;\n\n        switch (s) {\n            case SensorEnum.Accel: {\n                let x = input.acceleration(Dimension.X);\n                let y = input.acceleration(Dimension.Y);\n                let z = input.acceleration(Dimension.Z);\n\n                btMsg = \"a:\" + x + \":\" + y + \":\" + z;\n\n                break;\n            }\n            case SensorEnum.Sound: {\n                let level = input.soundLevel();\n\n                btMsg = \"s:\" + level;\n\n                break;\n            }\n            case SensorEnum.Light: {\n                let level = input.lightLevel();\n\n                btMsg = \"l:\" + level;\n\n                break;\n            }\n            case SensorEnum.Temperature: {\n                let level = input.temperature();\n\n                btMsg = \"t:\" + level;\n\n                break;\n            }\n            case SensorEnum.Magnetic: {\n                let x = input.magneticForce(Dimension.X);\n                let y = input.magneticForce(Dimension.Y);\n\n                btMsg = \"m:\" + x + \":\" + y;\n\n                break;\n            }\n            case SensorEnum.Compas: {\n                let heading = input.compassHeading();\n\n                btMsg = \"c:\" + heading;\n\n                break;\n            }\n            case SensorEnum.Rotation: {\n                let pitch = input.rotation(Rotation.Pitch);\n                let roll = input.rotation(Rotation.Roll);\n\n                btMsg = \"r:\" + pitch + \":\" + roll;\n\n                break;\n            }\n        }\n\n        if (btMsg != null) {\n            bluetooth.uartWriteLine(btMsg);\n        }\n    }\n\n    /**\n     * Publishes a value via BlueTooth\n     * @param v The value to publish\n     */\n    //% block=\"publish value $v\"\n    //% block.loc.da=\"publicer værdi $v\"\n    //% jsdoc.loc.da=\"Udgiv en sensor værdi over BlueTooth\"\n    //% s.loc.da=\"Sensoren der skal udgives\"\n    export function publishValue(v: number): void {\n        let btMsg = \"v:\" + v;\n\n        if (btMsg != null) {\n            bluetooth.uartWriteLine(btMsg);\n        }\n    }\n\n    bluetooth.startUartService();\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program12">
+                const codeFragment = Fragment.one("#program12");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+
+            <code-fragment id="kodebibliotek" data-type="application/json" class="cotinker-noauto" data-restrict="kodebibliotek">
+                {
+                "header": {
+                "name": "Ikke-navngivet",
+                "meta": {
+                "caviId": "kodebibliotek"
+                },
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "4.1.14",
+                "id": "39d7cf4f-1f5f-4df7-4b93-2a71826c1d78",
+                "recentUse": 1647503836,
+                "modificationTime": 1647503836,
+                "path": "Ikke-navngivet-6",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"0\" y=\"0\"></block><block type=\"device_forever\" x=\"-1\" y=\"199\"></block></xml>",
+                "main.ts": "basic.forever(function () {\n\t\n})\n",
+                "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"radio\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n"
+                }
+                }
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="kodebibliotek">
+                const codeFragment = Fragment.one("#kodebibliotek");
+                await makeController.linkFragment(codeFragment, {});
+            </code-fragment>
+        </slide>
+        <slide id="microbit-intro" style="background-color: white">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <img src="img/microbit-actuators.png" style="width: 50%;" class="autoSize">
+                <div>
+                    <p>Indbyggede aktuatorer</p>
+                    <ul style="padding-inline-start: 1.5em;">
+                        <li>5x5 LED display</li>
+                        <li>Højtaler</li>
+                    </ul>
+                </div>
+            </div>
+            <code-fragment data-type="text/javascript">
+                closeSidebar();
+
+                onSlideUnloaded(()=>{
+                    openSidebar();
+                });
+            </code-fragment>
+        </slide>
+        <slide id="programerringsblokke" style="background-color: white">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <img src="img/programerringsblokke.png" style="width: 90%" class="autoSize">
+            </div>
+            <code-fragment data-type="text/javascript">
+                closeSidebar();
+
+                onSlideUnloaded(()=>{
+                    openSidebar();
+                });
+            </code-fragment>
+        </slide>
+        <slide id="microbit-sensorer" style="background-color: white">
+            <img src="img/slide-microbit-sensorer.png" style="width: 90%;" class="autoSize">
+            <code-fragment data-type="text/javascript">
+                closeSidebar();
+
+                onSlideUnloaded(()=>{
+                    openSidebar();
+                });
+            </code-fragment>
+        </slide>
+        <slide id="microbit-sensorer2" style="background-color: white">
+            <img src="img/slide-microbit-sensorer.png" style="width: 60%;" class="autoSize">
+            <div class="sensorBundle">
+                <div class="sensor"><img src="img/sensor-mikrofon.png"> <span>Mikrofon, måler lydniveau</span></div>
+                <div class="sensor"><img src="img/sensor-termometer.png"> <span>Termometer, måler temperatur</span></div>
+                <div class="sensor"><img src="img/sensor-kompas.png"> <span>Kompas, måler retning mod nord</span></div>
+                <div class="sensor"><img src="img/sensor-lys.png"> <span>Lysmåler, måler lysniveau</span></div>
+                <div class="sensor" style="grid-column: span 2;"><img src="img/sensor-accel.png"> <span>Accelerometer, måler micro:bit’ens bevægelse og orientering</span></div>
+            </div>
+            <code-fragment data-type="text/javascript">
+                closeSidebar();
+
+                onSlideUnloaded(()=>{
+                    openSidebar();
+                });
+            </code-fragment>
+        </slide>
+        <slide id="microbit-sensorer3" style="background-color: white">
+            <h1>Opsamling af tidsrække af målinger</h1>
+            <p>Med blokken <i>plot bar graph of</i> fås også en opsamlet tidsrække af lydniveaumålinger på computeren via USB forbindelsen. På videoen nedenfor ses tidsrækken.</p>
+            <img src="img/sensorer-graf.png" style="width: 75%;" class="autoSize">
+            <code-fragment data-type="text/javascript">
+                closeSidebar();
+
+                onSlideUnloaded(()=>{
+                    openSidebar();
+                });
+            </code-fragment>
+        </slide>
+
+        <slide id="microbit-stepcounter" style="background-color: white; box-sizing: border-box;">
+            <img src="img/microbit-stepcounter-slide.png" style="height: 90%" class="autoSize">
+            <code-fragment data-type="text/javascript">
+                closeSidebar();
+
+                onSlideUnloaded(()=>{
+                    openSidebar();
+                });
+            </code-fragment>
+        </slide>
+
+        <slide id="microbit-bluetooth" style="background-color: white">
+            <img src="img/microbit-bluetooth.png" style="width: 90%" class="autoSize">
+            <code-fragment data-type="text/javascript">
+                closeSidebar();
+
+                onSlideUnloaded(()=>{
+                    openSidebar();
+                });
+            </code-fragment>
+        </slide>
+    </slides>
+</assignment>
+

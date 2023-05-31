@@ -1,0 +1,43 @@
+    <script>
+        window.cotinkerConfig.hideCollabButtons = true;
+        window.cotinkerConfig.sidebarController = true;
+        window.siteURL = "https://cotinker.projects.cavi.au.dk/sites/journey/menu2.html";
+        window.siteBase = "https://cotinker.projects.cavi.au.dk/sites/journey/";
+        window.opportunityURL = "https://cotinker.projects.cavi.au.dk/sites/journey/fbilleder.html";
+
+        window.revealAnonymous = (options)=>{
+            let slide = document.querySelector("#"+options.slide);
+            let input = slide.querySelector("input.reveal");
+
+            if(input != null && input.checked !== true) {
+                input.click();
+            }
+        }
+    </script> 
+
+    <link rel="stylesheet" href="../tables.css">
+    <script src="../tables.js"></script>
+    <script src="../d3-tree.js"></script>
+    <inline src="../tables.html"></inline>
+    <script>
+        enqueueAfterLoad(()=>{
+            if(window.view === false) {
+                document.querySelectorAll("textarea").forEach((elm) => {
+                    function fixSize(elm) {
+                        let lines = elm.value.split("\n").length;
+                        elm.setAttribute("rows", lines, {approved: true});
+                        while(elm.scrollHeight > elm.offsetHeight) {
+                            lines++;
+                            elm.setAttribute("rows", lines, {approved: true});
+                        }
+                    }
+
+                    fixSize(elm);
+
+                    elm.addEventListener("input", () => {
+                        fixSize(elm);
+                    });
+                });
+            }
+        });
+    </script>

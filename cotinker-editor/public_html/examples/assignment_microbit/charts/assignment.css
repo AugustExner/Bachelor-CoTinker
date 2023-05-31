@@ -1,0 +1,188 @@
+html, html > :not(head) {
+    background-color: #f3f4f7 !important;
+    background-image: linear-gradient(to bottom, #caccd1 0%, #f3f4f7 74%) !important;
+
+    color: black;
+}
+
+html[transient-class~=mobile], html[transient-class~=mobile] > :not(head) {
+    background: white !important;
+}
+
+.assignment-navigation {
+    display: flex;
+    align-items: center;
+}
+
+assignment {
+    top: 3.5em;
+}
+
+.autoSize {
+    object-fit: contain;
+    min-height: 0%;
+    min-width: 0%;
+    max-height: 90%;
+}
+
+.cotinker-top-bar {
+    background-color: #caccd1 !important;
+
+}
+
+.cotinker-top-bar button {
+    color: #2f4a38 !important;
+    background-color: dodgerblue !important;
+}
+
+.icon-save, .icon-bt, .icon-reset, .icon-prev, .icon-next, .icon-load {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-next {
+    transform: scaleX(-1);
+}
+
+.cotinker-top-bar .btButton:not(.connected) {
+    background-color: lightgray !important;
+}
+
+.sidebarController minimizer {
+    background-color: #f3f4f7 !important;
+}
+
+.sidebarController minimizer::before {
+    border-bottom: 1em solid #f3f4f7;
+}
+
+.sidebarController minimizer::after {
+    border-top: 1em solid #f3f4f7;
+}
+
+assignment steps step h1 {
+    padding: 1rem 1rem;
+}
+
+.sensorBundle {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+}
+
+.sensorBundle .sensor {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.5em;
+}
+
+.sensorBundle .sensor img {
+    width: 3em;
+    height: 3em;
+    object-fit: contain;
+}
+
+.stepCounterBundle {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    height: 50%;
+    box-sizing: border-box;
+    padding: 1em;
+}
+
+.activity-flex {
+    margin: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.centeredItems {
+    align-items: center;
+}
+
+.inline-flex-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.activity-flex img {
+    max-width: 80%;
+    max-height: 80%;
+    margin-bottom: 1em;
+}
+
+.activity-flex p {
+    padding: 0;
+}
+
+step video {
+    object-fit: fill;
+    width: 100%;
+}
+
+.videoContainer {
+    position: relative;
+}
+
+.videoContainer::before {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2em;
+    height: 2em;
+    margin-left: -1em;
+    margin-top: -1em;
+    display: inline-block;
+    text-align: center;
+    background: black;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: white;
+}
+
+.videoContainer:not(.playing)::before {
+    content: " ";
+    background-image: url("img/play.svg");
+    background-size: contain;
+}
+
+.videoContainer.playing:hover::before {
+    content: " ";
+    background-image: url("img/stop.svg");
+    background-size: contain;
+}
+
+img {
+    image-rendering: -webkit-optimize-contrast;
+}
+
+ul.series {
+    list-style: none;
+}
+
+ul.series li {
+    cursor: pointer;
+    background: lightgray;
+    padding: 0.5rem;
+    margin-bottom: 0.5em;
+    border-radius: 5px;
+    text-align: center;
+}
+
+ul.series li:hover {
+    background: dodgerblue;
+}
+
+.identificationPopup form input {
+    color: black;
+    background: rgba(0, 0, 0, 0.2);
+}
+.identificationPopup form input[type="submit"] {
+    background: rgba(4, 4, 4, 0.5);
+}
+.identificationPopup form input[type="submit"]:hover {
+    background: rgba(0, 0, 20, 0.3);
+}

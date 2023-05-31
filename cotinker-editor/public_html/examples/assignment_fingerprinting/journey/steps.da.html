@@ -1,0 +1,267 @@
+        <step name="Getting Started" data-slide="welcome">
+            <h1>Intro</h1>
+            <p>Velkommen! I det følgende forløb skal vi undersøge designet af en hjemmeside på nettet!</p>
+            <p>Dette forløb bruger nogle web teknologier, der kræver at man bruger en Chromium baseret browser som fx Chrome eller Microsoft Edge.</p>
+            <p>Når alle er klar til at begynde så scroll ned til bunden og tryk på "Next" for at fortsætte.</p>
+        </step>
+        <step class="" name="Intro" data-slide="welcome">
+            <code-fragment data-type="text/markdown" auto="true"># Sabbat-år
+
+Et firma ønsker at oplyse unge mennesker om de muligheder der findes, hvis man ønsker at holde et sabbatår efter gymnasiet. Firmaet ønsker at informationen skal være objektiv, og gratis for unge at tilgå. Derfor vil der komme reklamer undervejs.
+
+Indtil videre har de fået designet den hjemmeside, som om lidt vil blive vist til venstre på skærmen.
+
+De har ikke råd til at få professionelle til at designe siden, så derfor skal I afprøve siden for firmaet - og komme med feedback.
+
+I forbindelse med afprøvningen af hjemmesiden, skal I gøre jer nogle notater undervejs. I skal skrive noterne i fællesskab her i CoTinker, så I ikke skal bruge tid på at skrive på papir eller skifte mellem programmer.
+
+Vent med at klikke på "Next" herunder indtil alle i gruppen er klar til at begynde på afprøvningen af siden.
+            </code-fragment>            
+        </step>
+
+        <step class="" name="Explore" data-slide="website" data-slide-mode="explore"><code-fragment data-type="text/markdown" auto="true"># Udforskning
+
+Til venstre vises nu siden som I hver især skal afprøve. 
+
+* I skal benytte siden, som hvis det var jer der skulle planlægge et sabbatår. Det er altså ikke tanken at I skal gennemprøve hele siden.
+* Undersøg om der er nogle af tilbudene der frister jer
+
+Når i er færdige med at undersøge siden så svar invididuelt på følgende spørgsmål:
+
+## Hvilket tilbud føler du personligt er det mest spændende?
+
+&lt;select id="theFinalChoice"&gt;
+&lt;option disabled selected value="false"&gt;Vælg her&lt;/option&gt;
+&lt;option value="Højskoelophold"&gt;Højskoleophold&lt;/option&gt;
+&lt;option value="Frivilligt Arbejde"&gt;Frivilligt Arbejde&lt;/option&gt;
+&lt;option value="Koncert og Festival"&gt;Koncert og Festival&lt;/option&gt;
+&lt;option value="Sport"&gt;Sport&lt;/option&gt;
+&lt;option value="Udlandsstudier"&gt;Udlandsstudier&lt;/option&gt;
+&lt;/select&gt;
+
+Når alle i gruppen har truffet et valg og er klar til at fortsætte så tryk på "Next".
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                async function storeSubSessions(choice){
+                    // Query the UberTracker session to store relevant subsessions
+                    let uberTracker = await getUberTracker();
+                    await uberTracker.ready();
+                    let session = uberTracker.clientData;
+                    console.debug("UberTracker ready:", session);
+                    let subsessions = await uberTracker.getSubsessions();
+
+                    // Only pick the ones with the target site from the past hours
+                    let timeLimit = Date.now() - 2*3600*1000;
+                    let ourSubsessions = subsessions.filter(s => (s.data && s.data.time && s.data.time > timeLimit && s.data.url && s.data.url.startsWith(window.siteBase)));
+                    if (ourSubsessions.length === 0) {
+                        console.warn("Couldn't find any subsessions for ", window.questionnaireURL);
+                        // TODO: Abort?
+                    } 
+
+                    // Intentionally leak them into the webstrate
+                    data = await getStudentData();
+                    data.ubertracked = ourSubsessions;
+                    data.sabbatical = choice;
+                    await saveStudentData(data);
+                }
+                
+                // Handle the dropdown
+                let dropdown = document.querySelector("#theFinalChoice");
+                let data = await getStudentData();
+                if (data.sabbatical){
+                    dropdown.value = data.sabbatical;
+                    dropdown.disabled = true;
+                    
+                    // TODO: A "You chose XXXX field?"
+                } else {
+                    dropdown.onchange = ()=>{
+                        if (confirm("Er du helt sikker på at du vil vælge '"+dropdown.value+"'?")){
+                            storeSubSessions(dropdown.value);
+                            dropdown.disabled = true;
+                            runOnScreen("clearIframe");
+                        } else {
+                            dropdown.value = false;
+                        }
+                    }
+                }
+                
+            </code-fragment>
+        </step>
+
+        <step class="" data-slide="website" data-slide-mode="frontpage" name="Frontpage"><form><h1>Forsiden</h1>
+                <p>Her er hjemmesidens forside igen. I har følgende spørgsmål, som I skal besvare i fælleskab:</p>
+
+                <h2>Hvem er målgruppen?</h2>
+                <textarea placeholder="Skriv jeres svar her.."></textarea>
+
+                <h2>Hvordan er farvevalget i forhold til målgruppen?</h2>
+                <p>
+                    <label class="indented"><input name="answer1" type="radio" value="4">Det er perfekt!</label>
+                    <label class="indented"><input name="answer1" type="radio" value="4">Det er nogenlunde</label>
+                    <label class="indented"><input name="answer1" type="radio" value="4">Det er dårligt</label>
+                    <label class="indented"><input name="answer1" type="radio" value="4">Det er helt forfærdeligt!</label>
+                </p>
+
+                <h2>Hvad ville I vælge af farver og hvorfor?</h2>
+                <textarea placeholder="Skriv jeres svar her.."></textarea>
+
+                <h2>Er Don Normans designprincipper i spil? Hvilke? Og hvor?</h2>
+                <textarea placeholder="Skriv jeres svar her.."></textarea>
+
+                <h2>Er gestaltlovene anvendt? Hvilke og hvor?</h2>
+                <textarea placeholder="Skriv jeres svar her.."></textarea>
+            </form></step>
+        <step class="" name="Opportunity" data-slide="website" data-slide-mode="opportunity"><form><h1>Tilbudssiden</h1>
+
+                <p>Her vises nu en af undersiderne med et specifikt tilbud til sabbat-år. Besvar i fællesskab følgende spørgsmål:</p>
+
+                <h2>Hvad vil I tilføje af elementer for at brugeren fastholdes længere på siden?</h2>
+                <textarea placeholder="Skriv svar her..."></textarea>
+
+                <h2>Kan man skabe mere aktivitet på siden? Hvis ja, hvordan?</h2>
+                <textarea placeholder="Skriv svar her..."></textarea>
+
+                <h2>Er der forstyrrende elementer på siden?</h2>
+                <textarea placeholder="Skriv svar her..."></textarea>
+
+                <h2>Har i forslag til forbedringer af denne side?</h2>
+                <textarea placeholder="Skriv svar her..."></textarea></form>
+        </step>
+        <step class="" name="General" data-slide="generic"><form>
+                <h1>Generelt</h1>
+
+                <p>Her er spørgsmål omkring sabbat-år generelt som i skal besvare i fællesskab:</p>
+
+                <h2>Beskriv kort en typisk ung, som tager et sabbatår (Persona)</h2>
+                <textarea placeholder="Skriv jeres svar her.."></textarea>
+
+                <h2>Er der umiddelbart nogle muligheder for brug af sabbatår, som firmaet har overset?</h2>
+                <textarea placeholder="Skriv jeres svar her.."></textarea>
+
+            </form>
+        </step>
+        <step class="" name="Planche" data-slide="planchemaking">
+            <code-fragment data-type="text/markdown" auto=""># Lav en planche
+
+Brug A3 arket til at skitsere de ting I har fundet ud af, og kom med en konstruktiv kritik af firmaets hjemmeside, med forslag til forbedringer.
+
+Plancherne hænges op - det går vi videre med næste gang.
+            </code-fragment>
+        </step>
+        <step class="" name="Pause">
+            Intermezzo
+        </step>
+
+        <!--- --------------------------------------------------------------------------------------------------------------------- ---->
+        <step class="" name="TrackingIntro" data-slide="welcome">
+            <code-fragment data-type="text/markdown" auto=""># Hvem Kigger Med?
+                
+I den næste sektion skal vi kigge på hvordan hjemmesider behandler vores data på internettet.
+
+Når vi bevæger os rundt på nettet - som f.eks. på en hjemmeside om sabbatår - har vi en forventning om at vi er nogenlunde anonyme og at hjemmesiden blot forsøger at vise os noget indhold. Det kan være at
+de forsøger at sælge os et produkt eller en service.
+
+Ofte er virkeligheden dog en anden, ofte er det &lt;em&gt;os&lt;/em&gt; der er produktet.
+            </code-fragment></step>
+        <step class="" name="Collection" data-slide="fingerprint">
+            <code-fragment data-type="text/markdown" auto="true" ># Browser Fingerprinting
+                
+Da I besøgte hjemmesiden omkring sabbatår blev der samtidigt opsamlet en masse data omkring de browsers som viste hjemmesiden. Den information kan nu bruges til at genkende Jer igen på et senere tidspunkt.
+
+For hver enkelt browser kan man kombinere al informationen til et ID som mere eller mindre identificerer computeren eller telefonen unikt.
+
+I tabellen her til venstre vises en oversigt over de besøgene fra gruppen og de forskellige data som ligger til grund for hver af de besøgendes fingerprints. Mange af datapunkterne er identiske, men nogle er formentlig forskellige.
+
+* Undersøg hvad det er der gør folks computere forskellige fra hinanden (ifølge sliden)
+* Undersøg hvad der ens for alle
+* Kan i på forhånd gætte hvem der er hvem i gruppen?
+* Tryk <a href="#" class="revealAnonymous">her</a> for at afsløre navnene - gættede i rigtigt?
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="ServerSide" data-slide="trackingtable">
+            <code-fragment data-type="text/markdown" auto="true"># Hjemmesidens Server
+                
+Det er ikke kun browseren som kan opsnappe information. For at hente hjemmesiden med sabbatår blev der snakket med en webserver som også havde mulighed for at gemme information omkring det data der blev sendt frem og tilbage over netværket.
+
+Til venstre er nu en tabel med en oversigt over den information som hjemmesidens server kunne opsnappe og som nu kan bruges til at profilere hver af besøgene.
+
+* Undersøg hvad serverne fik af information fra netværkskommunikationen
+* Sammenlign de forskellige besøgende og se om der er noget der går igen på tværs af alle besøgende
+* Hvordan kan to besøgende have samme IP-addresse?
+* Kan i på forhånd gætte hvem der er hvem i gruppen?
+* Tryk <a href="#" class="revealAnonymous">her</a> for at afsløre navnene - gættede i rigtigt?
+            </code-fragment>
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="Profiling" data-slide="statisticstable">
+            <code-fragment data-type="text/markdown" auto="true"># Profilering af Opførsel
+                
+Ud over en analyse af de tekniske aspekter af browseren og netværkskommunikationen kan hjemmesider også benytte sig af andre metoder til at profilere de besøgende.
+
+Da I første gang udforskede hjemmesiden omkring sabbatår sendte hjemmesiden automatisk data omkring jeres opførsel på siden til et tracking framework et helt andet sted på internettet.
+
+På computeren vises nu en tabel med disse data.
+
+* Find ud af hvilke typer af data der er blevet gemt om besøget
+* Er der nogle besøgende hvor der er særligt stor forskel?
+* Kan i på forhånd gætte hvem der er hvem i gruppen?
+* Tryk <a href="#" class="revealAnonymous">her</a> for at afsløre navnene - gættede i rigtigt?
+            </code-fragment>
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="NavProfiling" data-slide="profilingnavigation">
+            <code-fragment data-type="text/markdown" auto=""># Endnu Mere Profilering
+
+Med tracking-data kan virksomheder lære hvordan vi bevæger os rundt på nettet. De kan lære hvilke sider vi går igennem for at finde det indhold vi søger, og hvad vi helst trykker på inde på siderne.
+
+Tabellen til venstre viser visuelt hvad tracking-frameworket i det skjulte lærte omkring jeres færd igennem hjemmesiden omkring sabbatår. En graf for hver besøgende.
+
+* Prøv at trykke på graferne for at vælge at se nærmere på den
+* Alle punkterne på grafen indeholder endnu mere information om hvad der skete på netop det sted. Tryk på punkterne for at læse mere
+* Fortæller de gemte data noget omkring de tanker I havde imens I besøgte hjemmesiden?
+* Kan i genkende jeres handlinger i tracking-dataen?
+            </code-fragment>
+        </step>
+        <step class="" name="End" data-slide="thanks">
+            <code-fragment data-type="text/markdown" auto=""># Godt Klaret!
+                
+Nu har vi både set på "The Great Hack: Cambridge Analytica" og oplevet på egen krop hvor meget data en hjemmeside kan samle omkring os. 
+
+* Hvis I har tid så diskutér i gruppen hvad I føler omkring hjemmesidens opsamling af data
+
+Heldigvis har vi i Europa og Danmark <a href=" https://gdpr.dk/persondataforordningen/" target="_blank">persondataforordningen</a> som hjælper med at beskytte os når vi bevæger os på nettet. GDPR stiller krav om at virksomheder gør opmærksomme på at de opsamler og deler vores data.
+            </code-fragment>
+        </step>

@@ -1,0 +1,224 @@
+        <slide id="welcome">
+            <img style="width: 80%; height: 80%; object-fit: contain;" src="logo_light.svg">
+        </slide>
+
+        <slide id="website">
+            <code-fragment data-type="text/javascript">
+                let slide = document.querySelector("#website");                
+                let iframe = slide.querySelector("iframe");
+
+                // Insert the iframe for the student
+                if (!iframe){
+                    iframe = document.createElement("iframe");
+                    iframe.classList.add("fullframe");
+                    slide.appendChild(iframe);
+                }
+
+                window.clearIframe = ()=>{
+                    let iframe = document.querySelector("#website iframe");
+                    let completedCode = "<"+"html><"+"/html>";
+                    iframe.setAttribute("src", "data:text/html;charset=utf-8," + escape(completedCode));
+                }
+            </code-fragment>            
+            
+            <code-fragment data-type="text/javascript" data-slide-mode="explore">
+                let studentData = await getStudentData();
+                let iframe = document.querySelector("#website iframe");
+                if (studentData.sabbatical){
+                    // Already completed the recording and made a choice, go to completed
+                    let completedCode = "<"+"html><"+"/html>";
+                    iframe.setAttribute("src", "data:text/html;charset=utf-8," + escape(completedCode));
+                } else {
+                    // Show the site, start the recording
+                    // Prepare UberTracker session to ensure crossdomain coalescing
+                    let uberTracker = await getUberTracker();
+                    await uberTracker.ready();
+                    let session = uberTracker.clientData;
+                    console.debug("UberTracker ready:", session);
+                    let url = new URL(window.siteURL);
+                    let utrack = await uberTracker.generateCrossDomainKey(url.hostname);
+                    iframe.setAttribute("src", window.siteURL+"?_utrack="+utrack.key);
+
+                    // Grab some serverside info
+                    await storeServersideInfo();
+
+                    // Also grab a fingerprint
+                    // Also grab a fingerprint
+                    await storeFingerprint();
+                }
+            </code-fragment>            
+            <code-fragment data-type="text/javascript" data-slide-mode="frontpage">
+                let uberTracker = await getUberTracker();
+                let url = new URL(window.siteURL);
+                let utrack = await uberTracker.generateCrossDomainKey(url.hostname);
+                document.querySelector("#website iframe").setAttribute("src", window.siteURL+"?_utrack="+utrack.key+"&track=false");
+            </code-fragment>
+            <code-fragment data-type="text/javascript" data-slide-mode="opportunity">
+                let uberTracker = await getUberTracker();
+                let url = new URL(window.siteURL);
+                let utrack = await uberTracker.generateCrossDomainKey(url.hostname);
+                document.querySelector("#website iframe").setAttribute("src", window.opportunityURL+"?_utrack="+utrack.key+"&track=false");
+            </code-fragment>
+        </slide>   
+        <slide id="generic">
+            <img class="fullframe" src="site/asien.jpg">
+            <style>
+                @keyframes asienAppears {
+                    to {
+                        transform: scale(1.2);
+                    }
+                }
+                #generic {
+                    overflow: hidden;
+                }
+                #generic img {
+                    height: 100%;
+                    object-fit: cover;
+                    z-index: initial;                
+                    animation: asienAppears 20s ease-out;
+                    animation-fill-mode: both;
+                }
+                
+            </style>
+        </slide>
+        <slide id="planchemaking">
+            <img class="fullframe" src="site/h3.jpg" style="height: 100%;object-fit: cover;z-index: initial;">
+        </slide>        
+
+        <slide id="fingerprint" class="headerAware">
+            <div class="comparison-table" data-seed="42"></div>
+            <code-fragment data-type="text/javascript">
+                embedFingerprintingTable(document.querySelector("#fingerprint .comparison-table",
+                    {anonymous:true}
+                ));
+            </code-fragment>            
+        </slide>
+        <slide id="trackingtable" class="headerAware">
+            <div class="comparison-table" data-seed="60"></div>
+            <code-fragment data-type="text/javascript">
+                embedServersideTable(document.querySelector("#trackingtable .comparison-table"));
+            </code-fragment>            
+        </slide>
+        <slide id="statisticstable" class="headerAware">
+            <div class="comparison-table" data-seed="4260"></div>
+            <code-fragment data-type="text/javascript">
+                embedStatisticsTable(document.querySelector("#statisticstable .comparison-table"));
+            </code-fragment>            
+        </slide>
+        <slide id="profilingnavigation">
+            <div class="comparison-table" data-seed="42609000"></div>
+            <div class="element-inspector"></div>
+            
+            <style>
+                #profilingnavigation {
+                    z-index: 99;
+                    background: linear-gradient(to bottom, #003d73, #004581);
+                }
+            </style>
+            
+            <code-fragment data-type="text/javascript">
+                await wpm.requireExternal("https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js");
+                await wpm.requireExternal("https://unpkg.com/vis-timeline@7.7.0/standalone/umd/vis-timeline-graph2d.min.js");
+                await wpm.requireExternal("https://unpkg.com/vis-timeline@7.7.0/styles/vis-timeline-graph2d.min.css");
+                
+                let labelMapper = function mapLabel(data, node){
+                    if (data.subsession && data.subsession.url){
+                        let url = data.subsession.url.split("?")[0];
+                        let replacements = {
+                            "fbilleder.html": "Sport-billeder",
+                            "hbilleder.html": "Højskole-billeder",
+                            "hibilleder.html": "Hiking-billeder",
+                            "hvemervi.html": "Hvem er vi?",
+                            "kbilleder.html": "Koncert-billeder",
+                            "kobilleder.html": "Festival-billeder",
+                            "lande.html": "Lande",
+                            "menu2.html": "Forsiden",
+                            "quizfodbold.html": "Sport-quiz",
+                            "quizfskole.html": "Frivillig-quiz",
+                            "quizhiking.html": "Hiking-quiz",
+                            "quizhskole.html": "Højskole-quiz",
+                            "quizststuder.html": "Udlands-quiz",
+                            "ubilleder.html": "Udlands-billeder",
+                            "ungrejs.html": "Udlands-oversigt",
+                        }
+                        if (window.cotinkerConfig && window.cotinkerConfig.language && window.cotinkerConfig.language === "en"){
+                            replacements = {
+                                "fbilleder.html": "Sports-images",
+                                "hbilleder.html": "Highschool-images",
+                                "hibilleder.html": "Hiking-images",
+                                "hvemervi.html": "Who are we?",
+                                "kbilleder.html": "Koncert-images",
+                                "kobilleder.html": "Festival-images",
+                                "lande.html": "Countries",
+                                "menu2.html": "Frontpage",
+                                "quizfodbold.html": "Sports-quiz",
+                                "quizfskole.html": "Volunteer-quiz",
+                                "quizhiking.html": "Hiking-quiz",
+                                "quizhskole.html": "Highschool-quiz",
+                                "quizststuder.html": "Exchange-quiz",
+                                "ubilleder.html": "Exchange-images",
+                                "ungrejs.html": "Exchange-overview",
+                            }                        
+                        }
+                        
+                        for (const [target,replacement] of Object.entries(replacements)){
+                            if (url.endsWith(target)){
+                                return replacement;
+                            }
+                        }
+                    }                
+                    return data.name;
+                };
+
+                embedNavigationTable(document.querySelector("#profilingnavigation .comparison-table"),{
+                    showExternalNavigation: true,
+                    clickHandler: async function handleClickSubsession(data,node){
+                        let out = document.querySelector(".element-inspector");
+                        out.innerHTML = "";
+
+            			// Some nicely styleable template with a header goes here
+                        let header = document.querySelector("#navigation-inspector-header").content.cloneNode(true);
+                        let label = labelMapper(data,node);
+                        header.querySelector(".title").innerText = label;
+                        header.querySelector(".subheader").innerText = data.name;
+                        out.appendChild(header);
+
+                        let views = document.createElement("div");
+                        views.classList.add("views");
+			            if (data.subsession){
+                            views.appendChild(await renderEventVisualizer(data.subsession));
+                            views.appendChild(await renderEventLog(data.subsession, {
+                                eventTypes: ["navigation", "noget med tags som viser/klikker på reklamer"]
+                            }));
+                        } else if (data.navigation){
+                            // TODO: Show iframe + target URL?
+                        }
+                        
+                        out.appendChild(views);
+                    },
+                    labelMapper: labelMapper
+                });
+            </code-fragment>            
+        </slide>
+        <slide id="thanks">
+            <h1 class="supersizeme">✓</h1>            
+            <style>
+                @keyframes supersizeAppears {
+                    0% {transform: scale(0.5); opacity: 0;}
+                    90% {transform: scale(1.1)}
+                    100% {}
+                }
+                @keyframes supersizeGlow {
+                    from {text-shadow: 0 0 0.1em rgba(255,255,255,0.2);}
+                    to {text-shadow: 0 0 5em white;}
+                }
+                
+                .supersizeme {
+                    font-size: 70vh;
+                    color: #00ca00;
+                    text-shadow: 0 0 5em white;
+                    opacity: 1;
+                    animation: supersizeAppears 0.125s ease-out, supersizeGlow 2s alternate ease-in-out infinite;
+                }
+            </style>
+        </slide>                        

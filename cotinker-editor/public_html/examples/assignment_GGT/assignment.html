@@ -1,0 +1,57 @@
+<script>
+    window.cotinkerConfig.sidebarController = true;
+    window.cotinkerConfig.hideSendNote = true;
+    window.cotinkerConfig.disableCollaboration = true;
+</script>
+
+<link rel="stylesheet" href="codefrag.css">
+
+
+<assignment>
+    
+    <steps>
+        <!-- Dette er step/instruktion 1 -->
+        <step name="step1" data-slide="welcome">
+            <h1>Intro: step 1</h1>
+            <p>Vælg farve til jeres logo</p>
+            <div id="editor1"></div>
+
+            <code-fragment data-type="text/css" id="step1" auto="true"><inline src="step1/step1.css"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" id="code" ><inline src="step1/codefrag.js"></inline></code-fragment>
+        </step>
+
+
+
+        <!-- Dette er step/instruktion 2, med de næste instruktioner-->
+        <step name="step2" data-slide="welcome">
+            <h1>Intro: step 2</h1>
+            <h2>Ret farven</h2>
+            <div id="editor2"></div>
+
+            <code-fragment data-type="text/css" id="step2" auto="true"><inline src="step2/step2.css"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" id="code" ><inline src="step2/codefrag2.js"></inline></code-fragment>
+        </step>        
+
+    </steps>
+
+
+
+
+<!-- Slides er den side der bliver redigeret i editoren fra steps.-->
+    <slides>
+        <!--Første slide-->
+        <slide id="welcome">
+            <h1 class="velkomst">GGT webshop</h1>
+            <h2 class="velkomst2">Ret farven</h2>
+        </slide>
+    </slides>
+
+
+
+
+
+
+
+</assignment>
+
+

@@ -1,0 +1,52 @@
+<assignment>
+    <slides>
+        <slide id="report">
+            <div id="myMenu" class="reportMenu"></div>
+            <report>
+                <div id="reportContent" class="reportContent" contenteditable="true">
+                    <h1>Report Title</h1>
+                    <p>Your text goes here ... </p>
+                </div>
+            </report>
+            <div id="myBar" class="reportBar"></div>
+            <code-fragment data-type="text/javascript" data-slide-mode="prepare">
+                closeAssignment();
+                await WPMv2.require("cotinker-ckeditor");
+                ReportEditor.makeUneditable("reportContent", "myMenu", "myBar");
+            </code-fragment>
+            <code-fragment data-type="text/javascript" data-slide-mode="edit">
+                openAssignment();
+                await WPMv2.require("cotinker-ckeditor");
+                ReportEditor.makeEditable("reportContent", "myMenu", "myBar");
+            </code-fragment>
+            
+            <style>
+                #myMenu { 
+                    margin-top: 3.5em;                   
+                }
+                #myBar {
+                    display: none;
+                }
+            </style>
+        </slide>
+    </slides>
+    <steps>
+        <step class="current" name="welcome" data-slide="report" data-slide-mode="prepare">
+            <code-fragment data-type="text/markdown" auto="true">
+# Writing a report
+                
+This example shows you how to write a report and get perfect grades for it!
+
+Click next to get started
+            </code-fragment>      
+        </step>
+        <step class="current" name="welcome" data-slide="report" data-slide-mode="edit">
+                <h1>Just do it</h1>
+                <p>Watch this video on how writing works</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CZnYQJ0ZX9A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                
+<p>Do it now!</p>
+        </step>        
+    </steps>    
+</assignment>

@@ -1,0 +1,122 @@
+        <step class="" name="Getting Started" data-slide="welcome">
+            <h1>Intro</h1>
+            <p>Welcome! In the following process, we will build a webshop!</p>
+            <p>When everyone is ready to begin, scroll down to the bottom and press "Next" to continue.</p>
+        </step>
+        
+        <step class="" name="HTML Intro" data-slide="simpleHTML">
+            <code-fragment data-type="text/markdown" auto="true"># HTML
+Hyper Text Markup Language
+
+Pages on the web are built from HTML code. The code controls what the content on the screen should be.
+
+In the <b>editor💻</b> is a small piece of HTML code that shows a product from a webshop that sells pizza.
+
+<transient id="htmlqrcode"></transient>
+            
+* Scan the QR tag with a <b>phone📱</b> (or more!) to open a live preview. The preview changes immediately if the HTML code is changed.
+* The product is missing a price - try writing some HTML that adds the price to the end of the product
+* Try adding one more pizza (Hint: There is a pizza2.jpg)
+            </code-fragment>
+            <style>
+                #htmlqrcode {
+                    width: 80%;
+                }
+                #htmlqrcode img {
+                    width: 100%;
+                    object-fit: contain;
+                }
+            </style>
+        </step>   
+        <step class="" name="JSON Intro" data-slide="webshop" data-slide-mode="simpleJSON">
+            <code-fragment data-type="text/markdown" auto="true"># JSON
+The <b>phone📱</b> now shows an example of a small webshop that some web developers have been building.
+
+* Click around the shop and examine how it works
+
+Normally, you don't write all the HTML code yourself by hand in the same way as we did in the previous step. Instead, some of the code will be done automatically by retrieving data from a database or from a file - e.g. a JSON file.
+
+The <b>editor💻</b> has a JSON file which is used as a kind of database.
+
+* Try to correct the text for the products so that they become something you would like to sell in your own delicious webshop
+* Try adding a new product
+
+New exciting product images can be uploaded by drag-n-dropping them to the field below. The file names of the images are in the list.
+            </code-fragment>
+            <div class="imageAssetUploader">
+        	<!-- Prefill with relevant existing assets that cannot be deleted -->
+        	<div class="preview"><img src="book_512.png"><span class="description">book_512.png</span></div>
+        	<div class="preview"><img src="cup_512.png"><span class="description">cup_512.png</span></div>
+        	<div class="preview"><img src="holger_512.png"><span class="description">holger_512.png</span></div>
+        	<div class="preview"><img src="honey_512.png"><span class="description">honey_512.png</span></div>
+            </div>
+        </step>
+                
+        <step class="" name="JSON Intro" data-slide="webshop" data-slide-mode="simpleTemplates">
+            <code-fragment data-type="text/markdown" auto="true"># Templates
+This webshop uses JavaScript to automatically build the finished HTML code based on our product data and a small piece of HTML (called a template) which is inserted for each product.
+
+There are two different HTML templates for a product: searchResultTemplate and productTemplate, which are used to display the product in the search on the front page or when you click on the product, where further details are displayed.
+
+* Find both the JSON code, the JavaScript and the two templates at the top of the editor and see if you can see how the products' HTML is created
+* The price of the products is in the database, but the developers never managed to display it properly on the page. Correct the JavaScript so that the price is also included on the front page
+* Can you fix the HTML template so that you can also see the price somewhere when you have clicked on a product and see the detailed description of it?
+            </code-fragment>
+        </step>
+        
+        
+        <step class="" name="CSS Intro" data-slide="webshop" data-slide-mode="simpleCSS">
+            <code-fragment data-type="text/markdown" auto="true"># CSS
+Cascaded Style Sheets
+
+On the web, HTML controls *what* is displayed and CSS controls *how* it is displayed.
+
+The developers of the webshop have, among other things, created the CSS file shown with some colors and a logo in it.
+
+* Try to adjust the colors in the file to something that you think suits your webshop better and look at the <b>phone📱</b> meanwhile to see how it looks.
+* Add a rounded edge to the products' preview image when they are displayed in the search results - search if necessary. on the web to find out how to make rounded corners with CSS
+* Draw a new logo and upload it by drag-n-dropping it in the field below. Correct the CSS so that the logo is displayed in the webshop instead of the CoTinker logo
+            </code-fragment>
+            <div class="imageAssetUploader">
+        	<div class="preview"><img src="logo_light.svg"><span class="description">logo_light.svg</span></div>
+            </div>
+        </step>
+        
+
+        <step class="" name="JS Intro" data-slide="webshop" data-slide-mode="simpleSearch">
+            <code-fragment data-type="text/markdown" auto="true"># JavaScript
+JavaScript is also used for interaction - such as when searching. There is a search field at the top of the shop which does not work but always just returns all items.
+
+The developers of the webshop never managed to complete the search function, but they prepared for the products to be filtered with the code that appears in the <b>editor💻</b> right now.
+
+* Rewrite the code so that it only returns <em>true</em> for the products where some of what is searched for is included in the name
+            </code-fragment>
+        </step>        
+        
+        <step class="" name="Playground" data-slide="webshop" data-slide-mode="play">
+            <code-fragment data-type="text/markdown" auto="true"># Congratulations!
+You have now built your own webshop with CSS, JSON and Javascript!
+            </code-fragment>
+            <span class="supersizeme">✓</span>            
+            <style>
+                @keyframes supersizeAppears {
+                    0% {transform: scale(0.5); opacity: 0;}
+                    90% {transform: scale(1.1)}
+                    100% {}
+                }
+                @keyframes supersizeGlow {
+                    from {text-shadow: 0 0 0.1em rgba(255,255,255,0.2);}
+                    to {text-shadow: 0 0 0.2em white;}
+                }
+                
+                .supersizeme {
+                    font-size: 50vh;
+                    text-align: center;
+                    color: #00ca00;
+                    text-shadow: 0 0 5em white;
+                    line-height: 0.5em;
+                    opacity: 1;
+                    animation: supersizeAppears 0.25s ease-out, supersizeGlow 2s alternate ease-in-out infinite;
+                }
+            </style>            
+        </step>

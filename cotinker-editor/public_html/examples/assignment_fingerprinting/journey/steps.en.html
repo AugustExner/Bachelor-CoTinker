@@ -1,0 +1,278 @@
+        <step name="Getting Started" data-slide="welcome">
+            <h1>Intro</h1>
+            <p>Welcome! In the following course, we will examine the design of a website on the Internet!</p>
+            <p>This course uses some web technologies that require you to use a Chromium-based browser such as Chrome or Microsoft Edge.</p>
+            <p>When everyone is ready to begin, scroll down to the bottom and press "Next" to continue. </p>
+        </step>
+        <step class="" name="Intro" data-slide="welcome">
+            <code-fragment data-type="text/markdown" auto="true"># Sabbatical year
+
+A company wants to inform young people about the options available if you want to take a sabbatical after high school. The company wants the information to be objective and free for young people to access. Therefore, there will be advertisements along the way.
+
+So far, they have designed the website, which will be displayed on the left side of the screen.
+
+They cannot afford to have professionals design the site, so you must test the site for the company - and provide feedback.
+
+In connection with the testing of the website, you must make some notes along the way. You must write the notes together here in CoTinker, so you don't have to spend time writing on paper or switching between programs.
+
+Wait to click "Next" below until everyone in the group is ready to begin testing the page.             </code-fragment>
+        </step>
+
+        <step class="" name="Explore" data-slide="website" data-slide-mode="explore"><code-fragment data-type="text/markdown" auto="true"># Exploration
+
+The page that each of you must test is now displayed on the left.
+
+* You must use the site as if you were planning a sabbatical. So it is not the idea that you have to go through the whole page.
+* Check whether there are any of the offers that tempt you
+
+When you have finished examining the page, answer the following questions individually:
+
+## Which offer do you personally feel is the most exciting?
+
+&lt;select id="theFinalChoice"&gt;
+&lt;option disabled selected value="false"&gt;Choose here&lt;/option&gt;
+&lt;option value="University stay"&gt;University stay&lt;/option&gt;
+&lt;option value="Voluntary work"&gt;Voluntary work&lt;/option&gt;
+&lt;option value="Concert and Festival"&gt;Concert and Festival&lt;/option&gt;
+&lt;option value="Sport"&gt;Sport&lt;/option&gt;
+&lt;option value="Study abroad"&gt;Study abroad&lt;/option&gt;
+&lt;/select&gt;
+
+When everyone in the group has made a choice and is ready to continue, press "Next".
+        </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                async function storeSubSessions(choice){
+                    // Query the UberTracker session to store relevant subsessions
+                    let uberTracker = await getUberTracker();
+                    await uberTracker.ready();
+                    let session = uberTracker.clientData;
+                    console.debug("UberTracker ready:", session);
+                    let subsessions = await uberTracker.getSubsessions();
+
+                    // Only pick the ones with the target site from the past hours
+                    let timeLimit = Date.now() - 2*3600*1000;
+                    let ourSubsessions = subsessions.filter(s => (s.data && s.data.time && s.data.time > timeLimit && s.data.url && s.data.url.startsWith(window.siteBase)));
+                    if (ourSubsessions.length === 0) {
+                        console.warn("Couldn't find any subsessions for ", window.questionnaireURL);
+                        // TODO: Abort?
+                    } 
+
+                    // Intentionally leak them into the webstrate
+                    data = await getStudentData();
+                    data.ubertracked = ourSubsessions;
+                    data.sabbatical = choice;
+                    await saveStudentData(data);
+                }
+                
+                // Handle the dropdown
+                let dropdown = document.querySelector("#theFinalChoice");
+                let data = await getStudentData();
+                if (data.sabbatical){
+                    dropdown.value = data.sabbatical;
+                    dropdown.disabled = true;
+                    
+                    // TODO: A "You chose XXXX field?"
+                } else {
+                    dropdown.onchange = ()=>{
+                        if (confirm("Are you sure you want to choose '"+dropdown.value+"'?")){
+                            storeSubSessions(dropdown.value);
+                            dropdown.disabled = true;
+                            runOnScreen("clearIframe");
+                        } else {
+                            dropdown.value = false;
+                        }
+                    }
+                }
+                
+            </code-fragment>
+        </step>
+
+        <step class="" data-slide="website" data-slide-mode="frontpage" name="Frontpage"><form><h1>Front page</h1>
+                <p>Here is the homepage again. You have the following questions, which you must answer together:</p>
+
+                <h2>Who is the target group?</h2>
+                <textarea placeholder="Write your answer here.."></textarea>
+
+                <h2>How is the color choice in relation to the target group?</h2>
+                <p>
+                    <label class="indented"><input name="answer1" type="radio" value="4">It's perfect</label>
+                    <label class="indented"><input name="answer1" type="radio" value="4">It's mediocre</label>
+                    <label class="indented"><input name="answer1" type="radio" value="4">It's bad</label>
+                    <label class="indented"><input name="answer1" type="radio" value="4">It's absolutely terrible!</label>
+                </p>
+
+                <h2>What colors would you choose and why?</h2>
+                <textarea placeholder="Write your answer here.. "></textarea>
+
+                <h2>Are Don Norman's design principles at play? Which ones? And where?</h2>
+                <textarea placeholder="Write your answer here.. "></textarea>
+
+                <h2>Are the gestalt laws applied? Which ones and where?</h2>
+                <textarea placeholder="Write your answer here.. "></textarea>
+            </form></step>
+        <step class="" name="Opportunity" data-slide="website" data-slide-mode="opportunity"><form><h1>The offer page</h1>
+
+                <p>Here, one of the subpages with a specific offer for sabbatical years is now displayed. Answer the following questions together: </p>
+
+                <h2>What elements should we add to keep the user longer on the page?</h2>
+                <textarea placeholder="Write your answer here..."></textarea>
+
+                <h2>Can you create more activity on the page? If so, how?</h2>
+                <textarea placeholder="Write your answer here..."></textarea>
+
+                <h2>Are there disturbing elements on the page?</h2>
+                <textarea placeholder="Write your answer here..."></textarea>
+
+                <h2>Do you have suggestions for improving this page?</h2>
+                <textarea placeholder="Write your answer here..."></textarea></form>
+        </step>
+        <step class="" name="General" data-slide="generic"><form>
+                <h1>In general</h1>
+
+                <p>Here are questions about sabbatical years in general that you must answer together:</p>
+
+                <h2>Briefly describe a typical young person who takes a sabbatical (Persona).</h2>
+                <textarea placeholder="Write your answer here.."></textarea>
+
+                <h2>Are there immediately any opportunities for using sabbaticals that the company has overlooked?</h2>
+                <textarea placeholder="Write your answer here.."></textarea>
+
+            </form>
+        </step>
+        <step class="" name="Planche" data-slide="planchemaking">
+            <code-fragment data-type="text/markdown" auto=""># Make a planche
+
+Use the A3 sheet to outline the things you have found out, and come up with a constructive criticism of the company's website, with suggestions for improvements.
+
+The planks are hung up - we will continue with that next time.
+            </code-fragment>
+        </step>
+        <step class="" name="Pause">
+            Intermezzo
+        </step>
+
+        <!--- --------------------------------------------------------------------------------------------------------------------- ---->
+        <step class="" name="TrackingIntro" data-slide="welcome">
+            <code-fragment data-type="text/markdown" auto=""># Who's Watching?
+
+In the next section, we will look at how websites process our data on the Internet.
+
+When we move around the web - such as on a website about sabbatical - we have an expectation that we are fairly anonymous and that the website is just trying to show us some content. It could be that they are trying to sell us a product or service.
+
+Often, however, the reality is different, often <em>we</em> are the product.
+            </code-fragment></step>
+        <step class="" name="Collection" data-slide="fingerprint">
+            <code-fragment data-type="text/markdown" auto="true" ># Browser Fingerprinting
+
+When you visited the website around the sabbatical year, a lot of data was simultaneously collected about the browsers that displayed the website. That information can now be used to recognize you again at a later time.
+
+For each individual browser, you can combine all the information into an ID that more or less uniquely identifies the computer or phone.
+
+The table on the left shows an overview of the visits from the group and the various data that form the basis of each of the visitors' fingerprints. Many of the data points are identical, but some are probably different.
+
+* Investigate what makes people's computers different from each other (according to the slide)
+
+* Examine what is the same for everyone
+
+* Can you guess in advance who is who in the group?
+
+* Click <a href="#" class="revealAnonymous">here</a> to reveal the names - did you guess correctly?
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="ServerSide" data-slide="trackingtable">
+            <code-fragment data-type="text/markdown" auto="true"># Website Server
+
+It is not only the browser that can intercept information. In order to retrieve the website with a sabbatical, a web server was talked to which also had the option of saving information about the data that was sent back and forth over the network.
+
+On the left is now a table with an overview of the information that the website's server could intercept and which can now be used to profile each of the visits.
+
+* Examine what information the servers got from the network communication
+
+* Compare the different visitors and see if there is something that repeats itself across all visitors
+
+* How can two visitors have the same IP address?
+
+* Can you guess in advance who is who in the group?
+
+* Click <a href="#" class="revealAnonymous">here</a> to reveal the names - did you guess correctly?
+            </code-fragment>
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="Profiling" data-slide="statisticstable">
+            <code-fragment data-type="text/markdown" auto="true"># Profiling of Behavior
+
+In addition to an analysis of the technical aspects of the browser and network communication, websites can also use other methods to profile the visitors.
+
+When you first explored the website around sabbatical, the website automatically sent data about your behavior on the page to a tracking framework somewhere else on the internet.
+
+A table with this data is now displayed on the computer.
+
+* Find out what types of data have been saved about the visit
+
+* Are there any visitors where there is a particularly big difference?
+
+* Can you guess in advance who is who in the group?
+
+* Click <a href="#" class="revealAnonymous">here</a> to reveal the names - did you guess correctly?
+            </code-fragment>
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                let link = stepReference.querySelector("a");
+                link.addEventListener("click", ()=>{
+                    runOnScreen("revealAnonymous", {"slide": stepReference.getAttribute("data-slide")});
+                });
+            </code-fragment>
+        </step>
+        <step class="" name="NavProfiling" data-slide="profilingnavigation">
+            <code-fragment data-type="text/markdown" auto=""># Even More Profiling
+
+With tracking data, companies can learn how we move around the web. They can learn which pages we go through to find the content we are looking for and what we prefer to click on inside the pages.
+
+The table on the left visually shows what the tracking framework secretly learned about your movement through the website around sabbatical. A graph for each visitor.
+
+* Try tapping on the graphs to choose to take a closer look at it
+
+* All the points on the graph contain even more information about what happened at that particular location. Press the points to read more
+
+* Does the stored data tell you anything about the thoughts you had while you visited the website?
+
+* Can you recognize your actions in the tracking data?
+            </code-fragment>
+        </step>
+        <step class="" name="End" data-slide="thanks">
+            <code-fragment data-type="text/markdown" auto=""># Well done!
+
+Now we have both looked at "The Great Hack: Cambridge Analytica" and experienced firsthand how much data a website can collect around us.
+
+* If you have time, discuss in the group what you feel about the website's collection of data
+
+Fortunately, in Europe and Denmark we have the <a href=" https://gdpr.dk/persondataforordningen/" target="_blank">personal data regulation</a> which helps to protect us when we move online. GDPR requires that companies make people aware that they collect and share our data.
+            </code-fragment>
+        </step>

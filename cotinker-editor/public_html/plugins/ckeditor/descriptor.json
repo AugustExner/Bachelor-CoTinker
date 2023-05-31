@@ -1,0 +1,9 @@
+{
+    "description": "CKEditor4 built for CoTinker",
+    "dependencies": [
+        "/codestrates-repos/?raw #EventSystem"        
+    ],
+    "license": "LGPL",
+    "assets": ["ckeditor_4.17.1_35ec56ceda42.zip"],
+    "version": "1"
+}

@@ -1,0 +1,151 @@
+        <step  name="Connect" data-slide="welcome" >
+            <h1>Velkommen til CoTinker</h1>
+            <p>Tryk på telefon-ikonet <img style="width: 1.5em;height: 1.5em;vertical-align: middle;filter: invert(1);" src="../../img/call.svg"> i kommunikationsmenuen øverst på skærmen på <b>computeren</b> for at snakke med resten af gruppemedlemmerne i din gruppe - samtalen vil blive optaget.</p>            
+            <p>Det kan være en klar fordel at alle benytter <b>headset</b>, for at undgå at lave ekko eller andet støj.</p>
+            <p>Vent med at trykke videre til at <b>alle</b> har forbindelse og er klar til næste del af opgaven.</p>
+        </step>          
+        <step  name="Survey" data-slide="welcome">
+            <h1>Spørgeskema</h1>
+            <p>I den første del af opgaven, skal I hver især besvare <a href="#" onclick="window.open('https://survey.au.dk/LinkCollector?key=R4RGXNP5JK16', '_blank');">dette spørgeskema</a>.<br />
+            Spørgeskemaet er personligt og svarene vil kun blive læst af dem der har lavet undersøgelsen.</p>
+            <p>Når alle er klar, kan I gå videre til næste del af opgaven.</p>
+        </step>          
+        <step name="Model" data-slide="model">
+            <h1>En grafisk computermodel</h1>
+            <p>På skærmen er en computer-model af en biologisk proces.</p>
+            <ul>
+                <li>Prøv at starte modellen og undersøg den grundigt.</li>
+                <li>Beskriv hvilken biologisk proces modellen repræsenterer.</li>
+            </ul>
+            <p>For at besvare opgaven, kan I bruge note-værktøjet herunder til at lave fælles noter undervejs. <br>Alle kan læse de noter der bliver skrevet.</p>
+        </step>
+        <step name="Elements" data-slide="model">
+            <h1>Elementer</h1>
+            <p>Beskriv hvilke elementer der optræder i modellen. </p>
+            <ul>
+                <li>Navngiv så mange elementer som muligt</li>
+                <li>Hvordan ser de ud?</li>
+                <li>Hvordan opfører de sig?</li>
+            </ul>
+        </step>
+        <step name="More Elements" data-slide="model">
+            <h1>Flere Elementer</h1>
+            <p>Er der elementer som modellen mangler?<br>Beskriv herunder hvilke I synes modellen mangler.
+               <!--Tag evt. et eller flere screenshots af modellen med billed-knappen i note-værktøjet nedenfor og tegn nye elementer på.-->
+            </p>
+        </step>           
+        <step name="Presentation" data-slide="model" data-slide-mode="colour">
+            <h1>Visning</h1>
+            <p>Overvej andre farver til elementerne i modellen og beskriv hvilke farver I vil bruge.</p>
+            <ul>
+                <li>Kig i den fremhævede kode og prøv at ændre farverne, så de passer med jeres ønsker.</li>
+                <li>Kør koden forfra med 
+                    <span style="font-size: 1.75em; vertical-align: top;">⟳</span>-knappen nederst på computerens skærm og se resultatet.</li>
+                <li>Hvorfor valgte I netop disse farver?</li>
+            </ul>
+            
+            <code-fragment data-type="text/javascript">
+                // Jump to colour definitions when entering this step
+                jumpTo("#Script", 170, 0);
+                broadcastSelection("#Script", 171, 0, 182, 0); // highlight "Script": original screenshot line 166 - 176
+            </code-fragment>                
+        </step>
+        <step name="Creation" data-slide="model" data-slide-mode="inhibitor-init">
+            <h1>Inhibitorer</h1>
+            <p>Kig på koden for <a href="javascript:showInhibitorAgent()">inhibitorernes udseende</a> og <a href="javascript:showInhibitorCreation()">hvornår de skabes</a>.</p>
+            <ul>
+                <li>Beskriv herunder hvordan inhibitorerne i modellen skabes.</li>
+            </ul>                 
+            <p>
+                Begge links åbner og highlighter den relevante kode på computeren.
+            </p>
+            <script>
+                function showInhibitorAgent(){
+                    jumpTo("#agents", "inhibitor");
+                    broadcastSelection("#agents", "inhibitor"); // highlight "agents": original screenshot line 51 - 68
+                }
+                
+                function showInhibitorCreation(){
+                    jumpTo("#Script", "inhibitor-creation");
+                    broadcastSelection("#Script", "inhibitor-creation"); // highlight "Script": original screenshot line 81 - 85
+                }
+            </script>
+        </step>
+        <step name="Inhibitor Function" data-slide="model" data-slide-mode="inhibitor-function">
+            <h1>Inhibitorernes opførsel</h1>
+            <p>Kig på den fremhævede kode og beskriv hvad inhibitorernes funktion er og hvordan de opfører sig i modellen.</p>                 
+            
+            <code-fragment data-type="text/javascript">
+                // Jump to inhibitor
+                jumpTo("#Script", 154, 0);
+                broadcastSelection("#Script", 155, 0, 164, 0); // highlight "Script": original screenshot line 150 - 158
+            </code-fragment>                
+        </step>
+        <step name="More Inhibitors" data-slide="model" data-slide-mode="free-for-all">
+            <h1>Inhibitorer i modellen</h1>
+            <p>Lad os kigge nærmere på inhibitorerne og produktionen af mRNA.</p>
+            <p>Her kan du <a href="javascript:toggleCodeEditorOnScreen()">vise og gemme kode-editoren</a> på skærmen alt efter behov.</p>
+            <script type="application/javascript">
+                function toggleCodeEditorOnScreen() {
+                    runOnScreen("toggleCodeEditor");
+                }
+            </script>
+            <form>
+                <h2>Hvornår bliver inhibitorerne i modellen skabt?</h2>
+                <p>
+                    <label class="indented"><input name="answer1" type="radio" value="reset">De bliver alle sammen skabt, når man trykker på <span style="font-size: 1.75em; vertical-align: top;">⟳&#xfe0e;</span> (reload-knappen)</label><br>
+                    <label class="indented"><input name="answer1" type="radio" value="mRNA5">Der bliver skabt én når man trykker <span style="font-size: 1.75em; vertical-align: top;">⟳&#xfe0e;</span>, og flere når antallet af mRNA molekyler bliver større end fem</label><br>
+                    <label class="indented"><input name="answer1" type="radio" value="nucleo">Der bliver skabt én når man trykker <span style="font-size: 1.75em; vertical-align: top;">⟳&#xfe0e;</span>, og flere når antallet af nukleotider bliver mindre end 500</label><br>
+                    <label class="indented"><input name="answer1" type="radio" value="poly">De bliver alle sammen skabt, når en polymerase sætter sig på DNA-molekylet</label><br>
+                </p>                        
+
+                <h2>Prøv at sætte modellen igang ved at trykke play (▶&#xfe0e;). Hvorfor ”hakker” produktionen af mRNA?</h2>
+                <p> 
+                    <label class="indented"><input name="answer2" type="radio" value="computer">Fordi computeren ikke kan arbejde hurtigere</label><br>                        
+                    <label class="indented"><input name="answer2" type="radio" value="randompoly">Fordi polymeraserne bevæger sig med tilfældig hastighed</label><br>                        
+                    <label class="indented"><input name="answer2" type="radio" value="nucleo">Fordi antallet af nukleotider er for højt</label><br>                        
+                    <label class="indented"><input name="answer2" type="radio" value="randomnucleo">Fordi nukleotiderne bevæger sig tilfældigt rundt i modellen</label><br>                        
+                    <label class="indented"><input name="answer2" type="radio" value="lowpoly">Fordi antallet af polymeraser er for lavt</label><br>                        
+                </p>
+
+                <h2>Hvorfor er der nogle mRNA molekyler der ikke bliver færdigdannet?</h2>
+                <p>
+                    <label class="indented"><input name="answer3" type="radio" value="computer">Fordi computeren ikke kan arbejde hurtigere</label><br>                        
+                    <label class="indented"><input name="answer3" type="radio" value="highnucleo">Fordi antallet af nukleotider er for højt</label><br>                        
+                    <label class="indented"><input name="answer3" type="radio" value="lowpoly">Fordi antallet af polymeraser er for lavt</label><br>                        
+                    <label class="indented"><input name="answer3" type="radio" value="lowinhibi">Fordi antallet af inhibitorer er for højt</label><br>                        
+                    <label class="indented"><input name="answer3" type="radio" value="lownucleo">Fordi antallet af nukleotider er for lavt</label><br>                        
+                </p>
+
+                <h2>Hvorfor er DNA molekylet et godt sted at gemme information?</h2>
+                <p>
+                    <label class="indented"><input name="answer4" type="radio" value="hydrobonds">Hydrogenbindingerne der holder det sammen er meget stabile og svære at bryde</label><br>                        
+                    <label class="indented"><input name="answer4" type="radio" value="basepartners">Baserne binder altid til deres korrekte partnere</label><br>                        
+                    <label class="indented"><input name="answer4" type="radio" value="baseirrelevant">Sekvensen af baser har ikke stor indflydelse på molekylet</label><br>                        
+                    <label class="indented"><input name="answer4" type="radio" value="shapeinfo">Den generelle form af molekylet afspejler den information der er i det</label><br>                                                    
+                </p>
+
+                <h2>Hvad er det ved DNA/mRNA der gør det nemt at kopiere genetisk information?</h2>
+                <p>
+                    <label class="indented"><input name="answer5" type="radio" value="hydrobonds">Hydrogenbindingerne bliver nemt brudt</label><br>                                                    
+                    <label class="indented"><input name="answer5" type="radio" value="baseunique">Bindingen af baserne til hinanden er specifik</label><br>                                                    
+                    <label class="indented"><input name="answer5" type="radio" value="basesequence">Sekvensen af baserne gemmer information</label><br>                                                    
+                    <label class="indented"><input name="answer5" type="radio" value="moleculeshape">Molekylets facon er bestemt af den information der er i det</label><br>                                                                                
+                </p>
+
+                <h2>Hvad beskriver bedst hvordan en polymerase ”finder” et nukleotid, som kan indsættes i mRNA?</h2>
+                <p>
+                    <label class="indented"><input name="answer6" type="radio" value="polycatch">Polymerasen fanger en nukleotid</label><br>                                                                                
+                    <label class="indented"><input name="answer6" type="radio" value="hydrostream">Polymerasen følger strømmen af hydrogen ioner</label><br>                                                                                
+                    <label class="indented"><input name="answer6" type="radio" value="electroboom">Polymerasens elektronegativitet tiltrækker nukleotider til polymerasen</label><br>                                                                                
+                    <label class="indented"><input name="answer6" type="radio" value="nucleopump">Nukleotider bliver aktivt pumpet til det rigtige område</label><br>                                                                                
+                    <label class="indented"><input name="answer6" type="radio" value="randomwalk">Tilfældige bevægelser bringer nukleotiderne i nærheden af polymerasen</label><br>                                                                                                            
+                </p>
+            </form>
+        </step>
+        <step name="Ending" data-slide="thanks">
+            <h1>Tak for jeres besvarelse</h1>
+            <p>Som afslutning vil vi gerne bede jer om at udfylde et <a href="#" onclick="window.open('https://survey.au.dk/LinkCollector?key=GVPFVFXPU212', '_blank');">kort spørgeskema</a>. Den feedback I giver os, er med til at gøre oplevelsen af CoTinker bedre.</p>
+                      
+            <p>Tak fordi I ville deltage i denne lille test af fremtidens undervisningsmateriale!</p>
+        </step>        

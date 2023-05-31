@@ -1,0 +1,82 @@
+StrateComposerLoader {
+    background: url(img/pizza2.jpg);
+    background: url(img/honey_512.png);
+    background: url(img/holger_512.png);
+    background: url(img/cup_512.png);
+    background: url(img/book_512.png);
+}
+
+.cauldron-embedded .cauldron-base-content {
+    padding-top: 3.5rem;
+    box-sizing: border-box;
+    background: transparent;
+    line-height: initial;
+}
+
+.cauldron-embedded .cauldron-layout {
+    height: calc(100% - 3.5rem);
+}
+
+.imageAssetUploader {
+    background: rgba(255,255,255,0.1);
+    width: 100%;
+    position: relative;
+    transition: opacity 0.3s ease-in-out;
+    margin-bottom: 1em;
+}
+.imageAssetUploader:after {
+    content: "-> Drag Files Here <-";
+    display: block;
+    text-align: center;
+    padding: 1em;
+    opacity: 0.3;
+}
+.imageAssetUploader[transient-class="uploading"]{
+    opacity: 0.6;
+}
+.imageAssetUploader[transient-class="highlight"]{
+    background: rgba(200, 200, 255, 0.6);
+}
+.imageAssetUploader[transient-class="uploading"]:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 3em;
+    height: 3em;
+    background: pink;
+    opacity: 0.6;
+}
+.imageAssetUploader .preview {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #0000513d;
+    margin: 2px;
+}
+.imageAssetUploader .preview img {
+    height: 3em;
+    width: 4em;
+    object-fit: cover;
+    background: rgba(0,0,0,0.2);
+    padding: 0.25em 1em;
+}
+.imageAssetUploader .description {
+    flex: 1 1 auto;
+    padding: 1em;
+}
+
+.imageAssetUploader .deleter {
+    color: red;
+    background: rgba(255,0,0,0.1);
+    border: none;
+    font-size: 1.2em;
+    border-radius: 0.3em;
+    margin: 0.5em;    
+    cursor: pointer;
+    padding: 0.1em 0.25em;
+}
+.imageAssetUploader .deleter:hover {
+    background: rgba(255,0,0,0.3);    
+}

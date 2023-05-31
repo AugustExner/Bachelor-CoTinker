@@ -1,0 +1,212 @@
+<template id="btConnectionTpl">
+    <div>
+        <div>Connection status: <span class="connectionStatus">Not connected</span></div>
+        <button class="connect">Connect Maqueen</button>
+    </div>
+</template>
+<assignment>
+    <style>
+        div.joy {
+            user-select: none;
+            touch-action: none;
+
+            width: 200px;
+            height: 200px;
+        }
+
+        div.joy canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <steps>
+        <step name="Welcome" data-description="Welcome slide" data-slide="welcome">
+            <h1>Welcome to CoTinker</h1>
+            <p>In this tutorial we will build a drawing robot!</p>
+            <p>Click Next to get started</p>
+        </step>
+        <step name="Programming" data-slide="programming" data-slide-mode="program1">
+            <h1>Program Maqueen</h1>
+        </step>
+        <step name="RemoteControl" data-description="Allow students to control the Maqueen robot, remotely using their mobile phone" data-slide="joystick">
+            <h1>Maqueen Remote Control</h1>
+            <p>Make sure the Maqueen robot is turned on.</p>
+            <p>On the screen, click "Connect Maqueen" to connect to your robot.</p>
+            <p>When connected, you can control the robot with the joystick below:</p>
+            <div class="joy"></div>
+            <code-fragment data-type="text/javascript">
+                await WPMv2.require("cotinker-cavijoy");
+                let joy = new CaviJoy();
+
+                let transient = document.createElement("transient");
+                transient.appendChild(joy.html);
+
+                document.querySelector("div.joy").append(transient);
+
+                joy.drawJoystick();
+
+                joy.onUpdate((x, y, length)=>{
+                    let motorLeft = parseInt(x * 255 * length);
+                    let motorRight = parseInt(y * 255 * length);
+
+                    let msg = "j:"+motorLeft+":"+motorRight;
+
+                    sendMsgToScreen(msg);
+                });
+
+                onStepUnloaded(()=>{
+                    transient.remove();
+                });
+            </code-fragment>
+        </step>
+    </steps>
+    <slides>
+        <slide id="welcome">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../../img/logo_light.svg">
+        </slide>
+        <slide id="programming">
+            <code-fragment data-type="text/javascript">
+                console.log("Requiring microbit...");
+                // Insert MakeCode editor in slide regardless of mode
+                await WPMv2.require(["cotinker-pxt-microbit"]);
+
+                console.log("Setting up slides...");
+
+                let slide = document.querySelector("#programming");
+                let transient = document.createElement("transient");
+                transient.classList.add("makecode-view");
+                slide.appendChild(transient);
+                let makeController = new MakeController(transient);
+                window.makeController = makeController;
+
+                onSlideUnloaded(() => {
+                    //Destroy makecode?
+                    makeController.destroy();
+                    window.makeController = null;
+                    transient.remove();
+                });
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript" data-slide-mode="program1">
+                const codeFragment = Fragment.one("#program1_code");
+                await makeController.linkFragment(codeFragment, {
+                    "defaultState": 1
+                });
+                await makeController.stopSimulator();
+                await makeController.hideSimulator();
+            </code-fragment>
+        </slide>
+        <slide id="joystick">
+            <div class="btArea"></div>
+
+            <code-fragment data-type="text/javascript">
+                await WPMv2.require(["cotinker-cavibt", "cotinker-cavi-shared-sensors"]);
+
+                let sensorPublish = new CaviSharedSensors();
+
+                let tpl = WebstrateComponents.Tools.loadTemplate("btConnectionTpl");
+
+                let transient = document.createElement("transient");
+                transient.appendChild(tpl);
+
+                document.querySelector("#joystick .btArea").appendChild(transient);
+
+                if (!await CaviBT.supportsBT()) {
+                    document.querySelector("button.connect").setAttribute("disabled", "true");
+                    document.querySelector(".connectionStatus").textContent = "Not supported";
+                    return;
+                }
+
+                const bt = new CaviBT();
+                window.bt = bt;
+
+                bt.onMessage((msg) => {
+                    if (msg.startsWith("s:")) {
+                        let split = msg.split(":");
+                        sensorPublish.publishSensor("Lydniveau", parseInt(split[1]));
+                    } else if (msg.startsWith("l:")) {
+                        let split = msg.split(":");
+                        sensorPublish.publishSensor("Lysniveau", parseInt(split[1]));
+                    } else if (msg.startsWith("c:")) {
+                        let split = msg.split(":");
+                        sensorPublish.publishSensor("Kompas retning", parseInt(split[1]));
+                    } else if (msg.startsWith("t:")) {
+                        let split = msg.split(":");
+                        sensorPublish.publishSensor("Temperatur", parseInt(split[1]));
+                    } else if (msg.startsWith("a:")) {
+                        let split = msg.split(":");
+                        sensorPublish.publishSensor("Acceleration", parseInt(split[1])+", "+parseInt(split[2])+", "+parseInt(split[3]));
+                    } else if (msg.startsWith("r:")) {
+                        let split = msg.split(":");
+                        sensorPublish.publishSensor("Rotation", parseInt(split[1])+", "+parseInt(split[2]));
+                    } else if (msg.startsWith("m:")) {
+                        let split = msg.split(":");
+                        sensorPublish.publishSensor("Magnetisk styrke", parseInt(split[1])+", "+parseInt(split[2]));
+                    }
+                });
+
+                bt.onDisconnected(() => {
+                    try {
+                        document.querySelector("button.connect").removeAttribute("disabled");
+                        document.querySelector(".connectionStatus").textContent = "Not connected";
+                    } catch(e) {
+                        //Ignore
+                    }
+                });
+
+                async function connectBT() {
+                    await bt.connect();
+                    await bt.startReading();
+
+                    document.querySelector("button.connect").setAttribute("disabled", "true");
+                    document.querySelector(".connectionStatus").textContent = "Connected";
+
+                }
+
+                let onMessageFromMobileReference = onMessageFromMobile((msg) => {
+                    bt.send(msg);
+                });
+
+                document.querySelector("button.connect").addEventListener("pointerup", () => {
+                    connectBT();
+                });
+
+                onSlideUnloaded(() => {
+                    bt.disconnect();
+                    sensorPublish.destroy();
+                    onMessageFromMobileReference.remove();
+                    transient.remove();
+                });
+            </code-fragment>
+        </slide>
+    </slides>
+</assignment>
+<code-fragment id="program1_code" data-type="application/json">
+    {
+        "header": {
+            "target": "microbit",
+            "targetVersion": "4.1.12",
+            "editor": "blocksprj",
+            "name": "Maqueen BT",
+            "meta": {},
+            "pubId": "",
+            "pubCurrent": false,
+            "id": "dd1bec40-7526-4a38-7743-218b076a5d00",
+            "recentUse": 1646995821,
+            "modificationTime": 1646995821,
+            "path": "Maqueen-BT",
+            "blobCurrent_": false,
+            "cloudCurrent": false,
+            "saveId": null,
+            "githubCurrent": false
+        },
+        "text": {
+            "README.md": "",
+            "custom.ts": "enum SensorEnum {\n    //% block=\"sound level\"\n    //% block.loc.da=\"lydniveau\"\n    Sound,\n    //% block=\"light level\"\n    //% block.loc.da=\"lysniveau\"\n    Light,\n    //% block=\"temperature\"\n    //% block.loc.da=\"temperatur\"\n    Temperature,\n    //% block=\"compas direction\"\n    //% block.loc.da=\"kompas retning\"\n    Compas,\n    //% block=\"acceleration\"\n    //% block.loc.da=\"acceleration\"\n    Accel,\n    //% block=\"magnetic strength\"\n    //% block.loc.da=\"magnetisk styrke\"\n    Magnetic,\n    //% block=\"rotation\"\n    //% block.loc.da=\"rotation\"\n    Rotation,\n}\n\n/**\n * Custom blocks\n */\n//% weight=100 color=#0fbc11 icon=\"\"\n//% block=\"Sensors\"\n//% block.loc.da=\"Sensorer\"\nnamespace sensors {\n    /**\n     * Publishes a sensor value via BlueTooth\n     * @param s The sensor to publish\n     */\n    //% block=\"publish sensor $s\"\n    //% block.loc.da=\"udgiv sensor $s\"\n    //% jsdoc.loc.da=\"Udgiv en sensor værdi over BlueTooth\"\n    //% s.loc.da=\"Sensoren der skal udgives\"\n    export function publishSensor(s: SensorEnum): void {\n        let btMsg = null;\n\n        switch (s) {\n            case SensorEnum.Accel: {\n                let x = input.acceleration(Dimension.X);\n                let y = input.acceleration(Dimension.Y);\n                let z = input.acceleration(Dimension.Z);\n\n                btMsg = \"a:\" + x + \":\" + y + \":\" + z;\n\n                break;\n            }\n            case SensorEnum.Sound: {\n                let level = input.soundLevel();\n\n                btMsg = \"s:\" + level;\n\n                break;\n            }\n            case SensorEnum.Light: {\n                let level = input.lightLevel();\n\n                btMsg = \"l:\" + level;\n\n                break;\n            }\n            case SensorEnum.Temperature: {\n                let level = input.temperature();\n\n                btMsg = \"t:\" + level;\n\n                break;\n            }\n            case SensorEnum.Magnetic: {\n                let x = input.magneticForce(Dimension.X);\n                let y = input.magneticForce(Dimension.Y);\n\n                btMsg = \"m:\" + x + \":\" + y;\n\n                break;\n            }\n            case SensorEnum.Compas: {\n                let heading = input.compassHeading();\n\n                btMsg = \"c:\" + heading;\n\n                break;\n            }\n            case SensorEnum.Rotation: {\n                let pitch = input.rotation(Rotation.Pitch);\n                let roll = input.rotation(Rotation.Roll);\n\n                btMsg = \"r:\" + pitch + \":\" + roll;\n\n                break;\n            }\n        }\n\n        if (btMsg != null) {\n            bluetooth.uartWriteLine(btMsg);\n        }\n    }\n}",
+            "main.blocks": "&lt;xml xmlns=\"https://developers.google.com/blockly/xml\"&gt;&lt;variables&gt;&lt;variable id=\"2]gf,6b.)|jMWy.nfPJ:\"&gt;btBesked&lt;/variable&gt;&lt;variable id=\"Ks*`rvk-+?X_$`f*@E1Z\"&gt;split&lt;/variable&gt;&lt;variable id=\"sk|4bFM,h.8W7c-jQ[]L\"&gt;venstreMotor&lt;/variable&gt;&lt;variable id=\"KrRfP;^;8g#!fo{7,y?#\"&gt;højreMotor&lt;/variable&gt;&lt;/variables&gt;&lt;block type=\"pxt-on-start\" x=\"0\" y=\"0\"&gt;&lt;statement name=\"HANDLER\"&gt;&lt;block type=\"typescript_statement\" editable=\"false\"&gt;&lt;mutation xmlns=\"http://www.w3.org/1999/xhtml\" line0=\"let venstreMotor = 0\" numlines=\"1\" declaredvars=\"venstreMotor\"&gt;&lt;/mutation&gt;&lt;next&gt;&lt;block type=\"typescript_statement\" editable=\"false\"&gt;&lt;mutation xmlns=\"http://www.w3.org/1999/xhtml\" line0=\"let højreMotor = 0\" numlines=\"1\" declaredvars=\"højreMotor\"&gt;&lt;/mutation&gt;&lt;next&gt;&lt;block type=\"bluetooth_start_uart_service\"&gt;&lt;next&gt;&lt;block type=\"device_plot\"&gt;&lt;value name=\"x\"&gt;&lt;shadow type=\"math_number_minmax\"&gt;&lt;mutation min=\"0\" max=\"4\" label=\"Number\" precision=\"0\"&gt;&lt;/mutation&gt;&lt;field name=\"SLIDER\"&gt;4&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;value name=\"y\"&gt;&lt;shadow type=\"math_number_minmax\"&gt;&lt;mutation min=\"0\" max=\"4\" label=\"Number\" precision=\"0\"&gt;&lt;/mutation&gt;&lt;field name=\"SLIDER\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/statement&gt;&lt;/block&gt;&lt;block type=\"bluetooth_on_data_received\" x=\"293\" y=\"12\"&gt;&lt;value name=\"delimiters\"&gt;&lt;shadow type=\"serial_delimiter_conv\"&gt;&lt;field name=\"del\"&gt;Delimiters.NewLine&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;statement name=\"HANDLER\"&gt;&lt;block type=\"device_led_toggle\"&gt;&lt;value name=\"x\"&gt;&lt;shadow type=\"math_number_minmax\"&gt;&lt;mutation min=\"0\" max=\"4\" label=\"Number\" precision=\"0\"&gt;&lt;/mutation&gt;&lt;field name=\"SLIDER\"&gt;1&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;value name=\"y\"&gt;&lt;shadow type=\"math_number_minmax\"&gt;&lt;mutation min=\"0\" max=\"4\" label=\"Number\" precision=\"0\"&gt;&lt;/mutation&gt;&lt;field name=\"SLIDER\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;next&gt;&lt;block type=\"variables_set\"&gt;&lt;field name=\"VAR\" id=\"2]gf,6b.)|jMWy.nfPJ:\"&gt;btBesked&lt;/field&gt;&lt;value name=\"VALUE\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"bluetooth_uart_read\"&gt;&lt;value name=\"del\"&gt;&lt;shadow type=\"serial_delimiter_conv\"&gt;&lt;field name=\"del\"&gt;Delimiters.NewLine&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;next&gt;&lt;block type=\"controls_if\"&gt;&lt;value name=\"IF0\"&gt;&lt;shadow type=\"logic_boolean\"&gt;&lt;field name=\"BOOL\"&gt;TRUE&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"logic_compare\"&gt;&lt;field name=\"OP\"&gt;EQ&lt;/field&gt;&lt;value name=\"A\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"string_indexof\"&gt;&lt;value name=\"this\"&gt;&lt;shadow type=\"text\"&gt;&lt;field name=\"TEXT\"&gt;&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"variables_get\"&gt;&lt;field name=\"VAR\" id=\"2]gf,6b.)|jMWy.nfPJ:\"&gt;btBesked&lt;/field&gt;&lt;/block&gt;&lt;/value&gt;&lt;value name=\"searchValue\"&gt;&lt;shadow type=\"text\"&gt;&lt;field name=\"TEXT\"&gt;j&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;value name=\"B\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;statement name=\"DO0\"&gt;&lt;block type=\"variables_set\"&gt;&lt;field name=\"VAR\" id=\"Ks*`rvk-+?X_$`f*@E1Z\"&gt;split&lt;/field&gt;&lt;value name=\"VALUE\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"string_split\"&gt;&lt;value name=\"this\"&gt;&lt;shadow type=\"text\"&gt;&lt;field name=\"TEXT\"&gt;&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"variables_get\"&gt;&lt;field name=\"VAR\" id=\"2]gf,6b.)|jMWy.nfPJ:\"&gt;btBesked&lt;/field&gt;&lt;/block&gt;&lt;/value&gt;&lt;value name=\"separator\"&gt;&lt;shadow type=\"text\"&gt;&lt;field name=\"TEXT\"&gt;:&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;next&gt;&lt;block type=\"variables_set\"&gt;&lt;field name=\"VAR\" id=\"sk|4bFM,h.8W7c-jQ[]L\"&gt;venstreMotor&lt;/field&gt;&lt;value name=\"VALUE\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"string_parseint\"&gt;&lt;value name=\"text\"&gt;&lt;block type=\"lists_index_get\"&gt;&lt;value name=\"LIST\"&gt;&lt;block type=\"variables_get\"&gt;&lt;field name=\"VAR\" id=\"Ks*`rvk-+?X_$`f*@E1Z\"&gt;split&lt;/field&gt;&lt;/block&gt;&lt;/value&gt;&lt;value name=\"INDEX\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;1&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;next&gt;&lt;block type=\"variables_set\"&gt;&lt;field name=\"VAR\" id=\"KrRfP;^;8g#!fo{7,y?#\"&gt;højreMotor&lt;/field&gt;&lt;value name=\"VALUE\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"string_parseint\"&gt;&lt;value name=\"text\"&gt;&lt;block type=\"lists_index_get\"&gt;&lt;value name=\"LIST\"&gt;&lt;block type=\"variables_get\"&gt;&lt;field name=\"VAR\" id=\"Ks*`rvk-+?X_$`f*@E1Z\"&gt;split&lt;/field&gt;&lt;/block&gt;&lt;/value&gt;&lt;value name=\"INDEX\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;2&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;next&gt;&lt;block type=\"typescript_statement\" editable=\"false\"&gt;&lt;mutation xmlns=\"http://www.w3.org/1999/xhtml\" line0=\"let leftDir = maqueen.Dir.CW;\" numlines=\"1\" declaredvars=\"leftDir\"&gt;&lt;/mutation&gt;&lt;next&gt;&lt;block type=\"controls_if\"&gt;&lt;value name=\"IF0\"&gt;&lt;shadow type=\"logic_boolean\"&gt;&lt;field name=\"BOOL\"&gt;TRUE&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"logic_compare\"&gt;&lt;field name=\"OP\"&gt;LT&lt;/field&gt;&lt;value name=\"A\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"variables_get\"&gt;&lt;field name=\"VAR\" id=\"sk|4bFM,h.8W7c-jQ[]L\"&gt;venstreMotor&lt;/field&gt;&lt;/block&gt;&lt;/value&gt;&lt;value name=\"B\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;statement name=\"DO0\"&gt;&lt;block type=\"typescript_statement\" editable=\"false\"&gt;&lt;mutation xmlns=\"http://www.w3.org/1999/xhtml\" line0=\"leftDir = maqueen.Dir.CCW;\" numlines=\"1\"&gt;&lt;/mutation&gt;&lt;/block&gt;&lt;/statement&gt;&lt;next&gt;&lt;block type=\"typescript_statement\" editable=\"false\"&gt;&lt;mutation xmlns=\"http://www.w3.org/1999/xhtml\" line0=\"let rightDir = maqueen.Dir.CW\" numlines=\"1\" declaredvars=\"rightDir\"&gt;&lt;/mutation&gt;&lt;next&gt;&lt;block type=\"controls_if\"&gt;&lt;value name=\"IF0\"&gt;&lt;shadow type=\"logic_boolean\"&gt;&lt;field name=\"BOOL\"&gt;TRUE&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"logic_compare\"&gt;&lt;field name=\"OP\"&gt;LT&lt;/field&gt;&lt;value name=\"A\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"variables_get\"&gt;&lt;field name=\"VAR\" id=\"KrRfP;^;8g#!fo{7,y?#\"&gt;højreMotor&lt;/field&gt;&lt;/block&gt;&lt;/value&gt;&lt;value name=\"B\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;statement name=\"DO0\"&gt;&lt;block type=\"typescript_statement\" editable=\"false\"&gt;&lt;mutation xmlns=\"http://www.w3.org/1999/xhtml\" line0=\"rightDir = maqueen.Dir.CCW;\" numlines=\"1\"&gt;&lt;/mutation&gt;&lt;/block&gt;&lt;/statement&gt;&lt;next&gt;&lt;block type=\"variables_set\"&gt;&lt;field name=\"VAR\" id=\"sk|4bFM,h.8W7c-jQ[]L\"&gt;venstreMotor&lt;/field&gt;&lt;value name=\"VALUE\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"math_op3\"&gt;&lt;value name=\"x\"&gt;&lt;block type=\"variables_get\"&gt;&lt;field name=\"VAR\" id=\"sk|4bFM,h.8W7c-jQ[]L\"&gt;venstreMotor&lt;/field&gt;&lt;/block&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;next&gt;&lt;block type=\"variables_set\"&gt;&lt;field name=\"VAR\" id=\"KrRfP;^;8g#!fo{7,y?#\"&gt;højreMotor&lt;/field&gt;&lt;value name=\"VALUE\"&gt;&lt;shadow type=\"math_number\"&gt;&lt;field name=\"NUM\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;block type=\"math_op3\"&gt;&lt;value name=\"x\"&gt;&lt;block type=\"variables_get\"&gt;&lt;field name=\"VAR\" id=\"KrRfP;^;8g#!fo{7,y?#\"&gt;højreMotor&lt;/field&gt;&lt;/block&gt;&lt;/value&gt;&lt;/block&gt;&lt;/value&gt;&lt;next&gt;&lt;block type=\"typescript_statement\" editable=\"false\"&gt;&lt;mutation xmlns=\"http://www.w3.org/1999/xhtml\" line0=\"maqueen.motorRun(maqueen.Motors.M1, leftDir, venstreMotor);\" numlines=\"1\"&gt;&lt;/mutation&gt;&lt;next&gt;&lt;block type=\"typescript_statement\" editable=\"false\"&gt;&lt;mutation xmlns=\"http://www.w3.org/1999/xhtml\" line0=\"maqueen.motorRun(maqueen.Motors.M2, rightDir, højreMotor)\" numlines=\"1\"&gt;&lt;/mutation&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/statement&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/next&gt;&lt;/block&gt;&lt;/statement&gt;&lt;/block&gt;&lt;block type=\"bluetooth_on_disconnected\" x=\"-2\" y=\"283\"&gt;&lt;statement name=\"HANDLER\"&gt;&lt;block type=\"device_unplot\"&gt;&lt;value name=\"x\"&gt;&lt;shadow type=\"math_number_minmax\"&gt;&lt;mutation min=\"0\" max=\"4\" label=\"Number\" precision=\"0\"&gt;&lt;/mutation&gt;&lt;field name=\"SLIDER\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;value name=\"y\"&gt;&lt;shadow type=\"math_number_minmax\"&gt;&lt;mutation min=\"0\" max=\"4\" label=\"Number\" precision=\"0\"&gt;&lt;/mutation&gt;&lt;field name=\"SLIDER\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/statement&gt;&lt;/block&gt;&lt;block type=\"bluetooth_on_connected\" x=\"-3\" y=\"424\"&gt;&lt;statement name=\"HANDLER\"&gt;&lt;block type=\"device_plot\"&gt;&lt;value name=\"x\"&gt;&lt;shadow type=\"math_number_minmax\"&gt;&lt;mutation min=\"0\" max=\"4\" label=\"Number\" precision=\"0\"&gt;&lt;/mutation&gt;&lt;field name=\"SLIDER\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;value name=\"y\"&gt;&lt;shadow type=\"math_number_minmax\"&gt;&lt;mutation min=\"0\" max=\"4\" label=\"Number\" precision=\"0\"&gt;&lt;/mutation&gt;&lt;field name=\"SLIDER\"&gt;0&lt;/field&gt;&lt;/shadow&gt;&lt;/value&gt;&lt;/block&gt;&lt;/statement&gt;&lt;/block&gt;&lt;block type=\"device_forever\" x=\"0\" y=\"560\"&gt;&lt;statement name=\"HANDLER\"&gt;&lt;block type=\"sensors_publishSensor\"&gt;&lt;field name=\"s\"&gt;SensorEnum.Sound&lt;/field&gt;&lt;/block&gt;&lt;/statement&gt;&lt;/block&gt;&lt;/xml&gt;",
+            "main.ts": "bluetooth.onBluetoothConnected(function () {\n    led.plot(0, 0)\n})\nbluetooth.onBluetoothDisconnected(function () {\n    led.unplot(0, 0)\n})\nbluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function () {\n    led.toggle(1, 0)\n    btBesked = bluetooth.uartReadUntil(serial.delimiters(Delimiters.NewLine))\n    if (btBesked.indexOf(\"j\") == 0) {\n        split = btBesked.split(\":\")\n        venstreMotor = parseInt(split[1])\n        højreMotor = parseInt(split[2])\n        let leftDir = maqueen.Dir.CW;\nif (venstreMotor &lt; 0) {\n            leftDir = maqueen.Dir.CCW;\n        }\n        let rightDir = maqueen.Dir.CW\nif (højreMotor &lt; 0) {\n            rightDir = maqueen.Dir.CCW;\n        }\n        venstreMotor = Math.abs(venstreMotor)\n        højreMotor = Math.abs(højreMotor)\n        maqueen.motorRun(maqueen.Motors.M1, leftDir, venstreMotor);\nmaqueen.motorRun(maqueen.Motors.M2, rightDir, højreMotor)\n    }\n})\nlet split: string[] = []\nlet btBesked = \"\"\nlet venstreMotor = 0\nlet højreMotor = 0\nbluetooth.startUartService()\nled.plot(4, 0)\nbasic.forever(function () {\n    sensors.publishSensor(SensorEnum.Sound)\n})\n",
+            "pxt.json": "{\n    \"name\": \"Maqueen BT\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"BluetoothMaqueen\": \"github:idontknowwhattoput-here/bluetoothmaqueen#e936cd5191067df62096ee3781cedfa8dfae5ffa\",\n        \"bluetooth\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\",\n        \"custom.ts\"\n    ],\n    \"targetVersions\": {\n        \"branch\": \"v4.0.18\",\n        \"tag\": \"v4.0.18\",\n        \"commits\": \"https://github.com/microsoft/pxt-microbit/commits/b9d2eeff8116b75fa50f663091b0e3acd800b7bc\",\n        \"target\": \"4.0.18\",\n        \"pxt\": \"7.0.14\"\n    },\n    \"preferredEditor\": \"blocksprj\",\n    \"languageRestriction\": \"blocks-only\"\n}\n"
+        }
+    }
+</code-fragment>

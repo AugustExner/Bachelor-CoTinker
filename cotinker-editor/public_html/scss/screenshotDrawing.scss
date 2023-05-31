@@ -1,0 +1,127 @@
+.screenShotDrawingPanel {
+    flex: 0 1 auto;
+    display: flex;
+    align-items: center;            
+
+    .drawTools {
+        display: flex;
+    }
+
+    .color {
+        width: 2em;
+        height: 2em;
+        border-radius: 1em;
+        border-width: 1px;
+        margin: 0 0.2em;    
+
+        &[data-color="red"] {
+            background-color: red;
+        }
+        &[data-color="green"] {
+            background-color: green;
+        }
+        &[data-color="blue"] {
+            background-color: blue;
+        }
+        &[data-color="white"] {
+            background-color: white;
+        }
+        &[data-color="black"] {
+            background-color: black;
+        }
+    }
+    
+    .eraser:before {
+        content: "⌫";
+    }
+}
+
+.mobileMessage {
+    &[transient-class~="drawmode"] {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-width: initial;
+        z-index: 9000;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        transform: none;
+        display: flex;
+
+        .author, .timestamp {
+            display: none;       
+        }
+
+        .message {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;     
+            align-items: center;
+            
+            .drawable {
+                -webkit-user-select: none; /* Safari */
+                 -ms-user-select: none; /* IE 10 and IE 11 */
+                 user-select: none; /* Standard syntax */
+
+                flex: 1 1 auto;
+                height: 0;
+                max-height: initial;
+                max-width: initial;
+            }
+        }
+
+        img.thumbnail {
+            display: none;
+        }
+    }
+
+    .drawable {
+        position: relative;
+        display: flex;
+        line-height: 0;
+        justify-content: center;            
+
+        width: 100%;
+        max-height: 10em;
+        max-width: 12em;        
+
+        img {
+            object-fit: contain;
+            max-width: 100%;
+        }
+        
+        .canvas {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+
+            &[transient-class~='disabled'] {
+                pointer-events: none;
+            }
+        }
+    }
+}
+
+
+.screenShotPopup {
+    .mdc-image-list__item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 42%;
+        margin: 4%;
+        cursor: pointer;        
+        
+        img {
+            border: 1px solid black;
+            object-fit: contain;
+            width: 100%;
+        }
+    }
+}

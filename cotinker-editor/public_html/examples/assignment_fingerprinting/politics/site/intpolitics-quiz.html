@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>International Politik - Quiz</title>
+        <link rel="stylesheet" href="main.css">
+        <script src="politics.js"></script>
+         <meta http-equiv="resfresh" content="1">
+    </head>
+    <body>
+        <include template="intpolitics-menu"></include>
+        
+        <template id="intpolitics-answers">
+            <form>
+                <ul class="answers">
+                    <li><label><input type="radio" name="d">Realisme</input></label></li>
+                    <li><label><input type="radio" name="d">Liberalisme</input></label></li>
+                    <li><label><input type="radio" name="d">Konstruktivisme</input></label></li>
+                    <li><label><input type="radio" name="d">Marxisme</input></label></li>
+                </ul>                                 
+            </form>
+        </template>
+
+        <article>
+            <h1>Multiple choice quiz om international politik</h1>
+
+            <div class="multiple-choice">
+                <p class="question" data-answer="Konstruktivisme">
+                    Hvilken af følgende teorier fremhæver rollen for internationale institutioner i at forme internationale relationer?
+                </p>
+                <include template="intpolitics-answers"></include>
+
+                <p class="question" data-answer="Liberalisme">
+                    Hvilken af følgende teorier fremhæver rollen for økonomisk interdependens i at forme internationale relationer?
+                </p>
+                <include template="intpolitics-answers"></include>
+
+                <p class="question" data-answer="Konstruktivisme">
+                    Hvilken af følgende teorier fremhæver rollen for ideer og overbevisninger i at forme internationale relationer
+                </p>
+                <include template="intpolitics-answers"></include>
+                
+                <p class="question" data-answer="Marxisme">
+                    Hvilken af følgende teorier fremhæver rollen for klassekamp og udnyttelse af arbejderklassen i at forme internationale relationer?
+                </p>
+                <include template="intpolitics-answers"></include>                            
+            </div>
+            
+            <div class="multiple-choice">
+                <p class="question" data-answer="Realisme">
+                    Hvilken af følgende teorier fremhæver rollen for magt og nationalt interesse i at forme internationale relationer?
+                </p>
+                <include template="intpolitics-answers"></include>
+                
+                <p class="question" data-answer="Liberalisme">
+                    Hvilken af følgende teorier fremhæver rollen for demokrati og frihandel i at forme internationale relationer?
+                </p>
+                <include template="intpolitics-answers"></include>                
+                
+                <p class="question" data-answer="Liberalisme">
+                    Hvilken af følgende teorier fremhæver rollen for ikke-statiske aktører, såsom NGO'er og transnationale selskaber, i at forme internationale relationer?
+                </p>
+                <include template="intpolitics-answers"></include>
+                
+                <p class="question" data-answer="Marxisme">
+                    Hvilken af følgende teorier fremhæver rollen for historisk materialisme og de indbyggede modsætninger i kapitalismen i at forme internationale relationer?
+                </p>
+                <include template="intpolitics-answers"></include>                
+            </div>
+        </article>
+    </body>
+</html>

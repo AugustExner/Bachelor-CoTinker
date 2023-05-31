@@ -1,0 +1,261 @@
+<inline src="assignment_global_test.html"></inline>
+<inline src="template.html"></inline>
+<inline src="template_cart_item.html"></inline>
+
+<assignment>
+    <style>
+        #welcome {
+            background-color: red;
+        }
+
+        #imageAssetUploader {
+            background: rgba(255,255,255,0.1);
+            width: 100%;
+            position: relative;
+            transition: opacity 0.3s ease-in-out;
+            margin-bottom: 1em;
+            max-height: calc(3 * 5em);
+            overflow-y: auto;
+        }
+        #imageAssetUploader:before {
+            content: "-> Drag Files Here <-";
+            display: block;
+            text-align: center;
+            padding: 1em;
+            opacity: 0.3;
+        }
+        #imageAssetUploader[transient-class="uploading"]{
+            opacity: 0.6;
+        }
+        #imageAssetUploader[transient-class="highlight"]{
+            background: rgba(200, 200, 255, 0.6);
+        }
+        #imageAssetUploader[transient-class="uploading"]:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 3em;
+            height: 3em;
+            background: pink;
+        }
+        #imageAssetUploader:before {
+            content: "-> Smid billederne her <-";
+            display: block;
+            text-align: center;
+            padding: 1em;
+            opacity: 0.3;
+        }
+        
+        #imageAssetUploader .preview {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border: 1px solid #0000513d;
+            margin: 2px;
+        }
+        #imageAssetUploader .preview img {
+            height: 3em;
+            width: 4em;
+            object-fit: cover;
+            background: rgba(0,0,0,0.2);
+            padding: 0.25em 1em;
+        }
+        #imageAssetUploader .description {
+            flex: 1 1 auto;
+            padding: 1em;
+        }
+
+        #imageAssetUploader .deleter {
+            color: red;
+            background: rgba(255,0,0,0.1);
+            border: none;
+            font-size: 1.2em;
+            border-radius: 0.3em;
+            margin: 0.5em;    
+            cursor: pointer;
+            padding: 0.1em 0.25em;
+        }
+        
+        #imageAssetUploader .deleter:hover {
+            background: rgba(255,0,0,0.3);    
+        }
+
+        #webshop-items {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(200px, 1fr));
+            grid-gap: 10px;
+        }
+
+        .grid-item {
+            background-color: #f1f1f1;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <steps>
+        <step name="one" data-slide="welcome">
+            Welcome
+            <div id="editor1"></div>
+            <div class="imageAssetUploader" id="imageAssetUploader">
+                <div class="preview"><img src="book_512.png"><span class="description">book_512.png</span></div>
+            </div>
+            <code-fragment data-type="text/css" name="step1" id="step1" auto="true"><inline src="step1.css"></inline></code-fragment>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step1", "#editor1");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+            <div id="editor3"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor3 = new createStepEditor("#addQuantity", "#editor3");
+                const editor3 = createEditor3.editor;
+                onStepUnloaded(()=>{
+                    editor3.unload();
+                });
+            </code-fragment>
+        </step>
+        <step name="two" data-slide="welcome">
+            <div class="imageAssetUploaderProduct" id="imageAssetUploader">
+                <div class="preview"><img src="book_512.png"><span class="description">book_512.png</span></div>
+            </div>
+            <div id="editor2">test</div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#json", "#editor2");
+                const editor = createEditor.editor;
+                if (!window.AlreadyRunning) {
+                    let upload = document.querySelector(".imageAssetUploaderProduct");
+                    upload.addEventListener("drop", (evt) => {
+                        evt.preventDefault();
+                        let files = evt.dataTransfer.files;
+
+                        let file = files[0];
+                        
+                        webstrate.on("asset", function(asset) {
+                            if(asset.fileName === file.name) {
+                                //Find fragmentet
+                                const frag = createEditor.frag;
+                                //Gem den gamle "rå" værdi, altså selve teksten man ser i editoren.
+                                let oldFragmentValue = frag.raw.slice(0,-1);
+                                //Ret teksten til hvad man nu vil
+                                let newFragmentValue = oldFragmentValue + '    ,\n    {\n    "name":"name",\n    "description":"description",\n    "price":0,\n    "image":"' + file.name + '"\n    }\n]';
+                                //Sæt værdien på fragmentet
+                                frag.raw = newFragmentValue;
+                            }
+                        });
+                    });
+                    window.AlreadyRunning = true;
+                }
+
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+        <step name="three" data-slide="welcome">
+            <div>step 3</div>
+            <div id="editor5"></div>
+            <!--<code-fragment data-type="text/javascript">   
+                const createEditor = new createStepEditor("#step3", "#editor3");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>-->
+            <code-fragment data-type="text/html" name="step3" id="step3" auto="true"><inline src="picture.html"></inline></code-fragment>
+            <code-fragment data-type="text/javascript">
+                const createEditor5 = new createStepEditor("#step3", "#editor5");
+                const editor5 = createEditor5.editor;
+                onStepUnloaded(()=>{
+                    editor5.unload();
+                });
+            </code-fragment>
+        </step>
+        <step name="four" data-slide="welcome">
+            <div>test</div>
+            <div id="editor4"></div>
+            <code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step2", "#editor4");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>
+        </step>
+        <step name="five" data-slide="welcome">
+            <div id="editor6"></div>
+            <!--<code-fragment data-type="text/javascript">
+                const createEditor = new createStepEditor("#step5", "#editor6");
+                const editor = createEditor.editor;
+                onStepUnloaded(()=>{
+                    editor.unload();
+                });
+            </code-fragment>-->
+        </step>
+    </steps>
+    <slides>
+        <slide id="welcome">
+            <p1>hey</p1>
+            hey
+            <div id="test">
+                <button id="testbutton">Hide/Show</button>
+                <div id="content">This is the content to hide/show</div>    
+            </div>
+            <div id="webshop-items"></div>
+            <div id="cart-menubar" style="
+            position: absolute;
+            width: 60px;
+            height: 50px;
+            bottom: 10px;
+            right: 10px;
+            ">  
+                <img src="shopping-cart-icon.svg" id="button-toggle-cart" height="50" width="50"/>
+            </div>
+            <div id="cart" style="
+            display: none;
+            width: 200px;
+            height: 500px;
+            position: absolute;
+            box-sizing: border-box;
+            right: 10px;
+            bottom: 80px;
+            background-color: #f1f1f1;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-family: Arial, sans-serif;
+            "> 
+                <div style="border: solid;
+                background-color: green;">
+                    <p style="text-align:center;
+                    font-size:25px;">Din Kurv</p>
+                </div>
+                <p id="cart-status" style="text-align:center;
+                font-size:20px; 
+                color: #757575; 
+                display: block;">Kurven er tom...</p>
+                <div id="cart-items"></div>
+            </div>
+            
+            <code-fragment data-type="text/javascript" name="reloadCode" id="reloadCode"><inline src="reloadCode.js"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" name="step3grann" id="step3grann"><inline src="step3grann.js"></inline></code-fragment>
+            <code-fragment data-type="text/javascript" name="addQuantity" id="addQuantity"><inline src="addQuantityFrag.js"></inline></code-fragment>
+            <code-fragment data-type="application/json" name="json" id="json"><inline src="products.json"></inline></code-fragment>
+            <code-fragment data-type="text/css" name="step2" id="step2" auto="true"><inline src="step2.css"></inline></code-fragment>
+            <code-fragment data-type="text/javascript">
+                if (!window.AlreadyRunningCart) {
+                    const cart = document.querySelector("#button-toggle-cart");
+                    cart.addEventListener("click", toggleCart);
+                    window.AlreadyRunningCart = true;
+                }
+            </code-fragment>
+            <!--<code-fragment data-type="text/javascript" name="step5" id="step5"><inline src="addQuantityFrag.js"></inline></code-fragment>-->
+        </slide>
+        <slide id="second">
+            <p>hello</p>
+        </slide>
+    </slides>
+</assignment>

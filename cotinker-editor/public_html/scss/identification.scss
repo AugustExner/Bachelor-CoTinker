@@ -1,0 +1,70 @@
+.identificationPopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9000;    
+
+    svg {
+        @keyframes userIconSparkles {
+            from {
+                filter: drop-shadow(0 0 1em rgb(208, 231, 254));
+            }
+            to {
+                filter: drop-shadow(0 0 2em rgb(208, 231, 254));
+            }
+        }
+        @keyframes userIconAppears {
+            from {
+                transform: scale(0.8); opacity: 0;
+            }
+        }        
+        
+        flex: 1 1 auto;
+        width: 80%;
+        filter: drop-shadow(0 0 1em rgb(208, 231, 254));
+        animation: userIconSparkles 2s infinite alternate, userIconAppears 2s ease-out;
+    }
+
+    form {
+        display: flex;
+        justify-content: center;
+        align-items: start;
+        padding-bottom: 10vh;
+        
+        input {
+            border-radius: 0.5em;
+            border: 0;
+            padding: 1em;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            -webkit-appearance: none;
+            height: 3rem;
+            box-sizing: border-box;
+            
+            &:first-of-type {            
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                width: 50vw;
+                max-width: 25em;
+            }
+            &[type="submit"] {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;                
+                background: rgba(255,255,255,0.5);
+                cursor: pointer;
+                &:hover {
+                    background: rgba(255,255,255,0.6);
+                }
+            }
+        }
+    } 
+}
+
+

@@ -1,0 +1,38 @@
+<template id="collaborationEntryTpl">
+    <li class="collaborationEntry">
+        <img src="../img/mute.svg" class="collabIcon collabMute" alt="Muted">
+        <img src="../img/voice.svg" class="collabIcon collabVoice" alt="Voice">
+        <img src="../img/mobile.svg" class="collabIcon collabController" alt="Mobile">
+        <img src="../img/screen.svg" class="collabIcon collabView" alt="Computer">
+        <div class="name">Unknown User</div>
+        <div class="volume" title="Voice Volume">
+            <input type="range" min="0" max="500" value="100" class="slider" />
+        </div>
+    </li>
+</template>
+
+<template id="collaborationTpl">
+    <div class="collaboration">
+        <button class="collabButton helpButton removed" title="Get Help">
+            ?
+        </button>        
+        <button class="collabButton startCall callButton" title="Join/Leave Call">
+            <inline src="../img/call.svg"></inline>
+        </button>
+        <button class="collabButton muteButton" title="Mute/Unmute">
+            <div class="icon-muted">
+                <inline src="../img/mic-off.svg"></inline>
+            </div>
+            <div class="icon-unmuted">
+                <inline src="../img/mic-on.svg"></inline>
+            </div>
+        </button>
+        <button class="collabButton collaborationMenu" title="Group Participants">
+            <inline src="../img/group.svg"></inline>
+            <div class="usercount">5</div>
+        </button>
+        <ul class="collaborationOverview">
+            <!-- hook template -->
+        </ul>
+    </div>
+</template>

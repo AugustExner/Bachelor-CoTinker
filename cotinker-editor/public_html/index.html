@@ -1,0 +1,116 @@
+<html data-protected="all" style="background: #003d73">
+    <head>
+        <title>CoTinker</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&amp;display=swap" rel="stylesheet">
+        <script id="WPMv2-script">
+            const request = new XMLHttpRequest();
+            request.open('GET', 'https://raw.githubusercontent.com/Webstrates/WPM/master/WPMv2.js', false);
+            request.send(null);
+            if(!(request.status===200)) throw new Error("Cannot load WPMv2");
+            eval(request.responseText);
+        </script>
+        <script type="text/json+bootconfig"><inline src="bootloader.json"></inline></script>
+        <script src="../../../AudioRecordingServer/src/main/webapp/js/recorder.js" type="text/javascript"></script>
+        <inline src="templates/mobile.html"></inline>
+        <inline src="templates/reconnect.html"></inline>
+        <inline src="templates/gettingStarted.html"></inline>
+        <inline src="templates/identification.html"></inline>
+        <inline src="templates/helpMe.html"></inline>
+        <inline src="templates/fragmentReverter.html"></inline>
+        <inline src="templates/collaboration.html"></inline>
+        <inline src="templates/screenshotDrawing.html"></inline>
+        <inline src="templates/notifications.html"></inline>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+        <script src="js/js.cookie.min.js" type="application/javascript"></script>
+        <script src="js/Config.js" type="text/javascript"></script>
+        <script src="js/loader.js" type="text/javascript"></script>
+        <script src="js/uploader.js" type="text/javascript"></script>
+        <script src="js/Tagger.js" type="text/javascript"></script>
+        <script src="js/EditorController.js" type="text/javascript"></script>
+        <script src="js/Mobile.js" type="text/javascript"></script>
+        <script src="js/View.js" type="text/javascript"></script>
+        <script src="js/Slides.js" type="text/javascript"></script>
+        <script src="js/Steps.js" type="text/javascript"></script>
+        <script src="js/Identification.js" type="text/javascript"></script>
+        <script src="js/collaboration.js" type="text/javascript"></script>
+        <script src="js/AudioChat.js" type="text/javascript"></script>
+        <script src="js/FragmentReverter.js" type="text/javascript"></script>
+        <script src="js/HelpMe.js" type="text/javascript"></script>
+        <script src="js/GlobalAssignmentFunctions.js" type="text/javascript"></script>
+        <script src="js/CanvasGrabber.js" type="text/javascript"></script>
+        <script src="js/ScreenshotDrawing.js" type="text/javascript"></script>
+        <script src="js/Notifications.js" type="text/javascript"></script>
+        <script src="js/main.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="scss/loading.scss">
+        <link rel="stylesheet" href="scss/base.scss">
+        <link rel="stylesheet" href="scss/identification.scss">
+        <link rel="stylesheet" href="scss/audiochat.scss">
+        <link rel="stylesheet" href="scss/fragmentReverter.scss">
+        <link rel="stylesheet" href="scss/helpMe.scss">
+        <link rel="stylesheet" href="scss/collaboration.scss">
+        <link rel="stylesheet" href="scss/notifications.scss">
+        <link rel="stylesheet" href="scss/screenshotDrawing.scss">
+        <link rel="stylesheet" href="scss/report.scss">
+    </head>
+
+    <body data-code-library="great-eagle-46" data-unityShare="cowardly-stingray-70" data-sensor-publish-webstrate="evil-liger-35">
+        <code-fragment data-type="application/json" id="cotinkerTags">[]</code-fragment>
+        <code-fragment data-type="application/json" id="cotinkerRecordings">[]</code-fragment>
+
+        <!-- Plugins -->
+        <plugins>
+            <wpm-package id="cotinker-ckeditor">
+                <script type="descriptor" src="plugins/ckeditor/descriptor.json"></script>
+                <script type="disabled" src="plugins/ckeditor/plugin-actions.js"></script>
+                <script type="disabled" src="plugins/ckeditor/plugin-ckeditor.js"></script>
+                <script type="disabled">
+                    window.CKEDITOR_BASEPATH = "ckeditor_4.17.1_35ec56ceda42.zip/ckeditor/";
+                    await wpm.requireExternal(CKEDITOR_BASEPATH + "ckeditor.js");
+                    window.CKEDITOR.disableAutoInline = true;
+                </script>
+            </wpm-package>
+            <wpm-package id="cotinker-cauldron">
+                <script type="descriptor" src="plugins/cotinker-cauldron/descriptor.json"></script>
+                <script type="disabled" src="plugins/cotinker-cauldron/plugin-actions.js"></script>
+                <script type="disabled" src="plugins/cotinker-cauldron/SlimEditor.js"></script>
+                <script type="disabled" src="plugins/cotinker-cauldron/TreeBrowserStepDecorator.js"></script>
+            </wpm-package>
+            <wpm-package id="cotinker-pxt-microbit">
+                <script type="descriptor" src="plugins/cotinker-pxt-microbit/descriptor.json"></script>
+                <script type="disabled" src="plugins/cotinker-pxt-microbit/plugin-actions.js"></script>
+                <script type="disabled" src="plugins/cotinker-pxt-microbit/MakeController.js"></script>
+                <link rel="stylesheet" href="plugins/cotinker-pxt-microbit/pxt.css">
+            </wpm-package>
+            <wpm-package id="cotinker-cavijoy">
+                <script type="descriptor" src="plugins/cavijoy/descriptor.json"></script>
+                <script type="disabled" src="plugins/cavijoy/CaviJoy.js"></script>
+            </wpm-package>
+            <wpm-package id="cotinker-cavibt">
+                <script type="descriptor" src="plugins/cavibt/descriptor.json"></script>
+                <script type="disabled" src="plugins/cavibt/CaviBT.js"></script>
+            </wpm-package>
+            <wpm-package id="cotinker-cavi-shared-sensors">
+                <script type="descriptor" src="plugins/cavisharedsensors/descriptor.json"></script>
+                <script type="disabled" src="plugins/cavisharedsensors/CaviSharedSensors.js"></script>
+            </wpm-package>
+            <wpm-package id="cotinker-analytics">
+                <script type="descriptor" src="plugins/cotinker-analytics/descriptor.json"></script>
+                <script type="disabled" src="plugins/cotinker-analytics/cotinker-analytics.js"></script>
+            </wpm-package>
+            <wpm-package id="cotinker-unity">
+                <script type="descriptor" src="plugins/cotinker-unity/descriptor.json"></script>
+                <script type="disabled" src="plugins/cotinker-unity/UnityController.js"></script>
+                <script type="disabled" src="plugins/cotinker-unity/plugin-actions.js"></script>
+                <inline src="plugins/cotinker-unity/templates.html"></inline>
+                <link rel="stylesheet" href="plugins/cotinker-unity/unity.scss">
+            </wpm-package>
+        </plugins>
+
+        <div class="cotinker-top-bar"></div>
+
+        <!-- Switch to another example here -->
+        <inline src="examples/assignment_niklas_webshop/assignment.html"></inline>
+    </body>
+</html>

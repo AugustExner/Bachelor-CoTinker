@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+      <link rel="stylesheet" href="main.css">
+    
+  <style>
+      #efter_submit {visibility:"hidden";}
+  </style>
+  <script type="text/jscript">
+     function tjek(){
+
+       if (document.quiz.spg2.value=="400"){
+         document.getElementById("efter_submit").style.visibility="visible";
+         document.getElementById("antal_rigtige").innerHTML="Du bør vælge Berlin eller Sevilla";
+       };
+       if (document.quiz.spg2.value=="600"){
+         document.getElementById("efter_submit").style.visibility="visible";
+         document.getElementById("antal_rigtige").innerHTML="Du bør vælge Barcelona";
+       };
+       if (document.quiz.spg2.value=="1000"){
+         document.getElementById("efter_submit").style.visibility="visible";
+         document.getElementById("antal_rigtige").innerHTML="Du bør vælge London";
+       };
+
+      }
+  </script>
+</head>
+<body style="width:1000px;margin:80px;background-color:#57A">
+  <div class="ad floating" id="primaryAd"></div>
+  
+    <a href="menu2.html"><img src="ungfri.jpg" style="float:left" width="100px"></a>
+  <div style="width:50%;margin:25%">
+  <h1> Hvad passer til dig</h1><br><br>
+    <form id="quiz" name="quiz">
+        Spørgsmål 1: Hvilken fodbold stil?<br>
+        <input name="spg1" type="radio" value="Engelsk">Engelsk<br>
+        <input name="spg1" type="radio" value="tysk">Tysk<br>
+        <input name="spg1" type="radio" value="Spansk">Spansk<br>
+        <br>
+        Spørgsmål 2: Prisniveau pr. kamp?<br>
+        <select  name="spg2">
+            <option value="">Vælg:</option>
+            <option value="400">400</option>
+            <option value="600">600</option>
+            <option value="1000">1000</option>
+        </select>
+        <br><br>
+              <input type="button" id="button" value="Tjek resultat" onclick=tjek()>
+   </form>
+<div id="efter_submit">
+<p id="antal_rigtige">  </p>
+</div>
+</div>
+    <script src="journey.js"></script>
+
+</body>
+</html>

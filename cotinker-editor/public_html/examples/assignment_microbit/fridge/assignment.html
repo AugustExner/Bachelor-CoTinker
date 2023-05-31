@@ -1,0 +1,1838 @@
+<assignment>
+    <style>
+        assignment steps step h1 {
+            min-height: 3.5rem;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;            
+        }
+        @keyframes stepAppears {
+            from {opacity:0;}
+        }
+
+        #uPlotOverlay {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 0.5rem;
+            margin: 0.75rem;
+            color: #fff;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .imageAssetUploader {
+            background: rgba(255,255,255,0.1);
+            width: 100%;
+            position: relative;
+            transition: opacity 0.3s ease-in-out;
+            margin-bottom: 1em;
+        }
+        .imageAssetUploader:after {
+            content: "-> Drag Files Here <-";
+            display: block;
+            text-align: center;
+            padding: 1em;
+            opacity: 0.3;
+        }
+        .imageAssetUploader[transient-class="uploading"]{
+            opacity: 0.6;
+        }
+        .imageAssetUploader[transient-class="highlight"]{
+            background: rgba(200, 200, 255, 0.6);
+        }
+        .imageAssetUploader[transient-class="uploading"]:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 3em;
+            height: 3em;
+            background: pink;
+            opacity: 0.6;
+        }
+        .imageAssetUploader .preview {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border: 1px solid #0000513d;
+            margin: 2px;
+        }
+        .imageAssetUploader .preview img {
+            height: 3em;
+            width: 4em;
+            object-fit: cover;
+            background: rgba(0,0,0,0.2);
+            padding: 0.25em 1em;
+        }
+        .imageAssetUploader .description {
+            flex: 1 1 auto;
+            padding: 1em;
+            cursor: pointer;
+        }
+
+        .imageAssetUploader .description:hover {
+            opacity: 0.7;
+        }
+
+        .imageAssetUploader .deleter, .logBookPreview .deleter {
+            color: red;
+            background: rgba(255,0,0,0.1);
+            border: none;
+            font-size: 1.2em;
+            border-radius: 0.3em;
+            margin: 0.5em;    
+            cursor: pointer;
+            padding: 0.1em 0.25em;
+        }
+        .imageAssetUploader .deleter:hover, .logBookPreview .deleter:hover {
+            background: rgba(255,0,0,0.3);    
+        }
+        .logBookPreview .deleter {
+            min-height: initial;
+            position: absolute;
+            right: 0px;
+            margin-top: 0;
+        }
+
+        steps textarea, steps input {
+            display: block;
+            width: 100%;
+            border: none;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            padding: 1em;
+            box-sizing: border-box;
+        } 
+    </style>
+    <script>
+        // Normal mode
+        // Switch layout to put mobile controller on the view screen as a sidebar
+        window.cotinkerConfig.sidebarController = true;
+        window.cotinkerConfig.hideCollabButtons = true;
+        window.cotinkerConfig.hideSendNote = false;
+
+        function formatTime(time) {
+            let hours = Math.floor(time / 3600);
+            let minutes = Math.floor((time - hours * 3600) / 60);
+            let seconds = (time - hours * 3600 - minutes * 60).toFixed(0);
+
+            if(hours < 10) {
+                hours = "0"+hours;
+            }
+            if(minutes < 10) {
+                minutes = "0"+minutes;
+            }
+            if(seconds < 10) {
+                seconds = "0"+seconds;
+            }
+
+            return hours+":"+minutes+":"+seconds;
+        }
+
+        function resetCurrentMakeCodeFragment() {
+            let ok = confirm("Er du sikker på du vil genskabe den oprindelige kode?");
+            if (!ok) {
+                return;
+            }
+
+            console.log("Resetting makecode...");
+
+            let revision = document.body.getAttribute("data-original-revision");
+
+            console.log("Original revision:", revision);
+
+            if (revision != null && makeController?.currentlyLinkedCodeFragment != null) {
+                let currentCodeFragmentId = makeController.currentlyLinkedCodeFragment.html[0].id;
+
+                console.log("Current code fragment id:", currentCodeFragmentId);
+
+                if (currentCodeFragmentId != null) {
+                    fetch(location.pathname + revision + "?raw").then((response) => {
+                        response.text().then((text) => {
+                            let domParser = new DOMParser();
+
+                            let parsedDocument = domParser.parseFromString(text, "text/html");
+
+                            let loadedFragmentHtml = parsedDocument.querySelector("#" + currentCodeFragmentId);
+
+                            if (loadedFragmentHtml != null) {
+                                let loadedFragment = Fragment.setupFragment(cQuery(loadedFragmentHtml));
+
+                                if (loadedFragment != null) {
+                                    makeController.currentlyLinkedCodeFragment.raw = loadedFragment.raw;
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        }
+        window.resetCurrentMakeCodeFragment = resetCurrentMakeCodeFragment;
+
+        function readCSV(csvFile) {
+            return new Promise((resolve, reject) => {
+                try {
+                    fetch(csvFile).then((response) => {
+                        response.text().then((csv) => {
+                            console.debug("CSV Loaded...");
+                            let json = {
+                                header: [],
+                                data: []
+                            };
+
+                            let first = true;
+
+                            csv.split("\n").forEach((line) => {
+                                if (line.trim().length === 0) {
+                                    return;
+                                }
+
+                                let columns = line.split(",");
+
+                                if (first) {
+                                    //Read header names
+                                    json.header = columns;
+                                    first = false;
+                                    return;
+                                }
+
+                                json.data.push(columns);
+                            });
+
+                            resolve(json);
+                        });
+                    });
+                } catch(e) {
+                    console.warn("Error during csv read:", e);
+                    reject();
+                }
+            });
+        }
+
+        enqueueAfterLoad(async ()=>{
+            if (view){
+                await WPMv2.require("cotinker-pxt-microbit");
+                await WPMv2.require("cotinker-cavi-shared-sensors");
+
+                window.sharedSensor = new CaviSharedSensors();
+            } else {
+                enableScreenshots();
+            }
+        });
+    </script>
+    <slides>
+        <slide id="welcome" class="">
+            <img style="width: 80%;height: 80%;object-fit: contain;" src="../../../img/logo_light.svg">
+        </slide>        
+        <slide id="code"> 
+            <code-fragment data-type="text/javascript">
+                // Insert MakeCode editor in slide regardless of mode
+                if (!window.makeController){
+                    let slide = document.querySelector("#code");
+                    let transient = document.createElement("transient");
+                    transient.classList.add("makecode-view");
+                    slide.appendChild(transient);
+                    let makeController = new MakeController(transient);
+                    window.makeController = makeController;
+                }
+            </code-fragment>        
+            
+            <code-fragment data-type="text/javascript" data-slide-mode="connect">
+                await makeController.linkFragment(Fragment.one("#smiley"), {
+                    "blocks": {
+                        "pxt-on-start": 1,
+                        "device_show_leds": 1
+                    },                    
+                    "defaultState": 0
+                });
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+            </code-fragment>      
+            
+            <code-fragment data-type="text/javascript" data-slide-mode="tempdisplay">
+                await makeController.linkFragment(Fragment.one("#tempdisplay"), {
+                    "blocks": {
+                        "every_interval": 1,
+                        "device_show_number": 1,
+                    	"device_temperature": 1
+                    },                    
+                    "defaultState": 0
+                });
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+            </code-fragment>      
+            <code-fragment data-type="text/javascript" data-slide-mode="tempstore">
+                await makeController.linkFragment(Fragment.one("#tempdisplay"), {
+                    "blocks": {
+                        "every_interval": 1,
+                        "device_show_number": 1,
+                    	"device_temperature": 1,
+                    	"dataloggerlog": 1
+                    },                    
+                    "defaultState": 0
+                });
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+            </code-fragment>      
+            <code-fragment data-type="text/javascript" data-slide-mode="tempmodule">
+                await makeController.linkFragment(Fragment.one("#tempdisplay"), {
+                    "blocks": {
+                        "every_interval": 1,
+                        "device_show_number": 1,
+                    	"device_temperature": 1,
+                    	"dataloggerlog": 1,
+                    	"kitronik_klimate_read_temperature": 1
+                    },                    
+                    "defaultState": 0
+                });
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+            </code-fragment>      
+            <code-fragment data-type="text/javascript" data-slide-mode="superlogger">
+                await makeController.linkFragment(Fragment.one("#superlogger"), {
+                    "blocks": {
+                    },                    
+                    "defaultState": 1
+                });
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+
+                setupResetButton();
+
+                onSlideModeUnloaded(()=>{
+                    cQuery(".resetButton").remove();
+                });
+
+            </code-fragment>      
+            <code-fragment data-type="text/javascript" data-slide-mode="homelogger">
+                await makeController.linkFragment(Fragment.one("#homie"), {
+                    "blocks": {
+                    },                    
+                    "defaultState": 1
+                });
+                makeController.stopSimulator();
+                makeController.hideSimulator();
+            </code-fragment>      
+        </slide>
+        <slide id="to-the-mobile-mobile">
+            <div class="gettingStarted">
+                <img class="mobile-imitator" src="../../../img/mobile.svg">
+                <div class="screen-imitator">
+                    <img class="screen-icon" src="../../../img/screen.svg">
+                    <div id="htmlqrcode" class="qrcode"></div>
+                </div>
+                <p>Scan QR-koden for at fortsætte på mobilen</p>
+            </div>            
+            <style>
+                #to-the-mobile-mobile .gettingStarted {
+                    position: relative;
+                }
+                #to-the-mobile-mobile {
+                    padding-top: 3.6rem;
+                    box-sizing: border-box;
+                }
+            </style>
+        </slide>
+        <slide id="log" class="">
+            <span class="material-icons-outlined">edit_note</span>
+            <style>
+                #log .material-icons-outlined {
+                    font-size: 50vh;
+                    color: rgba(100, 168, 255, 0.2);      
+                    opacity: 0.4;
+                }
+            </style>
+        </slide>        
+        <slide id="find-data" class="">
+            <span class="material-icons-outlined">download_for_offline</span>
+            <style>
+                #find-data .material-icons-outlined {
+                    font-size: 50vh;
+                    color: rgba(100, 168, 255, 0.2);      
+                    opacity: 0.4; 
+                }
+            </style>
+        </slide>
+        <slide id="graph" class="">
+            <code-fragment data-type="application/json" id="gruppensGraf">{}</code-fragment>
+            <style>
+                #graph .graph, #multigraph .chart {
+                    background: rgba(255, 255, 255, 0.67);
+                    padding: 1em;
+                    border: none;
+                    margin: 1em;
+                    box-shadow: 0 0 1em rgba(0,0,0,0.4);                    
+                    color: black;
+                }
+                #graph .settings {
+                    background: rgba(255,255,255,0.1);
+                    padding: 1rem;
+                    padding-left: 5rem;
+                    position: relative;
+                    box-sizing: border-box;     
+                    max-width: fit-content;
+                    margin-left: auto;
+                    margin-right: auto;                    
+                }
+                #graph .settings .material-icons-outlined {
+                    position: absolute;
+                    top: 1rem;
+                    left: 0.5rem;
+                    font-size: 3rem;
+                    bottom: 1rem;
+                    display: flex;
+                    width: 4rem;
+                    justify-content: center;
+                    align-items: center;
+                    opacity: 0.2;                    
+                }
+                #graph .settings > div:not(:last-child) {
+                    margin-bottom: 1em;
+                }
+                #graph .subsettings {
+                    margin-left: 6em;
+                }
+                #graph .flexlabel {
+                    display: flex;
+                }
+                #graph .flexlabel select {
+                    flex: 1 1 auto;
+                    margin-left: 1em;
+                }                
+
+                #graph .empty-placeholder .material-icons-outlined {
+                    font-size: 50vh;
+                    color: rgba(100, 168, 255, 0.2);      
+                    opacity: 0.4; 
+                }                
+            </style>
+            <div class="viewer" style="display:none">
+                <div class="graph"></div>
+                <div class="settings">
+                    <span class="material-icons-outlined">settings</span>
+                    <div><label class="flexlabel">Tids-akse: <select class="time"></select></label>
+                        <div class="subsettings">
+                            <label>Fra: <input type="time" class="from"></label>
+                            <label>Til: <input type="time" class="to"></label>
+                        </div>
+                    </div>
+                    <div><label class="flexlabel">Data-akse: <select class="data"></select></label></div>
+                </div>
+            </div>
+            <div class="empty-placeholder">
+                <span class="material-icons-outlined">insights</span>             
+            </div>
+
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                await wpm.require({"repository": "wpm_js_libs", "package": "uPlot"});
+                await wpm.requireExternal("https://cdn.jsdelivr.net/npm/uplot@1.6.22/dist/uPlot.min.css");
+
+                let timeSelect = slideReference.querySelector("select.time");
+                let dataSelect = slideReference.querySelector("select.data");
+                let filterMin = document.querySelector(".viewer input.from");
+                let filterMax = document.querySelector(".viewer input.to");
+
+                timeSelect.addEventListener("input", (evt) => {
+                    slideReference.setAttribute("data-timeindex", timeSelect.value, {approved: true});
+                    Tagger.tag("changedChartSetting", {"setting": "timeIndex"});
+                    updateSharedJson();
+                });
+                dataSelect.addEventListener("input", () => {
+                    slideReference.setAttribute("data-dataindex", dataSelect.value, {approved: true});
+                    Tagger.tag("changedChartSetting", {"setting": "dataIndex"});
+                    updateSharedJson();
+                });
+
+                filterMin.addEventListener("input", () => {
+                    slideReference.setAttribute("data-filtermin", filterMin.value, {approved: true});
+                    Tagger.tag("changedChartSetting", {"setting": "filterMin"});
+                    updateSharedJson();
+                });
+                filterMax.addEventListener("input", () => {
+                    slideReference.setAttribute("data-filtermax", filterMax.value, {approved: true});
+                    Tagger.tag("changedChartSetting", {"setting": "filterMax"});
+                    updateSharedJson();
+                });
+
+                logbookFragment = Fragment.one("#logBook");
+                logbookFragment.registerOnFragmentChangedHandler(() => {
+                    updateChartSettings();
+                });
+
+                let filterObserver = new MutationObserver((mutations) => {
+                    let updateTimeSeries = false;
+                    mutations.forEach((mutation) => {
+                        if (mutation.attributeName === "data-timeindex") {
+                            updateTimeSeries = true;
+                        }
+                    });
+                    updateChartSettings(updateTimeSeries);
+                });
+
+
+                filterObserver.observe(slideReference, {
+                    attributes: true,
+                    attributeFilter: ["data-filtermin", "data-filtermax", "data-timeindex", "data-dataindex", "data-csv"]
+                });
+
+                const overlay = document.createElement("div");
+                overlay.id = "uPlotOverlay";
+                overlay.style.display = "none";
+                overlay.style.position = "absolute";
+                document.body.appendChild(overlay);
+
+                function updateSharedJson() {
+                    let gruppe = document.body.getAttribute("data-group-name");
+                    if(gruppe != null) {
+                        let json = {
+                            gruppe: gruppe,
+                            filterMin: slideReference.getAttribute("data-filtermin"),
+                            filterMax: slideReference.getAttribute("data-filtermax"),
+                            timeIndex: slideReference.getAttribute("data-timeindex"),
+                            dataIndex: slideReference.getAttribute("data-dataindex"),
+                            csvFile: location.origin+location.pathname+slideReference.getAttribute("data-csv")
+                        }
+                        window.sharedSensor.publishJson(json, "tempChart", "tempChart");
+                    }
+                }
+
+                window.updateSharedJson = updateSharedJson;
+
+                function updateChartSettings(resetTimeFilters) {
+                    console.groupCollapsed("Updating chart settings:", resetTimeFilters);
+                    console.trace();
+                    console.groupEnd();
+
+                    let csvFile = document.querySelector("slide#graph").getAttribute("data-csv");
+
+                    if(csvFile == null) {
+                        return {};
+                    }
+
+                    return readCSV(csvFile).then((json) => {
+                        if (json?.data?.length > 0) {
+                            while (timeSelect.lastChild != null) {
+                                timeSelect.lastChild.remove();
+                            }
+                            while (dataSelect.lastChild != null) {
+                                dataSelect.lastChild.remove();
+                            }
+
+                            json.header.forEach((headerName, index) => {
+                                let option = document.createElement("option");
+                                option.textContent = headerName;
+                                option.value = index;
+
+                                let optionClone = option.cloneNode(true);
+
+                                timeSelect.appendChild(option);
+                                dataSelect.appendChild(optionClone);
+                            });
+
+                            let timeIndex = parseInt(slideReference.getAttribute("data-timeindex"));
+                            let dataIndex = parseInt(slideReference.getAttribute("data-dataindex"));
+
+                            if (!isNaN(timeIndex)) {
+                                timeSelect.value = timeIndex;
+                            } else {
+                                timeIndex = 0;
+                            }
+
+                            if (!isNaN(dataIndex)) {
+                                dataSelect.value = dataIndex;
+                            } else {
+                                dataIndex = 0;
+                            }
+
+                            if (!resetTimeFilters) {
+                                if (slideReference.hasAttributes("data-filtermin")) {
+                                    filterMin.value = slideReference.getAttribute("data-filtermin");
+                                }
+
+                                if (slideReference.hasAttributes("data-filtermax")) {
+                                    filterMax.value = slideReference.getAttribute("data-filtermax");
+                                }
+                            }
+
+                            //Render graph
+                            slideReference.querySelector(".viewer").style.display = "";
+                            slideReference.querySelector(".empty-placeholder").style.display = "none";
+
+                            let timeValues = [];
+                            let valueValues = [];
+
+                            let offset = 0;
+                            let lastValue = 0;
+
+                            let timeValuePairs = [];
+
+                            json.data.forEach((column) => {
+                                timeValuePairs.push({
+                                    time: column[timeIndex],
+                                    value: column[dataIndex]
+                                });
+                            });
+
+                            let timeMin = Infinity;
+                            let timeMax = -Infinity;
+
+                            timeValuePairs = timeValuePairs.map(({time, value}) => {
+                                let timeSplit = time.split(":");
+
+                                if (timeSplit.length === 3) {
+                                    //hh:mm:ss format?
+                                    time = parseInt(timeSplit[0]) * 60 * 60 + parseInt(timeSplit[1]) * 60 + parseInt(timeSplit[2]);
+                                } else {
+                                    //Floating point format?
+                                    time = parseFloat(time);
+                                }
+
+                                time += offset;
+
+                                if (time < lastValue) {
+                                    //New timestamp is in the past?
+                                    //Lets assume the time was reset, and use an offset
+
+                                    let additionalOffset = lastValue - offset;
+
+                                    time += additionalOffset;
+                                    offset = lastValue;
+                                }
+
+                                lastValue = time;
+
+                                timeMin = Math.min(timeMin, time);
+                                timeMax = Math.max(timeMax, time);
+
+                                value = parseFloat(value);
+
+                                return {time, value};
+                            });
+
+                            if (timeMin != Infinity) {
+                                //Set min/max on inputs
+                                let timeMinHours = Math.floor(timeMin / 3600);
+                                let timeMinMinutes = Math.floor((timeMin - timeMinHours * 3600) / 60) - 1;
+
+                                if (timeMinMinutes < 0) {
+                                    timeMinMinutes = 59;
+                                    timeMinHours -= 1;
+                                    if (timeMinHours < 0) {
+                                        timeMinHours = 0
+                                        timeMinMinutes = 0;
+                                    }
+                                }
+
+                                if (timeMinHours < 10) {
+                                    timeMinHours = "0" + timeMinHours;
+                                }
+                                if (timeMinMinutes < 10) {
+                                    timeMinMinutes = "0" + timeMinMinutes;
+                                }
+
+                                let timeMinString = timeMinHours + ":" + timeMinMinutes;
+
+                                let timeMaxHours = Math.floor(timeMax / 3600);
+                                let timeMaxMinutes = Math.floor((timeMax - timeMaxHours * 3600) / 60) + 1;
+
+                                if (timeMaxMinutes == 60) {
+                                    timeMaxMinutes = 0;
+                                    timeMaxHours += 1;
+
+                                    if (timeMaxHours === 24) {
+                                        timeMaxHours = 23;
+                                        timeMinMinutes = 59;
+                                    }
+                                }
+
+                                if (timeMaxHours < 10) {
+                                    timeMaxHours = "0" + timeMaxHours;
+                                }
+                                if (timeMaxMinutes < 10) {
+                                    timeMaxMinutes = "0" + timeMaxMinutes;
+                                }
+
+                                let timeMaxString = timeMaxHours + ":" + timeMaxMinutes;
+
+                                filterMin.setAttribute("min", timeMinString);
+                                filterMin.setAttribute("max", timeMaxString);
+                                filterMax.setAttribute("min", timeMinString);
+                                filterMax.setAttribute("max", timeMaxString);
+
+                                //Check if we have min/max set, if not, force update
+                                if(!slideReference.hasAttribute("data-filtermin") || !slideReference.hasAttribute("data-filtermax")) {
+                                    resetTimeFilters = true;
+                                }
+
+                                if (resetTimeFilters) {
+                                    filterMin.value = timeMinString;
+                                    filterMax.value = timeMaxString;
+                                    slideReference.setAttribute("data-filtermin", filterMin.value);
+                                    slideReference.setAttribute("data-filtermax", filterMax.value);
+                                }
+                            }
+
+                            let filterTimeMin = filterMin.value;
+                            let filterTimeMax = filterMax.value;
+
+                            if (filterTimeMin.length > 0) {
+                                let split = filterTimeMin.split(":");
+                                filterTimeMin = parseInt(split[0]) * 3600 + parseInt(split[1]) * 60;
+                            }
+
+                            if (filterTimeMax.length > 0) {
+                                let split = filterTimeMax.split(":");
+                                filterTimeMax = parseInt(split[0]) * 3600 + parseInt(split[1]) * 60;
+                            }
+
+                            timeValuePairs = timeValuePairs.filter(({time, value}) => {
+                                let allow = true;
+                                if (typeof filterTimeMin === "number") {
+                                    if (time < filterTimeMin) {
+                                        allow = false;
+                                    }
+                                }
+                                if (typeof filterTimeMax === "number") {
+                                    if (time > filterTimeMax) {
+                                        allow = false;
+                                    }
+                                }
+                                return allow;
+                            });
+
+                            timeValuePairs.forEach(({time, value}) => {
+                                timeValues.push(time);
+                                valueValues.push(value);
+                            });
+
+                            let data = [];
+                            data.push(timeValues);
+                            data.push(valueValues);
+
+                            drawChart(data, {x: json.header[timeIndex], y: json.header[dataIndex]});
+                        } else {
+                            slideReference.querySelector(".viewer").style.display = "none";
+                            slideReference.querySelector(".empty-placeholder").style.display = "block";
+                        }
+                    });
+
+                }
+
+                function drawChart(data, headers) {
+                    console.debug("Drawing chart:", data);
+
+                    let graph = slideReference.querySelector(".viewer .graph");
+                    while (graph.lastChild != null) {
+                        graph.lastChild.remove();
+                    }
+
+                    overlay.style.display = "none";
+                    let logbookEntries = [];
+
+                    function drawLogbook(u, si) {
+                        logbookFragment.require().then((logbook) => {
+                            let ctx = u.ctx;
+
+                            logbookEntries = [];
+
+                            logbook.forEach((entry) => {
+                                let d = new Date(entry.timestamp);
+                                let seconds = d.getSeconds() + d.getMinutes() * 60 + d.getHours() * 3600;
+
+                                let x = u.valToPos(seconds, "x", true);
+                                let y0 = u.valToPos(u.scales.y.min, "y", true);
+                                let y1 = u.valToPos(u.scales.y.max, "y", true);
+
+                                let idx = u.valToIdx(seconds);
+
+                                let yPoint = u.valToPos(u.data[1][idx], "y", true);
+
+                                let xCss = u.valToPos(seconds, "x", false);
+                                let yCss = u.valToPos(u.data[1][idx], "y", false);
+
+                                ctx.beginPath();
+                                ctx.strokeStyle = "green";
+                                ctx.setLineDash([2, 2]);
+                                ctx.moveTo(x, y0);
+                                ctx.lineTo(x, yPoint);
+                                ctx.stroke();
+
+                                ctx.beginPath();
+                                ctx.fillStyle = "lime";
+                                ctx.arc(x, yPoint, 5, 0, 2 * Math.PI);
+                                ctx.fill();
+
+                                logbookEntries.push({x: xCss, y: yCss, event: entry.event, time: seconds});
+                            });
+                        });
+                    }
+
+                    //Add 5 degree trendline
+                    let trendlineIndex = data.length;
+                    data.push([]);
+                    for(let i = 0; i<data[0].length; i++) {
+                        if(i === 0 || i === data[0].length-1) {
+                            data[trendlineIndex][i] = 5;
+                        } else {
+                            data[trendlineIndex][i] = null;
+                        }
+                    }
+
+                    let bounds = null;
+                    let animFrame = null;
+
+                    let opts = {
+                        title: "Temperatur",
+                        id: "chart1",
+                        class: "my-chart",
+                        width: 800,
+                        height: 500,
+                        scales: {
+                            x: {
+                                time: false
+                            },
+                            y: {
+                                range(u, dataMin, dataMax) {
+                                    if (dataMin == null)
+                                        return [0, 100];
+                                    return uPlot.rangeNum(dataMin, dataMax, 0.1, true);
+                                }
+                            },
+                        },
+                        hooks: {
+                            drawSeries: [
+                                (u, si) => {
+                                    drawLogbook(u, si);
+                                }
+                            ],
+                            setCursor: [(u) => {
+                                const {left, top, idx} = u.cursor;
+
+                                if (animFrame != null) {
+                                    cancelAnimationFrame(animFrame);
+                                }
+
+                                animFrame = requestAnimationFrame(() => {
+                                    animFrame = null;
+                                    if (left < 0) {
+                                        overlay.style.display = "none";
+                                        return;
+                                    }
+
+                                    let closestIdx = -1;
+                                    let closestDistance = Infinity;
+
+                                    let closeEntries = logbookEntries.filter((entry) => {
+                                        let distance = Math.sqrt(Math.pow(entry.x - left, 2) + Math.pow(entry.y - top, 2));
+                                        return distance <= 5;
+                                    });
+
+                                    while (overlay.lastChild != null) {
+                                        overlay.lastChild.remove();
+                                    }
+
+                                    if (closeEntries.length > 0) {
+                                        if (bounds == null) {
+                                            bounds = u.over.getBoundingClientRect();
+                                        }
+
+                                        closeEntries.forEach((entry) => {
+                                            let div = document.createElement("div");
+                                            div.classList.add("entry");
+                                            div.textContent = formatTime(entry.time) + " - " + entry.event;
+                                            overlay.appendChild(div);
+                                        });
+
+                                        overlay.style.display = "block";
+                                        overlay.style.top = (top + bounds.top) + "px";
+                                        overlay.style.left = (left + bounds.left) + "px";
+                                    } else {
+                                        overlay.style.display = "none";
+                                    }
+                                });
+                            }]
+                        },
+                        series: [
+                            {
+                                label: headers.x,
+                                value: (self, rawValue) => formatTime(rawValue)
+                            },
+                            {
+                                // initial toggled state (optional)
+                                show: true,
+
+                                spanGaps: false,
+
+                                // in-legend display
+                                label: headers.y,
+                                value: (self, rawValue) => rawValue,
+
+                                // series style
+                                stroke: "red",
+                                width: 1,
+                                fill: "rgba(255, 0, 0, 0.3)"
+                            },
+                            {
+                                // initial toggled state (optional)
+                                show: true,
+
+                                spanGaps: true,
+
+                                // in-legend display
+                                label: "Anbefalet temperatur",
+                                value: (self, rawValue) => 5,
+
+                                // series style
+                                stroke: "blue",
+                                width: 1,
+                                dash: [10, 5],
+                            }
+                        ],
+                        axes: [
+                            {
+                                values: (self, ticks, space) => {
+                                    return ticks.map((tick) => {
+                                        return formatTime(tick);
+                                    });
+                                }
+                            },
+                            {}
+                        ]
+                    };
+
+                    let plot = new uPlot(opts, data, graph);
+                }
+
+                updateChartSettings();
+            </code-fragment>
+        </slide>        
+        <slide id="multigraph" class="">
+            <div class="chart"></div>
+            
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                await wpm.require({"repository": "wpm_js_libs", "package": "uPlot"});
+                await wpm.requireExternal("https://cdn.jsdelivr.net/npm/uplot@1.6.22/dist/uPlot.min.css");
+
+                await window.sharedSensor.waitForConnect();
+
+                window.sharedSensor.registerJsonChangeListener("tempChart", async () => {
+                    updateChart();
+                });
+
+                let chart = slideReference.querySelector(".chart");
+
+                let colors = ["red", "yellow", "green", "lime", "pink", "orange", "silver", "white", "purple"];
+
+                async function updateChart() {
+                    let json = await window.sharedSensor.getJson("tempChart");
+
+                    let data = [];
+                    //Add x values array
+                    data.push([]);
+
+                    let opts = {
+                        title: "Temperaturer",
+                        id: "chart2",
+                        class: "my-chart",
+                        width: 800,
+                        height: 600,
+                        scales: {
+                            x: {
+                                time: false
+                            },
+                            y: {
+                                range(u, dataMin, dataMax) {
+                                    if (dataMin == null)
+                                        return [0, 100];
+                                    return uPlot.rangeNum(dataMin, dataMax, 0.1, true);
+                                }
+                            }
+                        },
+                        series: [
+                            {
+                                label: "Time",
+                                value: (self, rawValue) => formatTime(rawValue)
+                            }
+                        ],
+                        axes: [
+                            {
+                                values: (self, ticks, space) => {
+                                    return ticks.map((tick) => {
+                                        return formatTime(tick);
+                                    });
+                                }
+                            },
+                            {}
+                        ]
+                    };
+
+                    let dataMap = new Map();
+
+                    for(let series of json) {
+                        let seriesOpts = {
+                            // initial toggled state (optional)
+                            show: true,
+
+                            spanGaps: false,
+
+                            // in-legend display
+                            label: series.gruppe,
+                            value: (self, rawValue) => rawValue,
+
+                            // series style
+                            width: 1,
+                        };
+
+                        let seriesIndex = opts.series.push(seriesOpts) - 1;
+                        seriesOpts.stroke = colors[seriesIndex-1];
+
+                        let offset = 0;
+                        let lastValue = -1;
+
+                        let filterMin = -Infinity;
+                        let filterMax = Infinity;
+
+                        let filterMinSplit = series.filterMin.split(":");
+                        if (filterMinSplit.length == 2) {
+                            //hh:mm format?
+                            filterMin = parseInt(filterMinSplit[0]) * 60 * 60 + parseInt(filterMinSplit[1]) * 60;
+                        }
+
+                        let filterMaxSplit = series.filterMax.split(":");
+                        if (filterMaxSplit.length == 2) {
+                            //hh:mm format?
+                            filterMax = parseInt(filterMaxSplit[0]) * 60 * 60 + parseInt(filterMaxSplit[1]) * 60;
+                        }
+
+
+                        let seriesData = (await readCSV(series.csvFile)).data.map((entry)=>{
+                            let time = entry[series.timeIndex];
+                            let value = entry[series.dataIndex];
+
+                            let timeSplit = time.split(":");
+
+                            if (timeSplit.length === 3) {
+                                //hh:mm:ss format?
+                                time = parseInt(timeSplit[0]) * 60 * 60 + parseInt(timeSplit[1]) * 60 + parseInt(timeSplit[2]);
+                            } else {
+                                //Floating point format?
+                                time = parseFloat(time);
+                            }
+
+                            time += offset;
+
+                            if (time < lastValue) {
+                                //New timestamp is in the past?
+                                //Lets assume the time was reset, and use an offset
+
+                                let additionalOffset = lastValue - offset;
+
+                                time += additionalOffset;
+                                offset = lastValue;
+                            }
+
+                            lastValue = time;
+
+                            value = parseFloat(value);
+
+                            return {time, value};
+                        });
+
+                        seriesData = seriesData.filter(({time, value}) => {
+                            let allow = true;
+                            if (time < filterMin) {
+                                allow = false;
+                            }
+                            if (time > filterMax) {
+                                allow = false;
+                            }
+                            return allow;
+                        });
+
+                        //Push series data array
+                        data.push([]);
+
+                        seriesData.forEach(({time, value}) => {
+                            let timeEntries = dataMap.get(time);
+                            if (timeEntries == null) {
+                                timeEntries = {};
+                                dataMap.set(time, timeEntries);
+                            }
+                            timeEntries[seriesIndex] = value;
+                        });
+                    }
+
+                    let sortedKeys = Array.from(dataMap.keys()).sort((s1, s2)=>{
+                        return s1 - s2;
+                    });
+
+                    sortedKeys.forEach((time) =>{
+                        let timeEntries = dataMap.get(time);
+
+                        data[0].push(time);
+
+                        for(let i = 1; i<data.length; i++) {
+                            if(timeEntries[i] != null) {
+                                data[i].push(timeEntries[i]);
+                            } else {
+                                data[i].push(null);
+                            }
+                        }
+                    });
+
+
+                    //Add 5 degree trendline
+                    let trendlineIndex = data.length;
+                    data.push([]);
+                    for(let i = 0; i<data[0].length; i++) {
+                        if(i === 0 || i === data[0].length-1) {
+                            data[trendlineIndex][i] = 5;
+                        } else {
+                            data[trendlineIndex][i] = null;
+                        }
+                    }
+
+                    opts.series.push({
+                        // initial toggled state (optional)
+                        show: true,
+
+                        spanGaps: true,
+
+                        // in-legend display
+                        label: "Anbefalet temperatur",
+                        value: (self, rawValue) => 5,
+
+                        // series style
+                        stroke: "blue",
+                        width: 1,
+                        dash: [10, 5],
+                    });
+
+                    drawChart(opts, data, chart);
+                }
+
+                let animationId = null;
+
+                function drawChart(opts, data, chart) {
+                    if(animationId != null) {
+                        cancelAnimationFrame(animationId);
+                    }
+                    requestAnimationFrame(()=>{
+                        animationId = null;
+                        while(chart.lastChild != null) {
+                        chart.lastChild.remove();
+                        }
+
+                        let plot = new uPlot(opts, data, chart);
+                    });
+                }
+
+                updateChart();
+            </code-fragment>
+        </slide>    
+        <slide id="home">
+            <span class="material-icons-outlined">kitchen</span>
+            <style>
+                #home .material-icons-outlined {
+                    font-size: 50vh;
+                    color: rgba(100, 168, 255, 0.2);      
+                    opacity: 0.8;
+                    position: relative;
+                }
+                @keyframes supersizeAppears {
+                    0% {transform: scale(0.5); opacity: 0;}
+                    90% {transform: scale(1.1)}
+                    100% {}
+                }
+                @keyframes supersizeGlow {
+                    from {text-shadow: 0 0 0.1em rgba(255,255,255,0.2);}
+                    to {text-shadow: 0 0 0.2em white;}
+                }
+                
+                #home span:after {
+                    content: "✓";
+                    color: greenyellow;
+                    position: absolute;
+                    top: 50%;
+                    left: 60%;
+                    font-size: 0.5em;
+                    animation: supersizeAppears 0.25s ease-out, supersizeGlow 2s alternate ease-in-out infinite;
+                }
+                
+            </style>     
+        </slide>
+    </slides>
+    
+    <steps>
+        <step  name="Welcome" data-slide="welcome" >
+            <code-fragment data-type="text/markdown" auto="true">
+# Reducer Madspild!
+
+Velkommen til dette forløb omkring madspild!
+
+En af grundene til at mad bliver smidt ud i stedet for at blive spist er at det når at blive dårligt, før vi får det spist. Ofte er det på grund af at maden bliver opbevaret ved en forkert temperatur uden at vi lægger mærke til det.
+
+I dette forløb skal vi prøve at blive klogere på hvordan vi opbevarer fødevarer her på skolen og derhjemme ved at instrumentere vores køleskabe med sensorer for at se, om de opfylder Fødevarestyrelsens kølekrav til fødevarer.
+
+Når i skal svare på opgaverne under forløbet, kan i bruge "Send Note" feltet herunder, der kan man også uploade billeder.
+
+Da forløbet bruger en micro:bit, og skal snakke med den fra browseren, er det vigtigt et i bruger en chromium baseret browser, som fx Chrome eller Microsoft Edge.
+
+Når alle i gruppen er klar til at gå i gang, så scroll ned til navigationen her i bunden og tryk på Next-knappen.                
+            </code-fragment>
+        </step>        
+        <step name="Connect" data-slide="code" data-slide-mode="connect">
+            <code-fragment data-type="text/markdown" auto="true">
+# Vi er alle blinde
+
+Før vi overhovedet kan vurdere om vi overholder kravene for opbevaring af fødevarer, har vi brug for at vide hvad temperaturen i køleskabene er. Desværre viser mange køleskabe kun den temperatur, de er indstillet til (hvis de overhovedet viser noget) og ikke den faktiske temperatur i køleskabet - og der er muligvis også forskel på temperaturen forskellige steder i køleskabet.
+
+Vi bliver nødt til at bygge en måler, så vi kan se hvad temperaturen rent faktisk er. Til det kan vi bruge en Micro:bit. 
+
+På computeren er et MakeCode-projekt til Micro:bit, som tegner en smiley, når programmet udføres. For at se om Micro:bit’en overhovedet fungerer, kan vi prøve at lægge programmet over på den
+
+* Forbind først Micro:bit’en til computeren med USB-kablet uden at andre moduler eller batteri-pakker sat til den
+* Tryk på knappen “…” ved siden af “Download” og vælg “Connect Device”/“Forbind enhed” i popuppen
+* Nu kan man trykke på “Download” for at sende programmet og starte det
+* Prøv at rette i smiley’en og tryk på Download-knappen for at sende programmet igen. Hvad skete der på computerne, da i hver især begyndte at rette i programmet? Kan I få alle gruppens Micro:bits til at vise den samme smiley?
+            </code-fragment>            
+ 
+            <code-fragment id="smiley" data-type="application/json" data-restrict="smiley">{
+                "header": {
+                "name": "Untitled",
+                "meta": {"caviId": "smiley"},
+                "editor": "blocksprj",
+                "pubId": "",
+                "pubCurrent": false,
+                "target": "microbit",
+                "targetVersion": "5.0.15",
+                "id": "1ed57c42-b020-4697-7678-c125652f36c2",
+                "recentUse": 1669891147,
+                "modificationTime": 1669891147,
+                "path": "Untitled-2",
+                "cloudCurrent": false,
+                "saveId": null,
+                "githubCurrent": false
+                },
+                "text": {
+                "README.md": "",
+                "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"pxt-on-start\" x=\"23\" y=\"21\"><statement name=\"HANDLER\"><block type=\"device_show_leds\"><field name=\"LEDS\">`\n        . # . # . \n        . # . # . \n        . . . . . \n        # . . . # \n        . # # # .\n        `</field></block></statement></block></xml>",
+                "main.ts": "basic.showLeds(`\n    . # . # .\n    . # . # .\n    . . . . .\n    # . . . #\n    . # # # .\n    `)\n",
+                "pxt.json": "{\n    \"name\": \"Untitled\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"radio\": \"*\",\n        \"microphone\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"\n}\n"
+                }
+                }</code-fragment>
+        </step>            
+        <step name="Termometer" data-slide="code" data-slide-mode="tempdisplay">    
+            <code-fragment data-type="text/markdown" auto="true">
+# Byg et Termometer
+
+Nu er der åbnet op for nogle andre af blokkene i MakeCode - blandt andet en blok, som viser et tal på displayet, en blok som udfører noget kode med et fast interval, og en rund blok som måler temperaturen inde i Micro:bit’ens microchip.
+
+* Kan I sammen bygge et program, som en gang i sekundet viser hvad temperaturen i chippen er lige nu, ved at skrive det som et tal på displayet?
+* Hvis I sender programmet til alle Micro:bits i gruppen, er de så enige om temperaturen?
+* Virker målingerne realistiske eller præcise?
+* Kan I med vilje påvirke målingerne, så temperaturen bliver højere eller lavere?              
+            </code-fragment>                 
+            <code-fragment id="tempdisplay" data-type="application/json" data-restrict="tempdisplay">
+{
+    "header": {
+        "name": "Untitled",
+        "meta": {"caviId": "tempdisplay"},
+        "editor": "blocksprj",
+        "pubId": "",
+        "pubCurrent": false,
+        "target": "microbit",
+        "targetVersion": "5.0.15",
+        "id": "1a8b737b-a66d-4a29-abb3-0bab6b855e9b",
+        "recentUse": 1669637556,
+        "modificationTime": 1669637556,
+        "path": "Untitled-35",
+        "cloudCurrent": false,
+        "saveId": null,
+        "githubCurrent": false
+    },
+    "text": {
+        "README.md": "",
+        "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"></xml>",
+        "main.ts": "\n",
+        "pxt.json": "{\n    \"name\": \"Untitled\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"datalogger\": \"*\",\n        \"pxt-kitronik-klimate\": \"github:kitronikltd/pxt-kitronik-klimate#v1.0.2\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\",\n    \"languageRestriction\": \"blocks-only\"\n}\n"
+    }
+}
+            </code-fragment> 
+        </step> 
+        <step name="Indsamling" data-slide="code" data-slide-mode="tempstore">    
+            <code-fragment data-type="text/markdown" auto="true">
+# Dataopsamling
+
+Hvis vi skal overvåge et køleskab over lang tid, kan det godt være lidt træls at skulle stå og kigge på displayet på Micro:bit’en hele tiden for at aflæse temperaturen.
+
+I stedet kan vi bruge den indbyggede lagerplads til at gemme målingerne, så vi kan se dem senere.
+
+* Udvid termometer-programmet, som I har lavet, så det ud over at vise temperaturen også logger temperaturen til en kolonne navngivet “temp”
+* Send det nye program til Micro:bit’en
+
+Nu gemmes temperaturdata i en fil på Micro:bit’en. Så længe den sidder til med USB-kablet kan filen åbnes ved at bruge en fil-browser til at åbne filen MY_DATA.HTM i roden af “MICROBIT” drevet.
+
+* Åbn MY_DATA.HTM og se hvad der er gemt. Stemmer det overens med forventningerne?
+* Hvad sker der, hvis man slukker Micro:bit’en ved at tage den ud af USB og derefter tænder den igen ved at sætte den til igen? Hvordan påvirker det de gamle data - og de nye?
+* Prøv at trykke på “Download”-knappen i MY_DATA.HTM og se på indholdet af CSV-filen som den henter. Giver det mening?
+* Hvordan sletter eller nulstiller man dataopsamlingen, så man kan starte forfra på en frisk?
+* Hent CSV-filen igen for at bekræfte at den er tom
+            </code-fragment>                 
+        </step>
+        <step name="Klimamodul" data-slide="code" data-slide-mode="tempmodule"> 
+            <code-fragment data-type="text/markdown" auto="true">
+# Klimamodul
+
+Vi kan gøre målingerne mere præcise ved at bruge et klima-modul i stedet for den lidt unøjagtige indbyggede temperatursensor i Micro:bit’ens microchip. Klima-modulerne er til gengæld noget dyrere, så hver gruppe må nøjes med et enkelt klima-modul til deling.
+
+* Byg en udvidet måler ved at sætte en af gruppens Micro:bits sammen med klima-modulet
+* Opgrader i fællesskab jeres termometer-program, så det nu både viser og logger den nye, mere nøjagtige, temperatur-blok fra “Kitronik Klimate”-sektionen i stedet for den indbyggede temperaturmåler
+* Prøv programmet på Micro:bit’en med klima-modulet. Virker det som forventet og kan man hente gemte data ud af det?                
+            </code-fragment>                 
+        </step>
+        <step name="Instrumentation" data-slide="code" data-slide-mode="superlogger">    
+            <code-fragment data-type="text/markdown" auto="true">
+# Måler til et Køleskab
+
+Her er et program, som bygger videre på termometeret fra før, men der er nogle nye funktioner: 
+1. Nu kan man nulstille dataloggen ved at holde både knap A og knap B på forsiden af Micro:bit’en nede på samme tid
+2. Displayet er slukket og viser ikke længere temperaturen for at spare på strømmen
+3. Den bruger nu uret i klima-modulet til at logge hvad klokken var hver gang
+
+Vi skal have gjort køleskabs-måleren klar:
+
+* Kig på programmet og se om det giver mening
+* Prøv at lægge programmet op på gruppens Micro:bit med klima-modul
+* Tag Micro:bit’en ud af computeren og sæt batteri-pakken til i stedet (nogle batteri-pakker har også en lille kontakt der skal tændes)
+* Giv jeres måler et navn. Skriv det på et lille stykke papir og tape det fast på den, så I kan kende den igen
+
+Hvis i kommer til at ødelægge koden, så den ikke virker korrekt mere, kan i trykke <a class="codeResetButton" href="#">her</a> for at genskabe den oprindelige kode.
+            </code-fragment>
+            <code-fragment data-type="text/javascript">
+                if(fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference. alreadyRun = true;
+
+                stepReference.querySelector(".codeResetButton").addEventListener("click", ()=>{
+                    runOnScreen("resetCurrentMakeCodeFragment");
+                });
+            </code-fragment>
+            <code-fragment id="superlogger" data-type="application/json" data-restrict="superlogger">
+{
+    "header": {
+        "name": "Ikke-navngivet",
+        "meta": {
+            "caviId": "superlogger"
+        },
+        "editor": "blocksprj",
+        "pubId": "",
+        "pubCurrent": false,
+        "target": "microbit",
+        "targetVersion": "5.0.15",
+        "id": "80349577-4f28-474e-38b9-d609c634df33",
+        "recentUse": 1669637672,
+        "modificationTime": 1669637672,
+        "path": "Ikke-navngivet",
+        "cloudCurrent": false,
+        "saveId": null,
+        "githubCurrent": false
+    },
+    "text": {
+        "README.md": "",
+        "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"every_interval\" x=\"0\" y=\"0\"><value name=\"interval\"><shadow type=\"longTimePicker\"><field name=\"ms\">1000</field></shadow></value><statement name=\"HANDLER\"><block type=\"dataloggerlog\"><mutation xmlns=\"http://www.w3.org/1999/xhtml\" _expanded=\"1\" _input_init=\"true\"></mutation><value name=\"data1\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"time\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"kitronik_rtc_read_time\"></block></value></shadow></value><value name=\"data2\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"temp\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"kitronik_klimate_read_temperature\"><field name=\"temperature_unit\">Kitronik_klimate.TemperatureUnitList.C</field></block></value></shadow></value><value name=\"data3\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data4\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data5\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data6\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data7\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data8\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data9\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data10\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value></block></statement></block><block type=\"device_button_event\" x=\"530\" y=\"-5\"><field name=\"NAME\">Button.AB</field><statement name=\"HANDLER\"><block type=\"dataloggerdeletelog\"><mutation xmlns=\"http://www.w3.org/1999/xhtml\" _expanded=\"0\" _input_init=\"true\"></mutation><field name=\"deleteType\">datalogger.DeleteType.Fast</field><next><block type=\"basic_show_icon\"><field name=\"i\">IconNames.Yes</field><next><block type=\"device_clear_display\"><next><block type=\"control_reset\"></block></next></block></next></block></next></block></statement></block></xml>",
+        "main.ts": "input.onButtonPressed(Button.AB, function () {\n    datalogger.deleteLog()\n    basic.showIcon(IconNames.Yes)\n    basic.clearScreen()\n    control.reset()\n})\nloops.everyInterval(1000, function () {\n    datalogger.log(\n    datalogger.createCV(\"time\", kitronik_RTC.readTime()),\n    datalogger.createCV(\"temp\", Kitronik_klimate.temperature(Kitronik_klimate.TemperatureUnitList.C))\n    )\n})\n",
+        "pxt.json": "{\n    \"name\": \"Ikke-navngivet\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"datalogger\": \"*\",\n        \"pxt-kitronik-klimate\": \"github:kitronikltd/pxt-kitronik-klimate#v1.0.2\",\n        \"pxt-kitronik-rtc\": \"github:kitronikltd/pxt-kitronik-rtc#v1.0.2\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\",\n    \"yotta\": {\n        \"config\": {\n            \"microbit-dal\": {\n                \"bluetooth\": {\n                    \"open\": 1,\n                    \"whitelist\": 0,\n                    \"security_level\": null\n                }\n            }\n        }\n    }\n}\n",
+        ".simstate.json": "{}"
+    }
+}
+	    </code-fragment>
+        </step>
+        <step name="Logbook" data-slide="to-the-mobile-mobile">
+            <code-fragment data-type="text/markdown" auto="true">
+# Dataopsamling
+
+Nu er vi klar til at gå felten! Til det skal vi bruge et køleskab, måleren som I har bygget, og en mobil udgave af CoTinker. CoTinker hjælper med at indsamle andre data og observationer end dem som måleren kan måle direkte.
+
+Det næste stykke tid skal vi overvåge og observere køleskabet og tage en note hver gang der sker noget spændende med det - f.eks. hvis nogen åbner køleskabet, sætter noget ind eller tager noget ud af det.
+Hjælp hinanden i gruppen med at skrive noterne, hvis der sker mange ting samtidigt. 
+
+Hvis køleskabet slet ikke bliver åbnet i løbet af forsøget, så prøv selv at åbne det i 20-30 sekunder og luk det igen.
+
+* Scan QR-koden med jeres mobiltelefoner for at åbne den mobile udgave af opgave-vejledningen i CoTinker på mobilen. 
+
+Vent med at trykke på "Next" indtil alle i gruppen har fået scannet koden og er klar
+            </code-fragment>
+        </step>        
+        
+        <!-- This part takes place on the mobile phone -->
+        <step name="LogbookPlace" data-slide="log">
+            <code-fragment data-type="text/markdown" auto="true">
+# Placering af Måler
+
+Det er vigtigt at vælge en god placering til dataopsamling - og at dokumentere det valg man træffer. På denne måde kan man senere se om der har været specielle forhold, der har gjort sig gældende, hvis én måler på et senere tidspunkt viser sig at have målt helt anderledes end alle andre målere.
+
+* Find det køleskab I vil måle på og vælg et interessant sted - gerne et andet sted end der, hvor de andre grupper har deres måler
+* Læg måleren i køleskabet og tryk på A+B på forsiden af Micro:bit’en for at nulstille og starte målingen
+* Tryk her på <button class="upload">&#128247; Upload</button> for at uploade et nærbillede af placeringen inde i køleskabet som fotodokumentation
+* Tryk evt. igen for at uploade et billede af køleskabet hvor I på lidt længere afstand peger på hvilket køleskab det er og hvor det er i køleskabet
+* Skriv i fællesskab detaljer omkring målingerne så i kan huske det senere.
+
+Når i har placeret jeres måler, tryk da på "Næste".
+            </code-fragment>
+            <code-fragment data-type="text/javascript">
+                if(fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference. alreadyRun = true;
+
+                let uploadButton = fragmentSelfReference.html[0].closest("step").querySelector(".upload");
+
+                function handleUploadClicked() {
+                    uploadImage().then((result) => {
+                        let img = new Image();
+                        img.addEventListener("load", ()=>{
+                            Steps.instance.postScreenshot(location.pathname + result.full, location.pathname + result.thumb, img.width, img.height);
+                        });
+
+                        img.src = location.pathname + result.full;
+
+                        Tagger.tag("uploadImage");
+                    });
+                }
+
+                uploadButton.addEventListener("click", handleUploadClicked);
+            </code-fragment>
+        </step>
+        <step name="LogbookButtons" data-slide="log">
+            <code-fragment data-type="application/json" id="logBook">[
+            ]</code-fragment>
+            <template id="otherLogEntryTpl">
+                <div class="logbookEntryEditor">
+                    <label>Hvad skete der? <input class="eventmsg" placeholder="Beskriv hændelsen"/></label>
+                    <div class="buttons">
+                        <button class="cancel">Fortryd</button> <button class="add">Tilføj</button>
+                    </div>
+                </div>
+            </template>
+            <style>
+                step[name="LogbookButtons"] ul {
+                    display: flex;
+                    list-style: none;
+                    margin-left: 1em;      
+                    padding: 0;
+                }
+                step[name="LogbookButtons"] ul li {
+                    padding: 1em;
+                }
+                step[name="LogbookButtons"] ul li button {
+                    padding: 1em;
+                    min-height: 6em;
+                }
+                .logbookEntryEditor {
+                    padding: 1em;
+                }
+                .logbookEntryEditor label {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .logbookEntryEditor .buttons {
+                    text-align: right;
+                    margin-top: 1em;
+                }
+                .logbookEntryEditor .buttons button {
+                    padding: 1em;
+                    margin-left: 1em;
+                }         
+                step[name="LogbookButtons"] .logBookPreview {
+                    display: block;
+                    margin: 0;
+                    padding: 0;
+                }
+                step[name="LogbookButtons"] .logBookPreview li {
+                    padding: 0.25em 1em;                    
+                }                
+                .logBookPreview .event {
+                    margin-left: 1em;
+                    position: relative;
+                }
+                .logBookPreview .date {
+                    font-size: 0.8em;
+                    font-weight: bold;
+                    opacity: 0.5;
+                }
+            </style>
+            <code-fragment data-type="text/markdown" auto="true">
+# Logbog
+
+Tryk på knapperne præcis når der sker noget spændende for at tilføje et punkt til logbogen:
+
+* <button class="openDoor">Døren åbnes</button>
+* <button class="closeDoor">Døren lukkes</button>
+* <button class="other">Andet...</button>
+
+<div class="otherContainer"></div>
+<ul class="logBookPreview"></ul>
+
+Tryk på "Next" nedenfor når forsøget skal til at afsluttes
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                if (fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference.alreadyRun = true;
+
+                class LogBook {
+                    constructor() {
+                        this.fragment = Fragment.one("#logBook");
+                    }
+
+                    async addEntry(event, timestamp = null) {
+                        if (timestamp == null) {
+                            timestamp = Date.now();
+                        }
+                        let entry = {
+                            timestamp,
+                            event
+                        };
+
+                        let json = [];
+
+                        try {
+                            json = await this.fragment.require();
+                        } catch (e) {
+                            console.warn("Error reading logbook json:", e);
+                        }
+
+                        json.push(entry);
+
+                        Tagger.tag("logbookAddEntry", {"logbookEvent": event});
+
+                        this.fragment.raw = JSON.stringify(json, null, 2);
+                    }
+
+                    async deleteEntry(entry) {
+                        let json = await this.fragment.require();
+
+                        json.splice(json.indexOf(entry), 1);
+
+                        Tagger.tag("logbookDeleteEntry", {"logbookEvent": entry.event});
+
+                        this.fragment.raw = JSON.stringify(json, null, 2);
+                    }
+                }
+
+                const logbook = new LogBook();
+
+                const step = fragmentSelfReference.html[0].closest("step");
+
+                const otherContainer = step.querySelector("div.otherContainer");
+
+                step.querySelector("button.openDoor").addEventListener("click", () => {
+                    logbook.addEntry("Køleskab åbnet");
+                });
+                step.querySelector("button.closeDoor").addEventListener("click", () => {
+                    logbook.addEntry("Køleskab lukket");
+                });
+                step.querySelector("button.other").addEventListener("click", () => {
+                    let timestamp = Date.now();
+                    let tpl = WebstrateComponents.Tools.loadTemplate("#otherLogEntryTpl");
+                    let transient = document.createElement("transient");
+                    transient.appendChild(tpl);
+
+                    while (otherContainer.lastChild != null) {
+                        otherContainer.lastChild.remove();
+                    }
+
+                    function addEntry() {
+                        let msg = tpl.querySelector(".eventmsg").value.trim();
+
+                        if (msg.length > 0) {
+                            logbook.addEntry(msg, timestamp);
+                        }
+                        transient.remove();
+                    }
+
+                    tpl.querySelector(".eventmsg").addEventListener("keyup", (evt) => {
+                        if (evt.keyCode === 13) {
+                            addEntry();
+                        }
+                    });
+
+                    tpl.querySelector(".add").addEventListener("click", () => {
+                        addEntry();
+                    });
+                    tpl.querySelector(".cancel").addEventListener("click", () => {
+                        transient.remove();
+                    });
+
+                    otherContainer.appendChild(transient);
+
+                    tpl.querySelector(".eventmsg").focus();
+                });
+
+                const logBookPreview = step.querySelector(".logBookPreview");
+
+                function formatDate(date) {
+                    var hours = date.getHours();
+                    var minutes = date.getMinutes();
+                    minutes = minutes < 10 ? '0' + minutes : minutes;
+                    var strTime = hours + ':' + minutes;
+                    return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+                }
+
+                function updateLogBookPreview() {
+                    logbook.fragment.require().then((json) => {
+                        while (logBookPreview.lastChild != null) {
+                            logBookPreview.lastChild.remove();
+                        }
+
+                        json.reverse().forEach((entry) => {
+                            let li = document.createElement("li");
+                            li.classList.add("entry");
+
+                            let date = new Date(entry.timestamp);
+                            let dateDiv = document.createElement("div");
+                            dateDiv.classList.add("date");
+                            dateDiv.textContent = formatDate(date);
+                            li.appendChild(dateDiv);
+
+                            let eventDiv = document.createElement("div");
+                            eventDiv.classList.add("event");
+                            eventDiv.textContent = escapeHTML(entry.event);
+                            li.appendChild(eventDiv);
+
+                            let deleter = document.createElement("button");
+                            deleter.classList.add("deleter");
+                            deleter.innerText = "X";
+                            eventDiv.appendChild(deleter);
+                            deleter.addEventListener("click", async () => {
+                                let answer = confirm("Er du sikker på du vil slette logbog indgangen ["+entry.event+"]");
+
+                                if (answer === true) {
+                                    await logbook.deleteEntry(entry);
+                                }
+                            });
+
+                            logBookPreview.appendChild(li);
+                        });
+                    });
+                }
+
+                logbook.fragment.registerOnFragmentChangedHandler(() => {
+                    updateLogBookPreview();
+                });
+
+                updateLogBookPreview();
+            </code-fragment>
+        </step>
+        <step name="LogbookEnding" data-slide="log">
+            <code-fragment data-type="text/markdown" auto="true">
+# Afrund Forsøget
+
+Når i er færdige med forsøget
+* Tag batteri-pakken ud af Micro:bit’en for at stoppe den
+* Tag den med tilbage til computeren
+            </code-fragment>
+        </step>
+
+        <!-- This part is back on the computer -->        
+        <step name="Sikring" data-slide="find-data">    
+            <code-fragment data-type="text/markdown" auto="true">
+# Datasikring
+
+Nu skal vi have sikret de indsamlede data. Så længe de kun ligger på Micro:bit’en, er der en risiko for at nogen kunne komme til at nulstille den ved at trykke A+B eller slette data på anden vis - f.eks. ved at lægge et nyt program ind.
+
+* Sæt Micro:bit’en til en af computerne og find MY_DATA.HTM igen ligesom sidst
+* Ser det fornuftigt ud?
+* Tryk på “Download” for at hente dataene ud som en CSV-fil og gem filen et godt sted                
+            </code-fragment>                 
+        </step>        
+        <step name="Graph" data-slide="graph">
+            <code-fragment data-type="text/markdown" auto="true">
+# Gruppens Graf
+
+Før vi kan vurdere om køleskabet overholder kravene for opbevaring af fødevarer, er det naturligvis vigtigt, at vi sikrer os at de gemte målinger giver mening. Vi skal f.eks. ikke inkludere målinger fra før Micro:bit’en blev placeret i køleskabet eller målinger foretaget efter at forsøget sluttede.
+
+* På computeren med CSV-filen med målingerne: Tryk her på <button class="upload" style="display: inline-flex;align-items: center;vertical-align: bottom;cursor:pointer"><span class="material-icons-outlined" style="margin-right: 0.25em;">cloud_upload</span> Upload</button> for at vælge CSV-filen med måledata
+* Indstil grafen, så den viser de rigtige akser, og det rigtige tidsinterval
+* Kig på grafen og undersøg om der er en sammenhæng imellem de overlejrede hændelser fra logbogen og den målte temperatur
+* Er temperaturen stabil - eller svinger den over tid?
+* Var der tidspunkter, hvor temperaturen lå uden for Fødevarestyrelsens anbefalinger?
+* Kunne vi spare energi, fordi maden er kølet for meget?
+
+Grafen kan zoomes ved at trække og slippe med musen på det område man gerne vil kigge på, og man kan nulstille zoom med et dobbelt klik på grafen.
+            </code-fragment>
+
+            <code-fragment data-type="text/javascript">
+                if(fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference. alreadyRun = true;
+
+
+                let uploadButton = stepReference.querySelector("button.upload");
+
+                uploadButton.addEventListener("click", () => {
+                    let fileInput = document.createElement("input");
+                    fileInput.setAttribute("type", "file");
+                    fileInput.addEventListener("input", async ()=>{
+                        if(fileInput.files.length === 0) {
+                            return;
+                        }
+
+                        if (fileInput.files.length > 1) {
+                            alert("Multi upload not supported");
+                            return;
+                        }
+
+                        let file = fileInput.files[0];
+
+                        if(!file.name.endsWith(".csv")) {
+                            alert("Only .csv files supported");
+                            return;
+                        }
+
+                        await Uploader.upload(location.origin+location.pathname, file, file.name);
+
+                        document.querySelector("slide#graph").setAttribute("data-csv", file.name);
+                        runOnScreen("updateSharedJson", {});
+                    });
+                    fileInput.click();
+                });
+            </code-fragment>
+
+        </step>        
+        <step name="Compare" data-slide="multigraph">
+            <code-fragment data-type="text/markdown" auto="true">
+# Mere Data
+
+Her er en oversigt over alle de måledata, som klassen har lagt op i systemet for det samme tidsrum. Nogle af målerne var måske et andet sted i samme køleskab eller i et helt andet køleskab.
+
+* Kig på graferne, og vurder om der er nogen sammenhæng imellem dem
+* Er der bestemte steder, der hele tiden er meget varmere/koldere?
+* Er der mønstre, der går igen på alle graferne?
+
+Grafen kan zoomes ved at trække og slippe med musen på det område man gerne vil kigge på, og man kan nulstille zoom med et dobbelt klik på grafen.
+            </code-fragment>
+        </step>
+
+
+
+        <step name="PrepHome" data-slide="code" data-slide-mode="homelogger">
+            <code-fragment data-type="text/markdown" auto="true">
+# Dit Køleskab
+
+Det er ikke kun for caféer og restaurenter i professionelle miljøer at der er risiko for at mad kan gå til spilde på grund af manglende indsigt i opbevaringstemperaturen. Rigtigt mange køleskabe
+i danske hjem er indstillet uhensigtsmæssigt eller decideret forkert. 
+
+Det skyldes dog ikke nødvendigvis ond vilje fra forbrugeren. På nogle køleskabe er kompressorindstillingen mærket med tallene 1-6, et antal streger eller med bogstaver. Det er ofte uklart for forbrugeren
+om man skal skrue op eller ned for at få en lavere temperatur. F.eks. tolker nogle køleskabe indstillingen "5" som værende et ønske om 5°C inde i køleskabet, hvor indstillingen "2" (2°C) derfor naturligt 
+vil give en lavere temperatur. Modsat tolker nogle køleskabe "5" som værende den højeste kompressorhastighed, hvor indstillingen "2" derfor sætter køleskabet til at køle med under halv kraft, resulterende i
+i en væsentligt højere temperatur for madvarerne.
+
+Baseret på det oprindelige termometer-program uden klima-modul, som vi i starten af forløbet byggede til Micro:bit'en, kan vi lave en smartere måler som alle i gruppen hver især kan tage med hjem.
+
+Lige som for måleren vi byggede til klima-modulet har vi tilføjet muligheden for at nulstille loggen ved at holde A+B nede samtidigt. Der er dog nogle andre udfordringer:
+Micro:bit'en kan ikke gemme uendeligt meget data, faktisk kun omkring 11300 målepunkter når man gemmer temperaturen. Derudover koster det meget strøm at holde LED-displayet tændt.
+
+* Modificér programmet så det ikke logger data helt så ofte. - f.eks. så i er sikre på at det uden problemer kan logge data i et helt døgn uden at løbe tør for plads
+* Lav ændringer i programmet så det ikke længere altid viser temperaturen på LED-displayet når det logger en måling men kun viser temperaturen kortvarigt hvis man trykker på A-knappen?
+* Hvis i har god tid: Overvej om man kan tilføje en alarm som laver et kort bip efter hver måling hvis temperaturen er alt for høj - f.eks. hvis køleskabet er gået i stykker eller hvis nogen har glemt at lukke døren
+* Læg programmet på jeres Micro:bits, opfører det sig som forventet?
+
+Hvis i kommer til at ødelægge koden, så den ikke virker korrekt mere, kan i trykke <a class="codeResetButton" href="#">her</a> for at genskabe den oprindelige kode.
+            </code-fragment>
+            <code-fragment data-type="text/javascript">
+                if(fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference. alreadyRun = true;
+
+                stepReference.querySelector(".codeResetButton").addEventListener("click", ()=>{
+                    runOnScreen("resetCurrentMakeCodeFragment");
+                });
+            </code-fragment>
+            <code-fragment id="homie" data-type="application/json" data-restrict="homie">
+{
+  "header": {
+    "name": "Untitled",
+    "meta": {"caviId": "homie"},
+    "editor": "blocksprj",
+    "pubId": "",
+    "pubCurrent": false,
+    "target": "microbit",
+    "targetVersion": "5.0.15",
+    "id": "9dd7dc9b-6bdc-48b5-3dda-c70b9be47a9a",
+    "recentUse": 1670575165,
+    "modificationTime": 1670575165,
+    "path": "Untitled-15",
+    "cloudCurrent": false,
+    "saveId": null,
+    "githubCurrent": false
+  },
+  "text": {
+    "README.md": "",
+    "main.blocks": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"every_interval\" x=\"38\" y=\"24\"><value name=\"interval\"><shadow type=\"longTimePicker\"><field name=\"ms\">1000</field></shadow></value><statement name=\"HANDLER\"><block type=\"device_show_number\"><value name=\"number\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"device_temperature\"></block></value><next><block type=\"dataloggerlog\" inline=\"true\"><mutation xmlns=\"http://www.w3.org/1999/xhtml\" _expanded=\"0\" _input_init=\"true\"></mutation><value name=\"data1\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"temp\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow><block type=\"device_temperature\"></block></value></shadow></value><value name=\"data2\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data3\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data4\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data5\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data6\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data7\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data8\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data9\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value><value name=\"data10\"><shadow type=\"dataloggercreatecolumnvalue\"><value name=\"column\"><shadow type=\"datalogger_columnfield\"><field name=\"column\">\"\"</field></shadow></value><value name=\"value\"><shadow type=\"math_number\"><field name=\"NUM\">0</field></shadow></value></shadow></value></block></next></block></statement></block><block type=\"device_button_event\" x=\"567\" y=\"23\"><field name=\"NAME\">Button.AB</field><statement name=\"HANDLER\"><block type=\"dataloggerdeletelog\"><mutation xmlns=\"http://www.w3.org/1999/xhtml\" _expanded=\"0\" _input_init=\"true\"></mutation><field name=\"deleteType\">datalogger.DeleteType.Fast</field><next><block type=\"basic_show_icon\"><field name=\"i\">IconNames.Yes</field><next><block type=\"device_clear_display\"><next><block type=\"control_reset\"></block></next></block></next></block></next></block></statement></block></xml>",
+    "main.ts": "input.onButtonPressed(Button.AB, function () {\n    datalogger.deleteLog()\n    basic.showIcon(IconNames.Yes)\n    basic.clearScreen()\n    control.reset()\n})\nloops.everyInterval(1000, function () {\n    basic.showNumber(input.temperature())\n    datalogger.log(datalogger.createCV(\"temp\", input.temperature()))\n})\n",
+    "pxt.json": "{\n    \"name\": \"Untitled\",\n    \"description\": \"\",\n    \"dependencies\": {\n        \"core\": \"*\",\n        \"microphone\": \"*\",\n        \"datalogger\": \"*\"\n    },\n    \"files\": [\n        \"main.blocks\",\n        \"main.ts\",\n        \"README.md\"\n    ],\n    \"preferredEditor\": \"blocksprj\"}\n"
+  }
+}
+            </code-fragment> 
+        </step>
+        <step name="HomeGraph" data-slide="home">    
+            <code-fragment data-type="text/markdown" auto="true">
+# Check Køleskabet (Hjemmearbejde)
+
+Dette skridt foregår i jeres køleskabe derhjemme. Det kan være en god idé at fortælle resten af familien om eksperimentet så de ikke bliver overraskede når de åbner lågen.
+
+* Læg Micro:bit'en i køleskabet og start en frisk måling ved at holde A+B nede samtidigt. Luk lågen.
+* Lav noget andet i mindst 1 time, så måleren og køleskabet når at finde en nogenlunde fast temperatur
+* Check nu måleren ved at trykke på A-knappen (Pas på ikke at slette målingerne ved også at trykke på B!). Overholder køleskabet Fødevarestyrelsens anbefalede temperatur til at begynde med?
+* Bliver det varmere eller koldere hvis man "skruer op" på kompressor-indstillingen og venter mindst 1 time?
+* Hvad er den bedste indstilling som hverken er for kold eller for varm? (efter 1 time...)
+
+Når i har hentet dataene ud af Micro:bit'en kan i omdøbe CSV-filen til noget fornuftigt og trække den ned i upload-feltet herunder for at dele den med gruppen:
+
+I næste undervisningslektion skal vi i fællesskab på klassen kigge på hvordan man uden for CoTinker behandler de data i har optaget fra jeres køleskab.
+            </code-fragment>                 
+            <div class="imageAssetUploader">
+        	<!-- Prefill with relevant existing assets that cannot be deleted -->
+            </div>
+            <code-fragment data-type="text/javascript">
+                if(fragmentSelfReference.alreadyRun) {
+                    return;
+                }
+                fragmentSelfReference. alreadyRun = true;
+
+                CoTinkerAssetUploader.prepareUploadArea(stepReference.querySelector(".imageAssetUploader"));
+            </code-fragment>
+        </step>
+    </steps>
+    <code-fragment data-type="text/javascript" auto="auto">                
+        let link = window.location.href.split('?')[0] + "?mobile&controllerOnly";
+        await WPMv2.require([{package: "qrcodejs", repository: "wpm_js_libs"}]);
+        let target = document.getElementById("htmlqrcode");
+        new QRCode(target, {
+            text: link,
+            width: 2560,
+            height: 2560,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });            
+    </code-fragment>            
+</assignment>

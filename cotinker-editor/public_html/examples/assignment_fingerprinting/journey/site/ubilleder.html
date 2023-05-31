@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+          <link rel="stylesheet" href="main.css">
+
+    <title></title>
+    <script type="text/javascript">
+      var h=200; //global
+      function lille_stor(nr) {
+        if (h==70) {
+          if (nr==1){
+            document.images.b1.width=h*5/3;
+            document.images.b1.height=h;
+          };
+          if (nr==2){
+            document.images.b2.width=h*5/3;
+            document.images.b2.height=h;
+          };
+          if (nr==3){
+            document.images.b3.width=h*5/3;
+            document.images.b3.height=h;
+          };
+          if (nr==4){
+            document.images.b4.width=h*5/3;
+            document.images.b4.height=h;
+          };
+          h=200;
+        }
+      else {
+          if (nr==1){
+            document.images.b1.width=h*5/3;
+            document.images.b1.height=h;
+          };
+          if (nr==2){
+            document.images.b2.width=h*5/3;
+            document.images.b2.height=h;
+          };
+          if (nr==3){
+            document.images.b3.width=h*5/3;
+            document.images.b3.height=h;
+          };
+          if (nr==4){
+            document.images.b4.width=h*5/3;
+            document.images.b4.height=h;
+          };
+          h=70;
+        };
+      };
+    </script>
+  </head>
+<body style="width:100%;margin:10%;background-color:#5AB">
+      <div class="ad floating" id="primaryAd"></div>
+
+  <a href="menu2.html"><img src="ungfri.jpg" style="float:left" width="100px"></a>
+
+<div style="width:60%;float:left;margin-right:15%;margin-left:10%;padding:15px;background-color:#436;position:fixed"><p>
+      <H1>Hvordan er det at studere i udlandet?<br></H1>
+Du får du en intens og uforglemmelig oplevelse med masser af nye venskaber – uanset om du tager til USA, England eller Canada.
+
+
+
+Et udlandsophold er én af de mest intense oplevelser, du kan få i dit liv. Der er både fart på og plads til fordybelse i det du lærer og i mødet med en masse nye mennesker. Du bor på college eller privat, og bliver en del af et stort fællesskab.
+    </p>
+  <div style="padding:15px; background-color:#6BC;"><p>
+    <img src="s.jpg" name="b1" width="83" border=1  height="50"  onclick=lille_stor(1)>
+    <img src="s2.jpg" name="b2" width="83" border=1 height="50"  onclick=lille_stor(2)>
+    <img src="s3.jpg" name="b3" width="83" border=1  height="50"  onclick=lille_stor(3)>
+    <img src="s1.jpg" name="b4" width="83" border=1  height="50"  onclick=lille_stor(4)>
+  </div>    
+  </div>
+
+  <script src="journey.js"></script>
+
+  </body>
+</html>

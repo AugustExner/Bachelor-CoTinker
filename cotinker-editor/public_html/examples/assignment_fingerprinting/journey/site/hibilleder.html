@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+      <link rel="stylesheet" href="main.css">
+    
+    <title></title>
+    <script type="text/javascript">
+
+var nr=0;
+var images = new Array();
+
+
+var antal=8;
+for (i = 0; i < antal + 1; i++){
+images[i] = new Image();
+images[i].src = "r" + i + ".jpg";
+};
+
+function changeImg(){
+  document.images.slide.src = images[nr].src;
+  if (nr<images.length-1){
+    nr++;
+  } else {
+    nr=0;
+  }
+  setTimeout("changeImg()",2000);
+};
+onload=changeImg;
+
+</script>
+</head>
+
+<body style="width:100%;margin:10%;background-color:#A83">
+      <div class="ad floating" id="primaryAd"></div>
+
+<a href="menu2.html"><img src="ungfri.jpg" style="float:left" width="100px"></a>
+
+<div style="width:60%;float:left;margin-right:15%;margin-left:10%;padding:15px;background-color:#972;position:fixed">
+  <p>
+      <h1>Hvordan er det at rejse i udlandet?<br></h1>
+Du får du en intens og uforglemmelig oplevelse med masser af nye venskaber – uanset om du tager på et kort rejse eller på et lang rejse.
+
+Hvorfor rejse <br>
+Et rejse alene eller sammen med andre er én af de mest intense oplevelser, du kan få i dit liv. Der er både et væld af indtryk og plads til fordybelse i det du oplever og i mødet med en masse nye mennesker enten rejsefæller eller mennesker du møder tilfældigt.
+
+</p><br><br>
+  <img src="r0.jpg" name="slide" width="250" height="150">
+</div>
+<script src="journey.js"></script>
+
+  </body>
+</html>
